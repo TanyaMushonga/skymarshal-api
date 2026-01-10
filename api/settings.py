@@ -12,7 +12,7 @@ ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost').split(',')
 
 # Application definition
 SHARED_APPS = [
-    'django_tenants',  # Must come first
+    # 'django_tenants',  # Must come first
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -26,24 +26,19 @@ SHARED_APPS = [
     'channels',
     
     # Shared models
-    'apps.tenants',
+    # 'apps.tenants',
 ]
 
 TENANT_APPS = [
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    
     # Your tenant-specific apps
     'apps.users',
-    'apps.drones',
+    # 'apps.drones',
 ]
 
-INSTALLED_APPS = SHARED_APPS + TENANT_APPS
+INSTALLED_APPS = list(dict.fromkeys(SHARED_APPS + TENANT_APPS))
 
 MIDDLEWARE = [
-    'django_tenants.middleware.main.TenantMainMiddleware',
+    # 'django_tenants.middleware.main.TenantMainMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -52,7 +47,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'apps.tenants.middleware.TenantJWTMiddleware',
+    # 'api.middleware.TenantJWTMiddleware',
 ]
 
 ROOT_URLCONF = 'api.urls'
@@ -79,7 +74,7 @@ ASGI_APPLICATION = 'api.asgi.application'
 # Database
 DATABASES = {
     'default': {
-        'ENGINE': 'django_tenants.postgresql_backend',
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME': config('DB_NAME'),
         'USER': config('DB_USER'),
         'PASSWORD': config('DB_PASSWORD'),
@@ -88,15 +83,15 @@ DATABASES = {
     }
 }
 
-DATABASE_ROUTERS = ('django_tenants.routers.TenantSyncRouter',)
+# DATABASE_ROUTERS = ('django_tenants.routers.TenantSyncRouter',)
 
 # Tenant settings
-TENANT_MODEL = "tenants.Client"
-TENANT_DOMAIN_MODEL = "tenants.Domain"
+# TENANT_MODEL = "tenants.Client"
+# TENANT_DOMAIN_MODEL = "tenants.Domain"
 
 # Public schema (shared tables) - contains tenants
 PUBLIC_SCHEMA_NAME = 'public'
-PUBLIC_SCHEMA_URLCONF = 'api.urls'  # Assuming standard urls for now
+# PUBLIC_SCHEMA_URLCONF = 'api.urls'  # Assuming standard urls for now
 
 # Redis for channels and celery
 REDIS_URL = config('REDIS_URL')
@@ -161,7 +156,7 @@ MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type
-DEFAULT_AUTO_FIELD = 'django.models.BigAutoField'
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Logging
 LOGGING = {
