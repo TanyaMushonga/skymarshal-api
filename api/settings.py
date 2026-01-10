@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 from decouple import config
 
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = config('SECRET_KEY')
 
@@ -55,7 +55,7 @@ MIDDLEWARE = [
     'apps.tenants.middleware.TenantJWTMiddleware',
 ]
 
-ROOT_URLCONF = 'core.urls'
+ROOT_URLCONF = 'api.urls'
 
 TEMPLATES = [
     {
@@ -73,8 +73,8 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'core.wsgi.application'
-ASGI_APPLICATION = 'core.asgi.application'
+WSGI_APPLICATION = 'api.wsgi.application'
+ASGI_APPLICATION = 'api.asgi.application'
 
 # Database
 DATABASES = {
@@ -96,7 +96,7 @@ TENANT_DOMAIN_MODEL = "tenants.Domain"
 
 # Public schema (shared tables) - contains tenants
 PUBLIC_SCHEMA_NAME = 'public'
-PUBLIC_SCHEMA_URLCONF = 'core.urls_public'
+PUBLIC_SCHEMA_URLCONF = 'api.urls'  # Assuming standard urls for now
 
 # Redis for channels and celery
 REDIS_URL = config('REDIS_URL')
@@ -171,13 +171,9 @@ LOGGING = {
         'console': {
             'class': 'logging.StreamHandler',
         },
-        'file': {
-            'class': 'logging.FileHandler',
-            'filename': 'logs/debug.log',
-        },
     },
     'root': {
-        'handlers': ['console', 'file'],
+        'handlers': ['console'],
         'level': 'INFO',
     },
 }

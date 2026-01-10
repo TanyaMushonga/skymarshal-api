@@ -6,7 +6,7 @@ redis==5.0.1
 celery==5.3.1
 django-celery-beat==2.5.0
 djangorestframework-simplejwt==5.3.0
-django-tenant-schemas==1.10.0  # For multi-tenancy
+django-tenants==3.5.0  # For multi-tenancy
 channels==4.0.0  # For WebSocket support
 channels-redis==4.1.0
 daphne==4.0.0
