@@ -11,8 +11,7 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost').split(',')
 
 # Application definition
-SHARED_APPS = [
-    # 'django_tenants',  # Must come first
+INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -25,20 +24,12 @@ SHARED_APPS = [
     'corsheaders',
     'channels',
     
-    # Shared models
-    # 'apps.tenants',
-]
-
-TENANT_APPS = [
-    # Your tenant-specific apps
+    # Local apps
     'apps.users',
-    # 'apps.drones',
+    'apps.core',
 ]
-
-INSTALLED_APPS = list(dict.fromkeys(SHARED_APPS + TENANT_APPS))
 
 MIDDLEWARE = [
-    # 'django_tenants.middleware.main.TenantMainMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -47,7 +38,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # 'api.middleware.TenantJWTMiddleware',
 ]
 
 ROOT_URLCONF = 'api.urls'
@@ -83,15 +73,6 @@ DATABASES = {
     }
 }
 
-# DATABASE_ROUTERS = ('django_tenants.routers.TenantSyncRouter',)
-
-# Tenant settings
-# TENANT_MODEL = "tenants.Client"
-# TENANT_DOMAIN_MODEL = "tenants.Domain"
-
-# Public schema (shared tables) - contains tenants
-PUBLIC_SCHEMA_NAME = 'public'
-# PUBLIC_SCHEMA_URLCONF = 'api.urls'  # Assuming standard urls for now
 
 # Redis for channels and celery
 REDIS_URL = config('REDIS_URL')
