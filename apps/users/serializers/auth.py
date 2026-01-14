@@ -12,7 +12,6 @@ class AdminLoginSerializer(serializers.Serializer):
         password = attrs.get('password')
 
         if email and password:
-            # We explicitly check against email for admins
             user = authenticate(request=self.context.get('request'), email=email, password=password)
             if not user:
                  raise serializers.ValidationError(_('Unable to log in with provided credentials.'))
@@ -33,9 +32,6 @@ class OfficerLoginSerializer(serializers.Serializer):
         password = attrs.get('password')
 
         if force_number and password:
-            # Custom authentication for officer using force_number
-            # Since standard authenticate() uses USERNAME_FIELD (email), we need a custom backend or manual check
-            # For simplicity, we find the user by force_number then check password
             try:
                 user = User.objects.get(force_number=force_number)
             except User.DoesNotExist:
@@ -60,5 +56,12 @@ class Verify2FASerializer(serializers.Serializer):
     email = serializers.EmailField()
     code = serializers.CharField(max_length=6)
 
-class PasswordResetSerializer(serializers.Serializer):
+class AdminPasswordResetSerializer(serializers.Serializer):
     email = serializers.EmailField()
+
+class OfficerPasswordResetRequestSerializer(serializers.Serializer):
+    force_number = serializers.CharField()
+
+class OfficerPasswordResetVerifySerializer(serializers.Serializer):
+    force_number = serializers.CharField()
+    code = serializers.CharField(max_length=6)
