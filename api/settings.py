@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     # Local apps
     'apps.users',
     'apps.core',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
