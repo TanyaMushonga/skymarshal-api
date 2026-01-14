@@ -32,14 +32,15 @@ class BaseLoginView(views.APIView):
                 "detail": "Login successful"
             }, status=status.HTTP_200_OK)
             
-            response.set_cookie(
-                settings.SIMPLE_JWT.get('AUTH_COOKIE', 'access_token'),
-                access_token,
-                max_age=settings.SIMPLE_JWT.get('ACCESS_TOKEN_LIFETIME').total_seconds(),
-                httponly=True,
-                samesite='Lax',
-                secure=not settings.DEBUG
-            )
+            if self.request.headers.get('Platform') == 'web':
+                response.set_cookie(
+                    settings.SIMPLE_JWT.get('AUTH_COOKIE', 'access_token'),
+                    access_token,
+                    max_age=settings.SIMPLE_JWT.get('ACCESS_TOKEN_LIFETIME').total_seconds(),
+                    httponly=True,
+                    samesite='Lax',
+                    secure=not settings.DEBUG
+                )
             return response
 
         # Generate 2FA Code
@@ -102,14 +103,15 @@ class Verify2FAView(views.APIView):
             "requires_password_change": user.requires_password_change
         })
         
-        response.set_cookie(
-            settings.SIMPLE_JWT.get('AUTH_COOKIE', 'access_token'),
-            access_token,
-            max_age=settings.SIMPLE_JWT.get('ACCESS_TOKEN_LIFETIME').total_seconds(),
-            httponly=True,
-            samesite='Lax',
-            secure=not settings.DEBUG
-        )
+        if request.headers.get('Platform') == 'web':
+            response.set_cookie(
+                settings.SIMPLE_JWT.get('AUTH_COOKIE', 'access_token'),
+                access_token,
+                max_age=settings.SIMPLE_JWT.get('ACCESS_TOKEN_LIFETIME').total_seconds(),
+                httponly=True,
+                samesite='Lax',
+                secure=not settings.DEBUG
+            )
         return response
 
 class PasswordResetConfirmView(views.APIView):
