@@ -1,9 +1,9 @@
 from django.urls import path
-from .views.auth import (
-    AdminLoginView, OfficerLoginView, Verify2FAView, 
-    AdminPasswordResetRequestView, OfficerPasswordResetRequestView, 
-    OfficerPasswordResetVerifyView, PasswordResetConfirmView
+from .views.admin_auth import AdminLoginView, AdminPasswordResetRequestView
+from .views.officer_auth import (
+    OfficerLoginView, OfficerPasswordResetRequestView, OfficerPasswordResetVerifyView
 )
+from .views.shared_auth import Verify2FAView, PasswordResetConfirmView
 from .views.users import AdminCreateUserView
 
 urlpatterns = [
@@ -11,7 +11,7 @@ urlpatterns = [
     path('auth/login/admin/', AdminLoginView.as_view(), name='admin_login'),
     path('auth/login/officer/', OfficerLoginView.as_view(), name='officer_login'),
     
-    # 2FA Verification (Used by both after login if 2FA enabled, but mostly likely via login response handling)
+    # 2FA Verification (Shared)
     path('auth/verify-2fa/', Verify2FAView.as_view(), name='verify_2fa'),
     
     # Password Reset - Admin (Web/Email)
