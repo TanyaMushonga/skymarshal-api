@@ -18,7 +18,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     # Role & Hierarchy
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='officer')
-    badge_number = models.CharField(max_length=50, blank=True, null=True, unique=True, help_text="Officer Badge Number")
+    force_number = models.CharField(max_length=50, blank=True, null=True, unique=True, help_text="Officer Force Number")
     unit_id = models.CharField(max_length=50, blank=True, null=True)
 
     # Certification (Drone Specific)
