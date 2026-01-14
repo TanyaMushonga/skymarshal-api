@@ -13,12 +13,12 @@ class UserSerializer(serializers.ModelSerializer):
             'phone_number', 'is_2fa_enabled', 'requires_password_change',
             'is_on_duty', 'last_known_lat', 'last_known_lon'
         )
-        read_only_fields = ('id', 'is_officer', 'requires_password_change', 'is_2fa_enabled', 'last_known_lat', 'last_known_lon')
+        read_only_fields = ('id', 'is_officer', 'requires_password_change', 'last_known_lat', 'last_known_lon')
 
 class AdminCreateUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('email', 'first_name', 'last_name', 'role', 'force_number', 'unit_id', 'phone_number', 'is_certified_pilot', 'pilot_license_number')
+        fields = ('email', 'first_name', 'last_name', 'role', 'force_number', 'unit_id', 'phone_number', 'is_certified_pilot', 'pilot_license_number', 'is_2fa_enabled')
     
     def validate_email(self, value):
         if User.objects.filter(email=value).exists():
