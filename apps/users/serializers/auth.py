@@ -65,3 +65,7 @@ class OfficerPasswordResetRequestSerializer(serializers.Serializer):
 class OfficerPasswordResetVerifySerializer(serializers.Serializer):
     force_number = serializers.CharField()
     code = serializers.CharField(max_length=6)
+
+class PasswordResetConfirmSerializer(serializers.Serializer):
+    token = serializers.CharField()
+    new_password = serializers.CharField(write_only=True)

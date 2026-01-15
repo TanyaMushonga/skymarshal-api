@@ -1,4 +1,4 @@
-from rest_framework import status, views, permissions
+from rest_framework import status, views, permissions, generics
 from rest_framework.response import Response
 from django.conf import settings
 from django.core.cache import cache
@@ -18,7 +18,7 @@ class AdminLoginView(BaseLoginView):
         user = serializer.validated_data['user']
         return self.process_login(user)
 
-class AdminPasswordResetRequestView(views.APIView):
+class AdminPasswordResetRequestView(generics.GenericAPIView):
     permission_classes = [permissions.AllowAny]
     serializer_class = AdminPasswordResetSerializer
 

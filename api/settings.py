@@ -102,7 +102,10 @@ CELERY_TIMEZONE = 'UTC'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'apps.users.authentication.HybridAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ),
+    'LOGIN_URL': 'rest_framework:login',
+    'LOGOUT_URL': 'rest_framework:logout',
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
     ),

@@ -1,4 +1,4 @@
-from rest_framework import status, views, permissions
+from rest_framework import status, views, permissions, generics
 from rest_framework.response import Response
 from django.core.cache import cache
 from django.utils.crypto import get_random_string
@@ -27,7 +27,7 @@ class OfficerLoginView(BaseLoginView):
 
         return self.process_login(user)
 
-class OfficerPasswordResetRequestView(views.APIView):
+class OfficerPasswordResetRequestView(generics.GenericAPIView):
     permission_classes = [permissions.AllowAny]
     serializer_class = OfficerPasswordResetRequestSerializer
 
@@ -52,7 +52,7 @@ class OfficerPasswordResetRequestView(views.APIView):
 
         return Response({"detail": "If the officer exists, a verification code has been sent."}, status=status.HTTP_200_OK)
 
-class OfficerPasswordResetVerifyView(views.APIView):
+class OfficerPasswordResetVerifyView(generics.GenericAPIView):
     permission_classes = [permissions.AllowAny]
     serializer_class = OfficerPasswordResetVerifySerializer
 

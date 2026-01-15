@@ -1,11 +1,11 @@
-from rest_framework import status, views, permissions
+from rest_framework import status, views, permissions, generics
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.conf import settings
 from django.core.cache import cache
 from django.utils.crypto import get_random_string
 
-from ..serializers.auth import Verify2FASerializer
+from ..serializers.auth import Verify2FASerializer, PasswordResetConfirmSerializer
 from apps.core.tasks import send_email_task, send_sms_task
 from ..models import User
 
@@ -14,7 +14,7 @@ OTP_CACHE_PREFIX = "otp_"
 OTP_EXPIRY = 300  # 5 minutes
 RESET_TOKEN_EXPIRY = 900 # 15 minutes
 
-class BaseLoginView(views.APIView):
+class BaseLoginView(generics.GenericAPIView):
     permission_classes = [permissions.AllowAny]
     
     def process_login(self, user):
@@ -68,7 +68,7 @@ class BaseLoginView(views.APIView):
             "2fa_required": True
         }, status=status.HTTP_200_OK)
 
-class Verify2FAView(views.APIView):
+class Verify2FAView(generics.GenericAPIView):
     permission_classes = [permissions.AllowAny]
     serializer_class = Verify2FASerializer
 
@@ -114,15 +114,16 @@ class Verify2FAView(views.APIView):
             )
         return response
 
-class PasswordResetConfirmView(views.APIView):
+class PasswordResetConfirmView(generics.GenericAPIView):
     permission_classes = [permissions.AllowAny]
+    serializer_class = PasswordResetConfirmSerializer
     
     def post(self, request):
-        token = request.data.get('token')
-        new_password = request.data.get('new_password')
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
         
-        if not token or not new_password:
-            return Response({"detail": "Token and new password required"}, status=status.HTTP_400_BAD_REQUEST)
+        token = serializer.validated_data['token']
+        new_password = serializer.validated_data['new_password']
             
         cache_key = f"pwd_reset_{token}"
         user_id = cache.get(cache_key)
