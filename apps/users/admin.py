@@ -7,6 +7,7 @@ class UserAdmin(BaseUserAdmin):
     list_display = ('email', 'first_name', 'last_name', 'role', 'force_number', 'is_on_duty', 'is_certified_pilot')
     list_filter = ('role', 'is_on_duty', 'is_certified_pilot', 'is_2fa_enabled', 'is_active')
     search_fields = ('email', 'first_name', 'last_name', 'force_number', 'phone_number')
+    readonly_fields = ('date_joined', 'last_login', 'created_by')
     
     # Fieldsets for edit view
     fieldsets = (
