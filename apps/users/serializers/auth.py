@@ -69,3 +69,19 @@ class OfficerPasswordResetVerifySerializer(serializers.Serializer):
 class PasswordResetConfirmSerializer(serializers.Serializer):
     token = serializers.CharField()
     new_password = serializers.CharField(write_only=True)
+
+class RequestOTPSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=False)
+    force_number = serializers.CharField(required=False)
+
+    def validate(self, attrs):
+        email = attrs.get('email')
+        force_number = attrs.get('force_number')
+
+        if not email and not force_number:
+            raise serializers.ValidationError(_("Must provide either 'email' or 'force_number'."))
+        
+        if email and force_number:
+            raise serializers.ValidationError(_("Provide either 'email' or 'force_number', not both."))
+            
+        return attrs
