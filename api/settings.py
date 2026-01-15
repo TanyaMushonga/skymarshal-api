@@ -13,6 +13,10 @@ ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost').split(',')
 # Application definition
 AUTH_USER_MODEL = 'users.User'
 
+# Auth URL overrides
+LOGIN_URL = 'rest_framework:login'
+LOGOUT_URL = 'rest_framework:logout'
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
