@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.gis.geos import Point
-from ..models import Drone, DroneStatus, GPSLocation
+from .models import Drone, DroneStatus, GPSLocation
 
 
 class GPSLocationSerializer(serializers.ModelSerializer):
