@@ -12,3 +12,10 @@ env/
 local_settings.py
 .vscode/
 .idea/
+
+# Computer Vision
+*.pt
+datasets/
+runs/
+output/
+traffic_sample.mp4
