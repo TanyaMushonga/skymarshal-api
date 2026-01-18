@@ -1,19 +1,31 @@
 import os
 from celery import Celery
+from celery.schedules import crontab
 
-# Set the default Django settings module for the 'celery' program.
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'api.settings')
 
 app = Celery('api')
 
-# Using a string here means the worker doesn't have to serialize
-# the configuration object to child processes.
-# - namespace='CELERY' means all celery-related configuration keys
-#   should have a `CELERY_` prefix.
 app.config_from_object('django.conf:settings', namespace='CELERY')
 
 # Load task modules from all registered Django apps.
 app.autodiscover_tasks()
+
+# Periodic tasks
+app.conf.beat_schedule = {
+    'aggregate-metrics-every-5min': {
+        'task': 'apps.analytics.tasks.aggregate_traffic_metrics',
+        'schedule': crontab(minute='*/5'),
+    },
+    'generate-hourly-heatmaps': {
+        'task': 'apps.analytics.tasks.generate_heat_map',
+        'schedule': crontab(minute=0),
+    },
+    'monitor-drone-health': {
+        'task': 'apps.drones.tasks.monitor_drone_health',
+        'schedule': 60.0,
+    },
+}
 
 @app.task(bind=True, ignore_result=True)
 def debug_task(self):
