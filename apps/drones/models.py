@@ -1,43 +1,64 @@
 from django.db import models
+from apps.core.models import TimestampedModel
 
-class Drone(models.Model):
-    STATUS_CHOICES = (
-        ('IDLE', 'Idle'),
-        ('PATROLLING', 'Patrolling'),
-        ('RETURNING', 'Returning'),
-        ('CHARGING', 'Charging'),
-        ('MAINTENANCE', 'Maintenance'),
-    )
 
+class Drone(TimestampedModel):
+    drone_id = models.CharField(max_length=50, unique=True, db_index=True)
+    name = models.CharField(max_length=100)
+    model = models.CharField(max_length=100)
     serial_number = models.CharField(max_length=100, unique=True)
-    model_type = models.CharField(max_length=100)
-    max_speed = models.FloatField(default=0.0, help_text="Max speed in km/h")
-    battery_capacity = models.FloatField(default=100.0, help_text="Battery capacity in Wh")
+    is_active = models.BooleanField(default=True)
+    assigned_officer = models.ForeignKey(
+        'users.User', 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True,
+        related_name='assigned_drones'
+    )
     
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='IDLE')
-    current_battery_level = models.FloatField(default=100.0, help_text="Current battery percentage")
-    
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return f"{self.model_type} ({self.serial_number})"
-
-class Telemetry(models.Model):
-    drone = models.ForeignKey(Drone, on_delete=models.CASCADE, related_name='telemetry_logs')
-    latitude = models.FloatField()
-    longitude = models.FloatField()
-    altitude = models.FloatField(help_text="Altitude in meters")
-    speed = models.FloatField(help_text="Current speed in km/h")
-    battery_percentage = models.FloatField()
-    heading = models.FloatField(help_text="Heading in degrees")
-    signal_strength = models.FloatField(null=True, blank=True, help_text="Signal strength in dBm or percentage")
-    
-    timestamp = models.DateTimeField(auto_now_add=True)
-
     class Meta:
-        ordering = ['-timestamp']
-        verbose_name_plural = "Telemetry Logs"
-
+        db_table = 'drones'
+        ordering = ['name']
+    
     def __str__(self):
-        return f"Telemetry for {self.drone.serial_number} at {self.timestamp}"
+        return f"{self.name} ({self.drone_id})"
+
+
+class DroneStatus(TimestampedModel):
+    drone = models.OneToOneField(Drone, on_delete=models.CASCADE, related_name='status')
+    battery_level = models.IntegerField(default=100)
+    signal_strength = models.IntegerField(default=100)
+    status = models.CharField(
+        max_length=20, 
+        choices=[
+            ('online', 'Online'),
+            ('offline', 'Offline'),
+            ('maintenance', 'Maintenance'),
+            ('error', 'Error')
+        ],
+        default='offline'
+    )
+    
+    class Meta:
+        db_table = 'drone_status'
+    
+    def __str__(self):
+        return f"Status for {self.drone.name}"
+
+
+class GPSLocation(TimestampedModel):
+    drone = models.ForeignKey(Drone, on_delete=models.CASCADE, related_name='gps_locations')
+    latitude = models.DecimalField(max_digits=9, decimal_places=6)
+    longitude = models.DecimalField(max_digits=9, decimal_places=6)
+    altitude = models.FloatField()
+    timestamp = models.DateTimeField(auto_now_add=True, db_index=True)
+    
+    class Meta:
+        db_table = 'gps_locations'
+        ordering = ['-timestamp']
+        indexes = [
+            models.Index(fields=['drone', '-timestamp']),
+        ]
+    
+    def __str__(self):
+        return f"GPS for {self.drone.name} at {self.timestamp}"
