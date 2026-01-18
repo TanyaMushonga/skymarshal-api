@@ -18,23 +18,34 @@ LOGIN_URL = 'rest_framework:login'
 LOGOUT_URL = 'rest_framework:logout'
 
 INSTALLED_APPS = [
+    # Django core
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.gis',  # For PostGIS
     
-    # Third party apps
+    # Third-party
     'rest_framework',
-    'corsheaders',
+    'rest_framework_simplejwt',
     'channels',
+    'corsheaders',
+    'django_filters',
+    'drf_yasg',  # Swagger
     
-    # Local apps
-    'apps.users',
+    # Apps
     'apps.core',
+    'apps.users',
     'apps.drones',
-    'drf_yasg',
+    'apps.stream_ingestion',
+    'apps.detections',
+    'apps.violations',
+    'apps.analytics',
+    'apps.notifications',
+    'apps.vehicle_lookup',
+    'apps.compliance',
 ]
 
 MIDDLEWARE = [
@@ -69,21 +80,27 @@ TEMPLATES = [
 WSGI_APPLICATION = 'api.wsgi.application'
 ASGI_APPLICATION = 'api.asgi.application'
 
-# Database
+# Database (PostgreSQL + PostGIS)
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DB_NAME'),
-        'USER': config('DB_USER'),
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'NAME': config('DB_NAME', default='skymarshal'),
+        'USER': config('DB_USER', default='postgres'),
         'PASSWORD': config('DB_PASSWORD'),
-        'HOST': config('DB_HOST'),
-        'PORT': config('DB_PORT'),
+        'HOST': config('DB_HOST', default='db'),
+        'PORT': config('DB_PORT', default='5432'),
     }
 }
 
 
-# Redis for channels and celery
-REDIS_URL = config('REDIS_URL')
+# Redis
+REDIS_URL = config('REDIS_URL', default='redis://redis:6379/0')
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': REDIS_URL,
+    }
+}
 
 # Channels
 CHANNEL_LAYERS = {
@@ -96,12 +113,18 @@ CHANNEL_LAYERS = {
 }
 
 # Celery
-CELERY_BROKER_URL = REDIS_URL
+CELERY_BROKER_URL = config('CELERY_BROKER_URL', default='amqp://guest:guest@rabbitmq:5672//')
 CELERY_RESULT_BACKEND = REDIS_URL
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'UTC'
+CELERY_TASK_ROUTES = {
+    'stream_ingestion.tasks.*': {'queue': 'default'},
+    'computer_vision.tasks.*': {'queue': 'cv_processing'},
+    'violations.tasks.*': {'queue': 'citations'},
+    'analytics.tasks.*': {'queue': 'analytics'},
+}
 
 # JWT Authentication
 REST_FRAMEWORK = {
@@ -150,23 +173,36 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# AWS Settings
-AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID', default='')
-AWS_SECRET_ACCESS_KEY = config('AWS_SECRET_ACCESS_KEY', default='')
-
-# S3
-AWS_STORAGE_BUCKET_NAME = config('AWS_STORAGE_BUCKET_NAME', default='skymarshal-bucket')
+# Object Storage (AWS S3)
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = config('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = config('AWS_STORAGE_BUCKET_NAME')
 AWS_S3_REGION_NAME = config('AWS_S3_REGION_NAME', default='us-east-1')
 AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 # SES
 AWS_SES_REGION_NAME = config('AWS_SES_REGION_NAME', default='us-east-1')
 EMAIL_BACKEND = 'django_ses.SESBackend'
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='noreply@devmetric.dev')
 
-# SNS
-AWS_SNS_REGION_NAME = config('AWS_SNS_REGION_NAME', default='us-east-1')
+# Kafka
+KAFKA_BOOTSTRAP_SERVERS = config('KAFKA_BOOTSTRAP_SERVERS', default='kafka:9092').split(',')
+KAFKA_TOPICS = {
+    'RAW_FRAMES': 'raw_video_frames',
+    'DETECTIONS': 'detection_events',
+    'VIOLATIONS': 'violation_events',
+    'CITATIONS': 'citation_events',
+    'ANALYTICS': 'analytics_events',
+}
+
+# Computer Vision
+CV_MODELS = {
+    'VEHICLE_DETECTION': BASE_DIR / 'models' / 'yolov8n.pt',
+    'PLATE_DETECTION': BASE_DIR / 'models' / 'plate_yolov8.pt',
+}
+CV_CONFIDENCE_THRESHOLD = config('CV_CONFIDENCE_THRESHOLD', default=0.5, cast=float)
+CV_SPEED_LIMIT_DEFAULT = config('CV_SPEED_LIMIT_DEFAULT', default=60.0, cast=float)
 
 # Logging
 LOGGING = {
