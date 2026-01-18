@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.gis.db import models as gis_models
 from apps.core.models import TimestampedModel
 
 
@@ -48,8 +49,7 @@ class DroneStatus(TimestampedModel):
 
 class GPSLocation(TimestampedModel):
     drone = models.ForeignKey(Drone, on_delete=models.CASCADE, related_name='gps_locations')
-    latitude = models.DecimalField(max_digits=9, decimal_places=6)
-    longitude = models.DecimalField(max_digits=9, decimal_places=6)
+    location = gis_models.PointField(geography=True) 
     altitude = models.FloatField()
     timestamp = models.DateTimeField(auto_now_add=True, db_index=True)
     
@@ -62,3 +62,13 @@ class GPSLocation(TimestampedModel):
     
     def __str__(self):
         return f"GPS for {self.drone.name} at {self.timestamp}"
+    
+    @property
+    def latitude(self):
+        """Convenience property to access latitude (y-coordinate)"""
+        return self.location.y if self.location else None
+    
+    @property
+    def longitude(self):
+        """Convenience property to access longitude (x-coordinate)"""
+        return self.location.x if self.location else None
