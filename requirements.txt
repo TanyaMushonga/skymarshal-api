@@ -20,3 +20,11 @@ django-storages==1.14.1
 qrcode==7.4.2
 django-redis==5.4.0
 pyotp==2.9.0
+
+# Computer Vision Dependencies
+ultralytics
+opencv-python
+numpy
+easyocr
+torchvision
+torch
