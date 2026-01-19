@@ -38,15 +38,15 @@ class DroneAPIKeyAdmin(admin.ModelAdmin):
     list_display = ['drone', 'key_preview', 'is_active', 'last_used', 'usage_count', 'created_at']
     list_filter = ['is_active', 'created_at', 'last_used']
     search_fields = ['drone__drone_id', 'drone__name', 'key']
-    readonly_fields = ['key', 'created_at', 'updated_at', 'last_used', 'usage_count']
+    readonly_fields = ['hashed_key', 'created_at', 'updated_at', 'last_used', 'usage_count']
     
     fieldsets = (
         ('Drone Association', {
             'fields': ('drone',)
         }),
         ('API Key', {
-            'fields': ('key', 'is_active'),
-            'description': 'WARNING: Store this key securely. It cannot be recovered if lost.'
+            'fields': ('hashed_key', 'is_active', 'expires_at'),
+            'description': 'WARNING: Key is hashed and cannot be viewed. Regenerate if lost.'
         }),
         ('Usage Statistics', {
             'fields': ('last_used', 'usage_count'),
@@ -59,11 +59,8 @@ class DroneAPIKeyAdmin(admin.ModelAdmin):
     )
     
     def key_preview(self, obj):
-        """Display shortened key for security"""
-        if obj.key:
-            return f"{obj.key[:15]}...{obj.key[-10:]}"
-        return "-"
-    key_preview.short_description = 'API Key (Preview)'
+        return "********"
+    key_preview.short_description = 'API Key'
     
     def has_add_permission(self, request):
         """Disable manual creation through admin (use signal instead)"""
