@@ -1,16 +1,14 @@
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets
 from apps.core.permissions import IsAdminOrReadOnly
 from ..models import GPSLocation
-from ..serializers import (
-    GPSLocationSerializer,
-)
+from ..serializers import GPSLocationSerializer
 
 
-class GPSLocationViewSet(viewsets.ModelViewSet):
+class GPSLocationViewSet(viewsets.ReadOnlyModelViewSet):
     """
-    ViewSet for GPS location data.
+    ViewSet for viewing GPS location history.
     - Read operations: authenticated users (filtered by permissions)
-    - Write operations: admin only
+    - Write operations: Disabled (Drones update their own location via DroneViewSet)
     """
     queryset = GPSLocation.objects.select_related('drone').order_by('-timestamp')
     serializer_class = GPSLocationSerializer
@@ -29,14 +27,3 @@ class GPSLocationViewSet(viewsets.ModelViewSet):
             )
 
         return queryset
-
-    def perform_create(self, serializer):
-        """Ensure GPS location is created for accessible drones only"""
-        drone = serializer.validated_data['drone']
-        user = self.request.user
-        if getattr(user, 'role', None) != 'admin' and not user.is_staff:
-            # Non-admin users can only add locations for their assigned drones
-            if drone.assigned_officer != user:
-                raise permissions.PermissionDenied("Can only add locations for assigned drones")
-        serializer.save()
-
