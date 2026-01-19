@@ -1,7 +1,7 @@
 from rest_framework import authentication, exceptions
 from ..drones.models import DroneAPIKey
 import logging
-from .tasks import record_api_key_usage
+from ..drones.tasks import record_api_key_usage
 
 logger = logging.getLogger(__name__)
 
