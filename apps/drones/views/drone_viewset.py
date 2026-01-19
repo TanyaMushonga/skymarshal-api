@@ -1,4 +1,3 @@
-
 from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -8,7 +7,7 @@ from django.contrib.gis.geos import Point
 from django.utils import timezone
 from datetime import timedelta
 
-from apps.core.permissions import IsAdmin, IsAdminOrReadOnly
+from apps.core.permissions import IsAdmin
 from apps.users.models import User
 from ..models import Drone, DroneStatus, GPSLocation
 from ..serializers import (
@@ -18,41 +17,6 @@ from ..serializers import (
 )
 from ..permissions import IsDroneAuthenticated
 
-class DroneStatusViewSet(viewsets.ModelViewSet):
-    """
-    ViewSet for drone status management.
-    - Read operations: authenticated users
-    - Write operations: admin only
-    """
-    queryset = DroneStatus.objects.select_related('drone')
-    serializer_class = DroneStatusSerializer
-    permission_classes = [IsAdminOrReadOnly]
-
-    def get_queryset(self):
-        """Filter status based on user permissions"""
-        queryset = super().get_queryset()
-
-        # If not admin, only show status for accessible drones
-        user = self.request.user
-        if getattr(user, 'role', None) != 'admin' and not user.is_staff:
-            queryset = queryset.filter(
-                drone__is_active=True,
-                drone__assigned_officer__in=[user, None]
-            )
-
-        return queryset
-
-    def perform_create(self, serializer):
-        """Ensure status is created for accessible drones only"""
-        drone = serializer.validated_data['drone']
-        user = self.request.user
-        if getattr(user, 'role', None) != 'admin' and not user.is_staff:
-            # Non-admin users can only manage status for their assigned drones
-            if drone.assigned_officer != user:
-                raise permissions.PermissionDenied("Can only manage status for assigned drones")
-        serializer.save()
-
-
 class DroneViewSet(viewsets.ModelViewSet):
     """
     ViewSet for managing drones.
@@ -61,7 +25,7 @@ class DroneViewSet(viewsets.ModelViewSet):
         Prefetch('status'),
         Prefetch('gps_locations', queryset=GPSLocation.objects.order_by('-timestamp')[:1])
     )
-    permission_classes = [permissions.IsAuthenticated] # Base permission, specific actions will have custom permissions
+    permission_classes = [permissions.IsAuthenticated]
     lookup_field = 'drone_id'
 
     def get_permissions(self):
