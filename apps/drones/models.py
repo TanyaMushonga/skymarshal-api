@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.gis.db import models as gis_models
+from django.utils import timezone
+import secrets
 from apps.core.models import TimestampedModel
 
 
@@ -71,4 +73,45 @@ class GPSLocation(TimestampedModel):
     @property
     def longitude(self):
         """Convenience property to access longitude (x-coordinate)"""
-        return self.location.x if self.location else None
+        return self.location.x if self.location else None    
+
+
+class DroneAPIKey(TimestampedModel):
+    """
+    API key authentication for ESP32-CAM drones
+    Each drone gets a unique API key for authentication
+    """
+    drone = models.OneToOneField(Drone, on_delete=models.CASCADE, related_name='api_key')
+    key = models.CharField(max_length=128, unique=True, db_index=True, editable=False)
+    is_active = models.BooleanField(default=True)
+    last_used = models.DateTimeField(null=True, blank=True)
+    usage_count = models.IntegerField(default=0)
+    
+    class Meta:
+        db_table = 'drone_api_keys'
+        
+    def __str__(self):
+        return f"API Key for {self.drone.drone_id}"
+        
+    @classmethod
+    def generate_key(cls):
+        """
+        Generate a secure API key in format: sk_drone_{random_32_chars}
+        """
+        return f"sk_drone_{secrets.token_urlsafe(32)}"
+        
+    def save(self, *args, **kwargs):
+        """
+        Override save to auto-generate key if not exists
+        """
+        if not self.key:
+            self.key = self.generate_key()
+        super().save(*args, **kwargs)
+        
+    def record_usage(self):
+        """
+        Update last_used to now() and increment usage_count by 1
+        """
+        self.last_used = timezone.now()
+        self.usage_count += 1
+        self.save(update_fields=['last_used', 'usage_count'])
