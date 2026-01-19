@@ -49,3 +49,21 @@ class IsOfficer(permissions.BasePermission):
             return False
         
         return getattr(user, 'role', None) == 'officer'
+
+class IsDroneAuthenticated(permissions.BasePermission):
+
+    def has_permission(self, request, view):
+        return bool(request.auth and hasattr(request.auth, 'drone_id'))
+
+class IsDroneOwner(permissions.BasePermission):
+    
+    def has_object_permission(self, request, view, obj):
+        if not (request.auth and hasattr(request.auth, 'drone_id')):
+            return False
+            
+        if hasattr(obj, 'drone'):
+            return obj.drone == request.auth
+        elif hasattr(obj, 'drone_id'):
+            return obj.drone_id == request.auth.drone_id
+            
+        return False
