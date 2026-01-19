@@ -69,33 +69,40 @@ class DroneViewSet(viewsets.ModelViewSet):
         
         return queryset.filter(is_active=True)
 
-    @action(detail=True, methods=['get', 'put', 'patch'])
+    @action(detail=True, methods=['get'])
     def status(self, request, drone_id=None):
-        """Get or update current status of a specific drone"""
+        """Get current status of a specific drone"""
         drone = self.get_object()
         
-        if request.method == 'GET':
-            try:
-                status_obj = drone.status
-                serializer = DroneStatusSerializer(status_obj)
-                return Response(serializer.data)
-            except DroneStatus.DoesNotExist:
-                return Response(
-                    {'error': 'Status not available for this drone'},
-                    status=status.HTTP_404_NOT_FOUND
-                )
+        try:
+            status_obj = drone.status
+            serializer = DroneStatusSerializer(status_obj)
+            return Response(serializer.data)
+        except DroneStatus.DoesNotExist:
+            return Response(
+                {'error': 'Status not available for this drone'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+    @action(detail=False, methods=['patch'], permission_classes=[IsDroneAuthenticated])
+    def update_status(self, request):
+        """Update drone status (battery, signal) from ESP32"""
+        # Drone retrieved from authentication
+        drone = request.auth
         
-        # PUT/PATCH
-        # Check permission for updating status? existing IsAdmin check in get_permissions covers standard actions, 
-        # but for custom action we need to be careful.
-        # Ideally, officers assigned to the drone should be able to update status?
-        # Requirement says: PUT /api/v1/drones/{drone_id}/status/ # Update status (battery, signal)
-        
+        if not drone:
+            return Response(
+                {'error': 'Authentication required'}, 
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+            
         status_obj, created = DroneStatus.objects.get_or_create(drone=drone)
-        serializer = DroneStatusUpdateSerializer(status_obj, data=request.data, partial=request.method=='PATCH')
+        serializer = DroneStatusUpdateSerializer(status_obj, data=request.data, partial=True)
+        
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
+            
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=True, methods=['get'])
