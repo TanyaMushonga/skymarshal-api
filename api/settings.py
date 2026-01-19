@@ -130,6 +130,7 @@ CELERY_TASK_ROUTES = {
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'apps.users.authentication.HybridAuthentication',
+        'apps.drones.authentication.DroneAPIKeyAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ),
     'LOGIN_URL': 'rest_framework:login',
