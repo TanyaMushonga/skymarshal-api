@@ -1,4 +1,4 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, permissions
 from apps.core.permissions import IsAdminOrReadOnly
 from ..models import GPSLocation
 from ..serializers import GPSLocationSerializer
@@ -12,7 +12,7 @@ class GPSLocationViewSet(viewsets.ReadOnlyModelViewSet):
     """
     queryset = GPSLocation.objects.select_related('drone').order_by('-timestamp')
     serializer_class = GPSLocationSerializer
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         """Filter locations based on user permissions"""

@@ -11,7 +11,7 @@ class DroneStatusViewSet(viewsets.ReadOnlyModelViewSet):
     """
     queryset = DroneStatus.objects.select_related('drone')
     serializer_class = DroneStatusSerializer
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         """Filter status based on user permissions"""
