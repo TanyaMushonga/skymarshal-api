@@ -16,6 +16,7 @@ from ..serializers import (
     GPSLocationSerializer, DroneStatusUpdateSerializer,
     DroneAssignSerializer, GPSLocationUpdateSerializer
 )
+from ..permissions import IsDroneAuthenticated
 
 class DroneStatusViewSet(viewsets.ModelViewSet):
     """
@@ -158,10 +159,19 @@ class DroneViewSet(viewsets.ModelViewSet):
         serializer = GPSLocationSerializer(locations, many=True)
         return Response(serializer.data)
 
-    @action(detail=True, methods=['post'])
-    def location(self, request, drone_id=None):
+    @action(detail=False, methods=['post'], permission_classes=[IsDroneAuthenticated])
+    def location(self, request):
         """Update GPS location (from ESP32)"""
-        drone = self.get_object()
+        # Drone retrieved from authentication
+        drone = request.auth
+        
+        # Double check authentication (though permission class handles it)
+        if not drone:
+            return Response(
+                {'error': 'Authentication required'}, 
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+
         serializer = GPSLocationUpdateSerializer(data=request.data)
         
         if serializer.is_valid():
@@ -177,9 +187,6 @@ class DroneViewSet(viewsets.ModelViewSet):
                 location=location_point,
                 altitude=alt
             )
-            
-            # Also update drone's latest known location if needed (usually handled by querying latest)
-            # You might want to trigger websocket updates here
             
             return Response(GPSLocationSerializer(gps_location).data, status=status.HTTP_201_CREATED)
             
