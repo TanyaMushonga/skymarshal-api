@@ -178,6 +178,8 @@ volumes:
   postgres_data:
   redis_data:
   rabbitmq_data:
+  static_volume:
+  media_volume:
 networks:
   sky_marshal_network:
     driver: bridge
