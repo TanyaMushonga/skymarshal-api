@@ -25,6 +25,14 @@ app.conf.beat_schedule = {
         'task': 'apps.drones.tasks.monitor_drone_health',
         'schedule': 60.0,
     },
+    'cleanup-old-sessions': {
+        'task': 'apps.stream_ingestion.tasks.cleanup_old_sessions',
+        'schedule': crontab(minute='*/30'),  # Every 30 minutes
+    },
+    'monitor-stream-health': {
+        'task': 'apps.stream_ingestion.tasks.monitor_stream_health',
+        'schedule': 120.0,  # Every 2 minutes
+    },
 }
 
 @app.task(bind=True, ignore_result=True)
