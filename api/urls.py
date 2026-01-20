@@ -21,6 +21,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/', include('apps.users.urls')),
     path('api/v1/', include('apps.drones.urls')),
+    path('api/v1/', include('apps.stream_ingestion.urls')),
+    path('api/v1/notifications/', include('apps.notifications.urls')),
     path('api-auth/', include('rest_framework.urls')),
     
     # Documentation
