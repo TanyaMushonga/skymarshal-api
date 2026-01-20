@@ -1,11 +1,11 @@
-from kafka import KafkaProducer
+from kafka import KafkaProducer, KafkaConsumer
 from django.conf import settings
 import json
 import logging
 
 logger = logging.getLogger(__name__)
 
-class KafkaProducerSingleton:
+class KafkaProducerManager:
     _instance = None
     _producer = None
     
@@ -40,4 +40,17 @@ class KafkaProducerSingleton:
             self._producer.close()
 
 def get_kafka_producer():
-    return KafkaProducerSingleton()
+    return KafkaProducerManager()
+
+def get_kafka_consumer(topic, group_id=None, auto_offset_reset='latest'):
+    try:
+        return KafkaConsumer(
+            topic,
+            bootstrap_servers=settings.KAFKA_BOOTSTRAP_SERVERS,
+            group_id=group_id,
+            auto_offset_reset=auto_offset_reset,
+            value_deserializer=lambda m: json.loads(m.decode('utf-8')),
+             )
+    except Exception as e:
+        logger.error(f"Failed to create Kafka consumer for topic {topic}: {e}")
+        raise
