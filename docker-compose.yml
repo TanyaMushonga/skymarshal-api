@@ -160,6 +160,39 @@ services:
       - sky_marshal_network
     restart: unless-stopped
 
+  computer_vision:
+    build: .
+    container_name: skymarshal_cv
+    command: python computer_vision/main.py
+    volumes:
+      - .:/app
+      - media_volume:/app/media
+    env_file:
+      - .env
+    environment:
+      - CV_MODE=stream
+    depends_on:
+      - kafka
+      - db
+    networks:
+      - sky_marshal_network
+    restart: unless-stopped
+
+  detection_consumer:
+    build: .
+    container_name: skymarshal_detection_consumer
+    command: python manage.py run_detection_consumer
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    depends_on:
+      - kafka
+      - db
+    networks:
+      - sky_marshal_network
+    restart: unless-stopped
+
   flower:
     image: mher/flower:2.0.1
     container_name: skymarshal_flower
