@@ -184,6 +184,7 @@ AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
 
 # SES
 AWS_SES_REGION_NAME = config('AWS_SES_REGION_NAME', default='us-east-1')
+AWS_SNS_REGION_NAME = config('AWS_SNS_REGION_NAME', default='us-east-1')
 EMAIL_BACKEND = 'django_ses.SESBackend'
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='noreply@devmetric.dev')
 
