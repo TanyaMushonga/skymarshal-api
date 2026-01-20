@@ -2,6 +2,8 @@ from src.speed_estimator import SpeedEstimator
 from src.alpr import LicensePlateReader
 import cv2
 import os
+import numpy as np
+import base64
 
 class VideoProcessor:
     def __init__(self, detector, output_dir='output', speed_estimator=None, alpr_reader=None):
@@ -18,6 +20,61 @@ class VideoProcessor:
         self.alpr_reader = alpr_reader if alpr_reader else LicensePlateReader()
         if not os.path.exists(self.output_dir):
             os.makedirs(self.output_dir)
+
+    def process_frame_data(self, frame_data, frame_number, fps=30.0):
+        """
+        Process a single frame from Kafka stream.
+        :param frame_data: Base64 encoded frame string
+        :param frame_number: Integer frame index
+        :param fps: Frames per second (for speed calculation)
+        :return: List of detection dictionaries
+        """
+        # Decode base64
+        jpg_original = base64.b64decode(frame_data)
+        jpg_as_np = np.frombuffer(jpg_original, dtype=np.uint8)
+        frame = cv2.imdecode(jpg_as_np, flags=1)
+
+        detections = []
+        
+        # Detect
+        results = self.detector.detect_vehicles(frame)
+
+        if results[0].boxes.id is not None:
+            boxes = results[0].boxes.xyxy.cpu().numpy()
+            track_ids = results[0].boxes.id.int().cpu().tolist()
+            confs = results[0].boxes.conf.cpu().tolist()
+            cls_ids = results[0].boxes.cls.int().cpu().tolist()
+            
+            names = results[0].names
+
+            for box, track_id, conf, cls_id in zip(boxes, track_ids, confs, cls_ids):
+                x1, y1, x2, y2 = map(int, box)
+                bottom_center = (int((x1 + x2) / 2), y2)
+                
+                # Estimate speed
+                speed = self.speed_estimator.estimate_speed(
+                    track_id, bottom_center, frame_number, fps
+                )
+                
+                # ALPR
+                vehicle_crop = frame[y1:y2, x1:x2]
+                plate_text = None
+                if vehicle_crop.size > 0:
+                    read_plate = self.alpr_reader.detect_and_read(vehicle_crop, track_id)
+                    if read_plate and read_plate != "Scanning...":
+                        plate_text = read_plate
+
+                vehicle_type = names[cls_id]
+
+                detections.append({
+                    'vehicle_type': vehicle_type,
+                    'confidence': conf,
+                    'box_coordinates': [x1, y1, x2, y2],
+                    'license_plate': plate_text,
+                    'speed': speed
+                })
+
+        return detections
 
     def process_video(self, input_path):
         """
