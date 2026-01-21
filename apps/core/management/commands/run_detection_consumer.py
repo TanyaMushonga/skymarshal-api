@@ -4,6 +4,7 @@ from django.contrib.gis.geos import Point
 from apps.detections.models import Detection
 from apps.drones.models import Drone
 from apps.core.kafka_config import get_kafka_consumer
+from apps.patrols.services import PatrolService
 import logging
 import signal
 import sys
@@ -63,8 +64,12 @@ class Command(BaseCommand):
                 if lat is not None and lon is not None:
                     location = Point(lon, lat)
 
+            # Retrieve active patrol
+            patrol = PatrolService.get_active_patrol(drone_id)
+
             Detection.objects.create(
                 drone=drone,
+                patrol=patrol,
                 timestamp=timestamp,
                 frame_number=data.get('frame_number'),
                 vehicle_type=data.get('vehicle_type', 'unknown'),
