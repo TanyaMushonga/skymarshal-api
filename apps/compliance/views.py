@@ -11,7 +11,7 @@ class LotteryEventSerializer(serializers.ModelSerializer):
     class Meta:
         model = LotteryEvent
         fields = '__all__'
-        read_only_fields = ['pool_amount', 'status', 'winners']
+        read_only_fields = ['status', 'winners'] # pool_amount IS WRITABLE NOW
 
 class LotteryViewSet(viewsets.ModelViewSet):
     queryset = LotteryEvent.objects.all()
@@ -25,22 +25,21 @@ class LotteryViewSet(viewsets.ModelViewSet):
         if lottery.status != 'OPEN':
             return Response({'error': 'Lottery already drawn or closed'}, status=400)
         
-        # 1. Calculate Pool (Mock Logic: 10% of all fines collected ever, or simpler: 1000 flat)
-        # Real logic: Aggregate Violation.fine_amount where status='PAID' (if we had paid status tracking)
-        # For prototype: Sum of ALL fines assigned * 0.10
-        total_fines = Violation.objects.aggregate(total=Sum('fine_amount'))['total'] or 0.00
-        pool = float(total_fines) * 0.10
-        lottery.pool_amount = pool
+        # 1. Validate Pool
+        if lottery.pool_amount <= 0:
+            return Response({'error': 'Pool amount must be greater than 0. Please set a pool amount.'}, status=400)
         
-        # 2. Select Candidates (Points > 50, for example)
-        # Or simply top 20%? Let's say anyone with > 10 points
-        candidates = ComplianceScore.objects.filter(safe_driving_points__gte=10)
+        pool = float(lottery.pool_amount)
+        
+        # 2. Select Candidates (Use Configured Minimum Points)
+        min_pts = lottery.minimum_points
+        candidates = ComplianceScore.objects.filter(safe_driving_points__gte=min_pts)
         candidate_list = list(candidates)
         
         if not candidate_list:
-             return Response({'error': 'No eligible drivers (need > 10 pts)'}, status=400)
+             return Response({'error': f'No eligible drivers found with > {min_pts} points'}, status=400)
 
-        # 3. Pick Winners (3 winners)
+        # 3. Pick Winners (3 winners or less)
         num_winners = min(3, len(candidate_list))
         winners_scores = random.sample(candidate_list, num_winners)
         
