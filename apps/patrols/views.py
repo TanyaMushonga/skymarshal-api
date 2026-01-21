@@ -6,10 +6,20 @@ from .models import Patrol
 from .serializers import PatrolSerializer
 from apps.drones.models import Drone
 
+from rest_framework.filters import SearchFilter, OrderingFilter
+from django_filters.rest_framework import DjangoFilterBackend
+from apps.core.pagination import StandardResultsSetPagination
+
 class PatrolViewSet(viewsets.ModelViewSet):
-    queryset = Patrol.objects.all()
+    queryset = Patrol.objects.all().order_by('-start_time')
     serializer_class = PatrolSerializer
     permission_classes = [permissions.IsAuthenticated]
+    
+    pagination_class = StandardResultsSetPagination
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['status', 'drone__drone_id', 'officer__email']
+    search_fields = ['officer__username', 'drone__drone_id']
+    ordering_fields = ['start_time', 'end_time']
     
     def get_queryset(self):
         user = self.request.user
