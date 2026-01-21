@@ -1,4 +1,5 @@
 from rest_framework import viewsets, status, filters
+from apps.core.pagination import StandardResultsSetPagination
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -20,11 +21,12 @@ class VideoStreamViewSet(viewsets.ModelViewSet):
     queryset = VideoStream.objects.select_related('drone').all()
     serializer_class = VideoStreamSerializer
     permission_classes = [IsAuthenticated | IsDroneAuthenticated]
-    filter_backends = [DjangoFilterBackend, filters.OrderingFilter, filters.SearchFilter]
+    ordering = ['-created_at']
+    pagination_class = StandardResultsSetPagination
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = ['is_active', 'drone__drone_id', 'drone']
     search_fields = ['rtsp_url', 'drone__name', 'drone__drone_id']
     ordering_fields = ['created_at', 'updated_at']
-    ordering = ['-created_at']
     
     def get_serializer_class(self):
         """Use StreamRegistrationSerializer for create action"""
