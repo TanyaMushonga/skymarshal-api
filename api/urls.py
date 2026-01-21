@@ -26,6 +26,11 @@ urlpatterns = [
     path('api/v1/', include('apps.patrols.urls')),
     path('api/v1/', include('apps.vehicle_lookup.urls')), # Added vehicles
     path('api/v1/compliance/', include('apps.compliance.urls')),
+    path('api/v1/compliance/', include('apps.compliance.urls')),
+    path('api/v1/analytics/', include('apps.analytics.urls')),
+    path('api/v1/analytics/', include('apps.analytics.urls')),
+    path('api/v1/detections/', include('apps.detections.urls')),
+    path('api/v1/violations/', include('apps.violations.urls')),
     path('api-auth/', include('rest_framework.urls')),
     
     # Documentation
