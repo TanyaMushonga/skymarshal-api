@@ -18,6 +18,7 @@ class Drone(TimestampedModel):
         blank=True,
         related_name='assigned_drones'
     )
+    speed_limit = models.FloatField(default=60.0, help_text="Speed limit in km/h for this drone's patrol area")
     
     class Meta:
         db_table = 'drones'
