@@ -20,6 +20,7 @@ class VideoStream(TimestampedModel):
 
 class StreamSession(TimestampedModel):
     stream = models.ForeignKey(VideoStream, on_delete=models.CASCADE, related_name='sessions')
+    patrol = models.ForeignKey('patrols.Patrol', on_delete=models.SET_NULL, null=True, blank=True, related_name='stream_sessions')
     start_time = models.DateTimeField(auto_now_add=True)
     end_time = models.DateTimeField(null=True, blank=True)
     frames_processed = models.IntegerField(default=0)
