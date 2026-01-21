@@ -8,6 +8,7 @@ import logging
 from .models import VideoStream, StreamSession
 from apps.core.kafka_config import get_kafka_producer
 from apps.drones.models import GPSLocation
+from apps.patrols.services import PatrolService
 
 logger = logging.getLogger(__name__)
 
@@ -18,8 +19,12 @@ def process_rtsp_stream(self, stream_id):
         stream = VideoStream.objects.select_related('drone').get(stream_id=stream_id)
         logger.info(f"Starting stream processing: {stream_id} - {stream.rtsp_url}")
         
+        # Find active patrol
+        patrol = PatrolService.get_active_patrol(stream.drone.drone_id)
+
         session = StreamSession.objects.create(
             stream=stream,
+            patrol=patrol,
             kafka_topic=settings.KAFKA_TOPICS['RAW_FRAMES']
         )
         
