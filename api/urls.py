@@ -23,6 +23,7 @@ urlpatterns = [
     path('api/v1/', include('apps.drones.urls')),
     path('api/v1/', include('apps.stream_ingestion.urls')),
     path('api/v1/notifications/', include('apps.notifications.urls')),
+    path('api/v1/', include('apps.patrols.urls')),
     path('api-auth/', include('rest_framework.urls')),
     
     # Documentation
