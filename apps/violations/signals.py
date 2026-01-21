@@ -19,12 +19,19 @@ def check_for_violations(sender, instance, created, **kwargs):
         # Resolve Speed Limit
         # Priority: Patrol Config -> Drone Default -> Global Default (60.0)
         limit = 60.0
+        fine = 50.00
         
         if instance.patrol and instance.patrol.patrol_config:
             # Check for 'speed_limit' in config (could be string or int)
             cfg_limit = instance.patrol.patrol_config.get('speed_limit')
             if cfg_limit:
                 limit = float(cfg_limit)
+            
+            # Resolve Dynamic Fine
+            cfg_fine = instance.patrol.patrol_config.get('fine_amount')
+            if cfg_fine:
+                fine = float(cfg_fine)
+
         elif hasattr(instance.drone, 'speed_limit'):
             limit = instance.drone.speed_limit
         
@@ -45,15 +52,41 @@ def check_for_violations(sender, instance, created, **kwargs):
                 'timestamp': instance.timestamp.isoformat()
             }
 
-            Violation.objects.create(
+            violation = Violation.objects.create(
                 detection=instance,
                 patrol=instance.patrol,
                 violation_type='SPEEDING',
-                fine_amount=50.00, # Base fine logic could be dynamic too
+                fine_amount=fine, 
                 evidence_meta=evidence_data,
                 description=f"Vehicle detected at {instance.speed} km/h (Limit: {limit} km/h)"
             )
-            logger.info(f"Speeding violation created for Detection {instance.id} (Patrol Limit: {limit})")
+            logger.info(f"Speeding violation created for Detection {instance.id} (Patrol Limit: {limit}, Fine: {fine})")
+
+            # --- Notifications ---
+            from apps.notifications.tasks import send_notification, send_sms_to_citizen
+            from apps.vehicle_lookup.models import VehicleRegistration
+
+            # 1. Notify Officer (WebSocket)
+            if instance.patrol and instance.patrol.officer:
+                send_notification.delay(
+                    user_id=instance.patrol.officer.id,
+                    title="Speeding Violation Detected",
+                    message=f"Violation recorded by {instance.drone.drone_id}. Speed: {instance.speed} km/h",
+                    notification_type="violation_alert",
+                    related_object_id=str(violation.id)
+                )
+
+            # 2. Notify Citizen (SMS)
+            if instance.license_plate:
+                try:
+                    reg = VehicleRegistration.objects.get(license_plate=instance.license_plate)
+                    if reg.owner_phone_number:
+                        sms_msg = (f"TRAFFIC ALERT: Violation recorded for {instance.license_plate}. "
+                                   f"Speed: {instance.speed}km/h in {limit}km/h zone. "
+                                   f"Ticket ID: {violation.id}. Fine: ${fine:.2f}")
+                        send_sms_to_citizen.delay(reg.owner_phone_number, sms_msg)
+                except VehicleRegistration.DoesNotExist:
+                    logger.warning(f"No registration found for plate {instance.license_plate}")
 
     except Exception as e:
         logger.error(f"Error checking violations for Detection {instance.id}: {e}", exc_info=True)
