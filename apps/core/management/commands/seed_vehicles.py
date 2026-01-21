@@ -18,6 +18,7 @@ class Command(BaseCommand):
             {'plate': 'KCC 789C', 'make': 'Isuzu', 'model': 'D-Max', 'color': 'Silver', 'status': 'STOLEN'},
             {'plate': 'KCD 012D', 'make': 'Nissan', 'model': 'Note', 'color': 'Red', 'status': 'EXPIRED'},
             {'plate': 'KCE 345E', 'make': 'Honda', 'model': 'Fit', 'color': 'Black', 'status': 'ACTIVE'},
+            {'plate': 'KBB 456H', 'make': 'Subaru', 'model': 'Forester', 'color': 'Black', 'status': 'ACTIVE'},
         ]
         
         today = date.today()
@@ -30,6 +31,7 @@ class Command(BaseCommand):
             VehicleRegistration.objects.create(
                 license_plate=v['plate'],
                 owner_name=f"Owner of {v['plate']}",
+                owner_phone_number="+254700000000", # Dummy number for testing SMS
                 make=v['make'],
                 model=v['model'],
                 color=v['color'],
@@ -46,6 +48,7 @@ class Command(BaseCommand):
             VehicleRegistration.objects.create(
                 license_plate=plate,
                 owner_name=f"Random Owner {i}",
+                owner_phone_number=f"+2547{random.randint(10000000, 99999999)}",
                 make=random.choice(makes),
                 model="Generic",
                 color=random.choice(colors),
