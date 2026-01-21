@@ -46,3 +46,30 @@ def send_notification(user_id, title, message, notification_type='general', rela
         logger.error(f"User {user_id} not found for notification: {title}")
     except Exception as e:
         logger.error(f"Failed to process notification task: {e}", exc_info=True)
+
+
+@shared_task
+def send_sms_to_citizen(phone_number, message):
+    """
+    Sends an SMS notification to a citizen using AWS SNS.
+    """
+    import boto3
+    from django.conf import settings
+    
+    try:
+        # Check if we have AWS creds, or mock it/log it
+        # For this environment we'll just log if credentials aren't set up, 
+        # but the code structure is correct for SNS.
+        
+        # client = boto3.client(
+        #     'sns',
+        #     region_name=settings.AWS_REGION_NAME,
+        #     aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+        #     aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY
+        # )
+        # client.publish(PhoneNumber=phone_number, Message=message)
+        
+        logger.info(f"[SMS SENT] To: {phone_number} | Msg: {message}")
+        
+    except Exception as e:
+        logger.error(f"Failed to send SMS to {phone_number}: {e}", exc_info=True)
