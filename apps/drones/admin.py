@@ -21,7 +21,7 @@ class DroneAPIKeyInline(admin.StackedInline):
 # Update existing DroneAdmin to include inline
 @admin.register(Drone)
 class DroneAdmin(admin.ModelAdmin):
-    list_display = ['drone_id', 'name', 'is_active', 'assigned_officer', 'has_api_key', 'created_at']
+    list_display = ['drone_id', 'name', 'is_active', 'assigned_officer', 'speed_limit', 'has_api_key', 'created_at']
     list_filter = ['is_active', 'created_at']
     search_fields = ['drone_id', 'name', 'serial_number']
     inlines = [DroneAPIKeyInline]  # Add this line
