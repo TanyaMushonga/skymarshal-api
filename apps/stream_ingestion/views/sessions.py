@@ -1,4 +1,5 @@
 from rest_framework import viewsets, status, filters
+from apps.core.pagination import StandardResultsSetPagination
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -21,6 +22,9 @@ class StreamSessionViewSet(viewsets.ReadOnlyModelViewSet):
     filterset_fields = ['stream', 'stream__drone']
     ordering_fields = ['start_time', 'end_time', 'frames_processed']
     ordering = ['-start_time']
+    pagination_class = StandardResultsSetPagination
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['stream__stream_url', 'stream__drone__drone_id']
     
     def get_queryset(self):
         """
