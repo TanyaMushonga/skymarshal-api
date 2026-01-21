@@ -1,4 +1,7 @@
 from rest_framework import viewsets, permissions, status
+from rest_framework.filters import SearchFilter, OrderingFilter
+from django_filters.rest_framework import DjangoFilterBackend
+from apps.core.pagination import StandardResultsSetPagination
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.db.models import Sum
@@ -17,6 +20,12 @@ class LotteryViewSet(viewsets.ModelViewSet):
     queryset = LotteryEvent.objects.all()
     serializer_class = LotteryEventSerializer
     permission_classes = [permissions.IsAdminUser]
+    
+    pagination_class = StandardResultsSetPagination
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['status']
+    search_fields = ['name']
+    ordering_fields = ['draw_date', 'pool_amount']
 
     @action(detail=True, methods=['post'])
     def run_draw(self, request, pk=None):
