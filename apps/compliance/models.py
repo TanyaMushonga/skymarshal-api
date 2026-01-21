@@ -20,6 +20,7 @@ class LotteryEvent(TimestampedModel):
     name = models.CharField(max_length=100)
     draw_date = models.DateField()
     pool_amount = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+    minimum_points = models.IntegerField(default=10, help_text="Minimum compliance points required to enter")
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='OPEN')
     
     warnings = models.TextField(blank=True, help_text="Any issues during draw")
