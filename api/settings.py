@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'apps.notifications',
     'apps.vehicle_lookup',
     'apps.compliance',
+    'apps.patrols',
 ]
 
 MIDDLEWARE = [
@@ -92,6 +93,20 @@ DATABASES = {
     }
 }
 
+
+
+# GDAL Fix for Linux/Docker
+if os.name == 'posix':
+    gdal_lib_paths = [
+        '/usr/lib/libgdal.so',
+        '/usr/local/lib/libgdal.so',
+        '/usr/lib/x86_64-linux-gnu/libgdal.so',
+        '/usr/lib/aarch64-linux-gnu/libgdal.so',
+    ]
+    for path in gdal_lib_paths:
+        if os.path.exists(path):
+            GDAL_LIBRARY_PATH = path
+            break
 
 # Redis
 REDIS_URL = config('REDIS_URL', default='redis://redis:6379/0')
