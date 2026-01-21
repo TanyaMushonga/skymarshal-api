@@ -5,6 +5,7 @@ from apps.drones.models import Drone
 
 class Detection(TimestampedModel):
     drone = models.ForeignKey(Drone, on_delete=models.CASCADE, related_name='detections')
+    patrol = models.ForeignKey('patrols.Patrol', on_delete=models.SET_NULL, null=True, blank=True, related_name='detections')
     timestamp = models.DateTimeField(db_index=True)
     frame_number = models.IntegerField()
     
