@@ -10,6 +10,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libgl1 \
     libglvnd0 \
     libglib2.0-0 \
+    curl \
+    netcat-openbsd \
     && rm -rf /var/lib/apt/lists/*
 
 # Set work directory
