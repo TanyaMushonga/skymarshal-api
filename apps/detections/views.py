@@ -12,6 +12,6 @@ class DetectionViewSet(viewsets.ReadOnlyModelViewSet):
     
     pagination_class = StandardResultsSetPagination
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = ['vehicle_type', 'drone__drone_id', 'patrol']
+    filterset_fields = ['vehicle_type', 'drone__drone_id', 'patrol', 'track_id']
     search_fields = ['license_plate', 'track_id']
     ordering_fields = ['timestamp', 'speed']
