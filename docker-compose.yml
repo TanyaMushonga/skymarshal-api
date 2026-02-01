@@ -7,7 +7,7 @@ services:
       - "443:443"
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
-      - static_volume:/app/static:ro
+      - static_volume:/app/staticfiles:ro
       - media_volume:/app/media:ro
     depends_on:
       - web
@@ -24,7 +24,7 @@ services:
              gunicorn api.wsgi:application --bind 0.0.0.0:8000"
     volumes:
       - .:/app
-      - static_volume:/app/static
+      - static_volume:/app/staticfiles
       - media_volume:/app/media
     ports:
       - "8000:8000"
