@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include
+from .views import health_check
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
@@ -18,6 +19,7 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
+    path('health/', health_check, name='health_check'),
     path('admin/', admin.site.urls),
     path('api/v1/', include('apps.users.urls')),
     path('api/v1/', include('apps.drones.urls')),
