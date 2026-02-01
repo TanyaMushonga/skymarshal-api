@@ -1,5 +1,18 @@
 import cv2
+import torch
 from ultralytics import YOLO
+
+# Allow YOLO models to be unpickled in PyTorch 2.6+
+torch.serialization.add_safe_globals([
+    'ultralytics.nn.tasks.DetectionModel',
+    'ultralytics.nn.tasks.DetectionModel' # Duplicate if needed or add more specific ones if found
+])
+
+try:
+    from ultralytics.nn.tasks import DetectionModel
+    torch.serialization.add_safe_globals([DetectionModel])
+except ImportError:
+    pass
 
 class VehicleDetector:
     def __init__(self, model_name='yolov8n.pt'):
