@@ -13,6 +13,8 @@ class Detection(TimestampedModel):
     vehicle_type = models.CharField(max_length=50) # car, truck, etc.
     confidence = models.FloatField()
     box_coordinates = models.JSONField() # [x1, y1, x2, y2]
+    track_id = models.IntegerField(null=True, blank=True)
+
     
     # Optional extended properties
     license_plate = models.CharField(max_length=20, null=True, blank=True)
