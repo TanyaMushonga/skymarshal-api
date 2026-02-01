@@ -1,26 +1,13 @@
 services:
-  nginx:
-    image: nginx:alpine
-    container_name: skymarshal_nginx
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro
-      - static_volume:/app/staticfiles:ro
-      - media_volume:/app/media:ro
-    depends_on:
-      - web
-    networks:
-      - sky_marshal_network
-
   web:
     build: .
     container_name: skymarshal_web
+    user: root
     command: >
       sh -c "python manage.py wait_for_db &&
              python manage.py migrate &&
              python manage.py collectstatic --noinput &&
+             chown -R 1000:1000 /app/staticfiles &&
              gunicorn api.wsgi:application --bind 0.0.0.0:8000"
     volumes:
       - .:/app
@@ -37,13 +24,7 @@ services:
       - CELERY_BROKER_URL=amqp://guest:guest@rabbitmq:5672//
       - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
     healthcheck:
-      test:
-        [
-          "CMD",
-          "python",
-          "-c",
-          "import urllib.request; urllib.request.urlopen('http://localhost:8000/health/').read()",
-        ]
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health/"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -55,7 +36,7 @@ services:
       rabbitmq:
         condition: service_healthy
       kafka:
-        condition: service_started
+        condition: service_healthy
     restart: unless-stopped
     networks:
       - sky_marshal_network
@@ -116,6 +97,7 @@ services:
   kafka:
     image: confluentinc/cp-kafka:7.5.0
     container_name: skymarshal_kafka
+    hostname: kafka
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
@@ -123,10 +105,17 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
     ports:
       - "9092:9092"
+    healthcheck:
+      test: ["CMD-SHELL", "nc -z localhost 9092"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     depends_on:
-      - zookeeper
+      zookeeper:
+        condition: service_healthy
     networks:
       - sky_marshal_network
 
@@ -137,6 +126,11 @@ services:
       ZOOKEEPER_CLIENT_PORT: 2181
     ports:
       - "2181:2181"
+    healthcheck:
+      test: ["CMD-SHELL", "nc -z localhost 2181"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     networks:
       - sky_marshal_network
 
@@ -155,11 +149,16 @@ services:
       - CELERY_BROKER_URL=amqp://guest:guest@rabbitmq:5672//
       - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
     depends_on:
-      - db
-      - redis
-      - rabbitmq
-      - kafka
-      - web
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+      web:
+        condition: service_healthy
     networks:
       - sky_marshal_network
     restart: unless-stopped
@@ -179,10 +178,14 @@ services:
       - CELERY_BROKER_URL=amqp://guest:guest@rabbitmq:5672//
       - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
     depends_on:
-      - db
-      - redis
-      - rabbitmq
-      - web
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      web:
+        condition: service_healthy
     networks:
       - sky_marshal_network
     restart: unless-stopped
@@ -190,7 +193,9 @@ services:
   computer_vision:
     build: .
     container_name: skymarshal_cv
-    command: python computer_vision/main.py
+    command: >
+      sh -c "ln -sf /app/yolov8n.pt /app/best.pt &&
+             python computer_vision/main.py"
     volumes:
       - .:/app
       - media_volume:/app/media
@@ -202,8 +207,10 @@ services:
       - DB_PORT=5432
       - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
     depends_on:
-      - kafka
-      - db
+      kafka:
+        condition: service_healthy
+      db:
+        condition: service_healthy
     networks:
       - sky_marshal_network
     restart: unless-stopped
@@ -221,8 +228,10 @@ services:
       - DB_PORT=5432
       - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
     depends_on:
-      - kafka
-      - db
+      kafka:
+        condition: service_healthy
+      db:
+        condition: service_healthy
     networks:
       - sky_marshal_network
     restart: unless-stopped
