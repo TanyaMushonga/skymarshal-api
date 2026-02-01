@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'django_filters',
     'drf_yasg',  # Swagger
+    'django_celery_beat',
     
     # Apps
     'apps.core',
@@ -145,7 +146,7 @@ CELERY_TASK_ROUTES = {
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-        'apps.drones.authentication.DroneAPIKeyAuthentication',
+        'apps.core.drone_authentication.DroneAPIKeyAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ),
     'LOGIN_URL': 'rest_framework:login',
