@@ -23,8 +23,13 @@ class PatrolViewSet(viewsets.ModelViewSet):
     
     def get_queryset(self):
         user = self.request.user
+        
+        # Safe handling for schema generation (AnonymousUser)
+        if not user or not user.is_authenticated:
+            return Patrol.objects.none()
+            
         # Ordinary officers only see their own patrols
-        if user.role == 'officer':
+        if getattr(user, 'role', None) == 'officer':
             return Patrol.objects.filter(officer=user)
         return Patrol.objects.all()
 
