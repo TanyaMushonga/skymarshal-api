@@ -14,6 +14,6 @@ class ViolationViewSet(viewsets.ReadOnlyModelViewSet):
     
     pagination_class = StandardResultsSetPagination
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = ['status', 'violation_type', 'drone__drone_id', 'patrol']
-    search_fields = ['license_plate', 'citation_number']
+    filterset_fields = ['status', 'violation_type', 'detection__drone__drone_id', 'patrol']
+    search_fields = ['detection__license_plate', 'violation_type']
     ordering_fields = ['created_at', 'fine_amount']
