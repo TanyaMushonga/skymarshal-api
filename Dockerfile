@@ -1,9 +1,7 @@
 FROM python:3.11-slim
 
 # Install system dependencies
-RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
-    --mount=type=cache,target=/var/lib/apt,sharing=locked \
-    apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     gdal-bin \
     libgdal-dev \
     libpq-dev \
@@ -17,12 +15,11 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 # Set work directory
 WORKDIR /app
 
-# Copy requirements first to leverage caching
+# Copy requirements first to leverage standard layer caching
 COPY requirements.txt .
 
-# Install Python dependencies using BuildKit cache
-RUN --mount=type=cache,target=/root/.cache/pip \
-    pip install -r requirements.txt
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy project files
 COPY . .
