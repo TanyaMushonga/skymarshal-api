@@ -1,0 +1,4325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="robots" content="NONE,NOARCHIVE">
+  <title>TypeError
+          at /swagger/</title>
+  <style type="text/css">
+    html * { padding:0; margin:0; }
+    body * { padding:10px 20px; }
+    body * * { padding:0; }
+    body { font:small sans-serif; background-color:#fff; color:#000; }
+    body>div { border-bottom:1px solid #ddd; }
+    h1 { font-weight:normal; }
+    h2 { margin-bottom:.8em; }
+    h3 { margin:1em 0 .5em 0; }
+    h4 { margin:0 0 .5em 0; font-weight: normal; }
+    code, pre { font-size: 100%; white-space: pre-wrap; word-break: break-word; }
+    summary { cursor: pointer; }
+    table { border:1px solid #ccc; border-collapse: collapse; width:100%; background:white; }
+    tbody td, tbody th { vertical-align:top; padding:2px 3px; }
+    thead th {
+      padding:1px 6px 1px 3px; background:#fefefe; text-align:left;
+      font-weight:normal; font-size:11px; border:1px solid #ddd;
+    }
+    tbody th { width:12em; text-align:right; color:#666; padding-right:.5em; }
+    table.vars { margin:5px 10px 2px 40px; width: auto; }
+    table.vars td, table.req td { font-family:monospace; }
+    table td.code { width:100%; }
+    table td.code pre { overflow:hidden; }
+    table.source th { color:#666; }
+    table.source td { font-family:monospace; white-space:pre; border-bottom:1px solid #eee; }
+    ul.traceback { list-style-type:none; color: #222; }
+    ul.traceback li.cause { word-break: break-word; }
+    ul.traceback li.frame { padding-bottom:1em; color:#4f4f4f; }
+    ul.traceback li.user { background-color:#e0e0e0; color:#000 }
+    div.context { padding:10px 0; overflow:hidden; }
+    div.context ol { padding-left:30px; margin:0 10px; list-style-position: inside; }
+    div.context ol li { font-family:monospace; white-space:pre; color:#777; cursor:pointer; padding-left: 2px; }
+    div.context ol li pre { display:inline; }
+    div.context ol.context-line li { color:#464646; background-color:#dfdfdf; padding: 3px 2px; }
+    div.context ol.context-line li span { position:absolute; right:32px; }
+    .user div.context ol.context-line li { background-color:#bbb; color:#000; }
+    .user div.context ol li { color:#666; }
+    div.commands, summary.commands { margin-left: 40px; }
+    div.commands a, summary.commands { color:#555; text-decoration:none; }
+    .user div.commands a { color: black; }
+    #summary { background: #ffc; }
+    #summary h2 { font-weight: normal; color: #666; }
+    #explanation { background:#eee; }
+    #template, #template-not-exist { background:#f6f6f6; }
+    #template-not-exist ul { margin: 0 0 10px 20px; }
+    #template-not-exist .postmortem-section { margin-bottom: 3px; }
+    #unicode-hint { background:#eee; }
+    #traceback { background:#eee; }
+    #requestinfo { background:#f6f6f6; padding-left:120px; }
+    #summary table { border:none; background:transparent; }
+    #requestinfo h2, #requestinfo h3 { position:relative; margin-left:-100px; }
+    #requestinfo h3 { margin-bottom:-1em; }
+    .error { background: #ffc; }
+    .specific { color:#cc3300; font-weight:bold; }
+    h2 span.commands { font-size:.7em; font-weight:normal; }
+    span.commands a:link {color:#5E5694;}
+    pre.exception_value { font-family: sans-serif; color: #575757; font-size: 1.5em; margin: 10px 0 10px 0; }
+    .append-bottom { margin-bottom: 10px; }
+    .fname { user-select: all; }
+  </style>
+  
+  <script>
+    function hideAll(elems) {
+      for (var e = 0; e < elems.length; e++) {
+        elems[e].style.display = 'none';
+      }
+    }
+    window.onload = function() {
+      hideAll(document.querySelectorAll('ol.pre-context'));
+      hideAll(document.querySelectorAll('ol.post-context'));
+      hideAll(document.querySelectorAll('div.pastebin'));
+    }
+    function toggle() {
+      for (var i = 0; i < arguments.length; i++) {
+        var e = document.getElementById(arguments[i]);
+        if (e) {
+          e.style.display = e.style.display == 'none' ? 'block': 'none';
+        }
+      }
+      return false;
+    }
+    function switchPastebinFriendly(link) {
+      s1 = "Switch to copy-and-paste view";
+      s2 = "Switch back to interactive view";
+      link.textContent = link.textContent.trim() == s1 ? s2: s1;
+      toggle('browserTraceback', 'pastebinTraceback');
+      return false;
+    }
+  </script>
+  
+</head>
+<body>
+<div id="summary">
+  <h1>TypeError
+       at /swagger/</h1>
+  <pre class="exception_value">&#x27;Meta.fields&#x27; must not contain non-model field names: type</pre>
+  <table class="meta">
+
+    <tr>
+      <th>Request Method:</th>
+      <td>GET</td>
+    </tr>
+    <tr>
+      <th>Request URL:</th>
+      <td>http://127.0.0.1:8000/swagger/?format=openapi</td>
+    </tr>
+
+    <tr>
+      <th>Django Version:</th>
+      <td>5.0.14</td>
+    </tr>
+
+    <tr>
+      <th>Exception Type:</th>
+      <td>TypeError</td>
+    </tr>
+
+
+    <tr>
+      <th>Exception Value:</th>
+      <td><pre>&#x27;Meta.fields&#x27; must not contain non-model field names: type</pre></td>
+    </tr>
+
+
+    <tr>
+      <th>Exception Location:</th>
+      <td><span class="fname">/home/tanyamushonga/Desktop/development/django_rest/skymarshal-api/venv/lib/python3.12/site-packages/django_filters/filterset.py</span>, line 349, in get_filters</td>
+    </tr>
+
+
+    <tr>
+      <th>Raised during:</th>
+      <td>drf_yasg.views.SchemaView</td>
+    </tr>
+
+    <tr>
+      <th>Python Executable:</th>
+      <td>/home/tanyamushonga/Desktop/development/django_rest/skymarshal-api/venv/bin/python</td>
+    </tr>
+    <tr>
+      <th>Python Version:</th>
+      <td>3.12.3</td>
+    </tr>
+    <tr>
+      <th>Python Path:</th>
+      <td><pre>[&#x27;/home/tanyamushonga/Desktop/development/django_rest/skymarshal-api&#x27;,
+ &#x27;/home/tanyamushonga/Desktop/development/django_rest/skymarshal-api&#x27;,
+ &#x27;/usr/lib/python312.zip&#x27;,
+ &#x27;/usr/lib/python3.12&#x27;,
+ &#x27;/usr/lib/python3.12/lib-dynload&#x27;,
+ &#x27;/home/tanyamushonga/Desktop/development/django_rest/skymarshal-api/venv/lib/python3.12/site-packages&#x27;,
+ &#x27;/home/tanyamushonga/Desktop/development/django_rest/skymarshal-api/venv/lib/python3.12/site-packages/setuptools/_vendor&#x27;]</pre></td>
+    </tr>
+    <tr>
+      <th>Server time:</th>
+      <td>Sun, 01 Feb 2026 10:04:13 -0600</td>
+    </tr>
+  </table>
+</div>
+
+
+
+
+<div id="traceback">
+  <h2>Traceback <span class="commands"><a href="#" onclick="return switchPastebinFriendly(this);">
+    Switch to copy-and-paste view</a></span>
+  </h2>
+  <div id="browserTraceback">
+    <ul class="traceback">
+      
+        
+        <li class="frame django">
+          
+            <code class="fname">/home/tanyamushonga/Desktop/development/django_rest/skymarshal-api/venv/lib/python3.12/site-packages/django/core/handlers/exception.py</code>, line 55, in inner
+          
+
+          
+            <div class="context" id="c129353190847040">
+              
+                <ol start="48" class="pre-context" id="pre129353190847040">
+                
+                  <li onclick="toggle('pre129353190847040', 'post129353190847040')"><pre></pre></li>
+                
+                  <li onclick="toggle('pre129353190847040', 'post129353190847040')"><pre>        return inner</pre></li>
+                
+                  <li onclick="toggle('pre129353190847040', 'post129353190847040')"><pre>    else:</pre></li>
+                
+                  <li onclick="toggle('pre129353190847040', 'post129353190847040')"><pre></pre></li>
+                
+                  <li onclick="toggle('pre129353190847040', 'post129353190847040')"><pre>        @wraps(get_response)</pre></li>
+                
+                  <li onclick="toggle('pre129353190847040', 'post129353190847040')"><pre>        def inner(request):</pre></li>
+                
+                  <li onclick="toggle('pre129353190847040', 'post129353190847040')"><pre>            try:</pre></li>
+                
+                </ol>
+              
+              <ol start="55" class="context-line">
+                <li onclick="toggle('pre129353190847040', 'post129353190847040')"><pre>                response = get_response(request)
+                               ^^^^^^^^^^^^^^^^^^^^^</pre> <span>…</span></li>
+              </ol>
+              
+                <ol start='56' class="post-context" id="post129353190847040">
+                  
+                  <li onclick="toggle('pre129353190847040', 'post129353190847040')"><pre>            except Exception as exc:</pre></li>
+                  
+                  <li onclick="toggle('pre129353190847040', 'post129353190847040')"><pre>                response = response_for_exception(request, exc)</pre></li>
+                  
+                  <li onclick="toggle('pre129353190847040', 'post129353190847040')"><pre>            return response</pre></li>
+                  
+                  <li onclick="toggle('pre129353190847040', 'post129353190847040')"><pre></pre></li>
+                  
+                  <li onclick="toggle('pre129353190847040', 'post129353190847040')"><pre>        return inner</pre></li>
+                  
+                  <li onclick="toggle('pre129353190847040', 'post129353190847040')"><pre></pre></li>
+                  
+              </ol>
+              
+            </div>
+          
+
+          
+            
+              <details>
+                <summary class="commands">Local vars</summary>
+            
+            <table class="vars" id="v129353190847040">
+              <thead>
+                <tr>
+                  <th>Variable</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                  <tr>
+                    <td>exc</td>
+                    <td class="code"><pre>TypeError(&quot;&#x27;Meta.fields&#x27; must not contain non-model field names: type&quot;)</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>get_response</td>
+                    <td class="code"><pre>&lt;bound method BaseHandler._get_response of &lt;django.core.handlers.wsgi.WSGIHandler object at 0x75a5a15969c0&gt;&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>request</td>
+                    <td class="code"><pre>&lt;WSGIRequest: GET &#x27;/swagger/?format=openapi&#x27;&gt;</pre></td>
+                  </tr>
+                
+              </tbody>
+            </table>
+            </details>
+          
+        </li>
+      
+        
+        <li class="frame django">
+          
+            <code class="fname">/home/tanyamushonga/Desktop/development/django_rest/skymarshal-api/venv/lib/python3.12/site-packages/django/core/handlers/base.py</code>, line 197, in _get_response
+          
+
+          
+            <div class="context" id="c129353190846976">
+              
+                <ol start="190" class="pre-context" id="pre129353190846976">
+                
+                  <li onclick="toggle('pre129353190846976', 'post129353190846976')"><pre></pre></li>
+                
+                  <li onclick="toggle('pre129353190846976', 'post129353190846976')"><pre>        if response is None:</pre></li>
+                
+                  <li onclick="toggle('pre129353190846976', 'post129353190846976')"><pre>            wrapped_callback = self.make_view_atomic(callback)</pre></li>
+                
+                  <li onclick="toggle('pre129353190846976', 'post129353190846976')"><pre>            # If it is an asynchronous view, run it in a subthread.</pre></li>
+                
+                  <li onclick="toggle('pre129353190846976', 'post129353190846976')"><pre>            if iscoroutinefunction(wrapped_callback):</pre></li>
+                
+                  <li onclick="toggle('pre129353190846976', 'post129353190846976')"><pre>                wrapped_callback = async_to_sync(wrapped_callback)</pre></li>
+                
+                  <li onclick="toggle('pre129353190846976', 'post129353190846976')"><pre>            try:</pre></li>
+                
+                </ol>
+              
+              <ol start="197" class="context-line">
+                <li onclick="toggle('pre129353190846976', 'post129353190846976')"><pre>                response = wrapped_callback(request, *callback_args, **callback_kwargs)
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</pre> <span>…</span></li>
+              </ol>
+              
+                <ol start='198' class="post-context" id="post129353190846976">
+                  
+                  <li onclick="toggle('pre129353190846976', 'post129353190846976')"><pre>            except Exception as e:</pre></li>
+                  
+                  <li onclick="toggle('pre129353190846976', 'post129353190846976')"><pre>                response = self.process_exception_by_middleware(e, request)</pre></li>
+                  
+                  <li onclick="toggle('pre129353190846976', 'post129353190846976')"><pre>                if response is None:</pre></li>
+                  
+                  <li onclick="toggle('pre129353190846976', 'post129353190846976')"><pre>                    raise</pre></li>
+                  
+                  <li onclick="toggle('pre129353190846976', 'post129353190846976')"><pre></pre></li>
+                  
+                  <li onclick="toggle('pre129353190846976', 'post129353190846976')"><pre>        # Complain if the view returned None (a common error).</pre></li>
+                  
+              </ol>
+              
+            </div>
+          
+
+          
+            
+              <details>
+                <summary class="commands">Local vars</summary>
+            
+            <table class="vars" id="v129353190846976">
+              <thead>
+                <tr>
+                  <th>Variable</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                  <tr>
+                    <td>callback</td>
+                    <td class="code"><pre>&lt;function View.as_view.&lt;locals&gt;.view at 0x75a572f94680&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>callback_args</td>
+                    <td class="code"><pre>()</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>callback_kwargs</td>
+                    <td class="code"><pre>{}</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>middleware_method</td>
+                    <td class="code"><pre>&lt;bound method CsrfViewMiddleware.process_view of &lt;CsrfViewMiddleware get_response=convert_exception_to_response.&lt;locals&gt;.inner&gt;&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>request</td>
+                    <td class="code"><pre>&lt;WSGIRequest: GET &#x27;/swagger/?format=openapi&#x27;&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>response</td>
+                    <td class="code"><pre>None</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>self</td>
+                    <td class="code"><pre>&lt;django.core.handlers.wsgi.WSGIHandler object at 0x75a5a15969c0&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>wrapped_callback</td>
+                    <td class="code"><pre>&lt;function View.as_view.&lt;locals&gt;.view at 0x75a572f94680&gt;</pre></td>
+                  </tr>
+                
+              </tbody>
+            </table>
+            </details>
+          
+        </li>
+      
+        
+        <li class="frame django">
+          
+            <code class="fname">/home/tanyamushonga/Desktop/development/django_rest/skymarshal-api/venv/lib/python3.12/site-packages/django/views/decorators/csrf.py</code>, line 65, in _view_wrapper
+          
+
+          
+            <div class="context" id="c129353190846912">
+              
+                <ol start="58" class="pre-context" id="pre129353190846912">
+                
+                  <li onclick="toggle('pre129353190846912', 'post129353190846912')"><pre></pre></li>
+                
+                  <li onclick="toggle('pre129353190846912', 'post129353190846912')"><pre>        async def _view_wrapper(request, *args, **kwargs):</pre></li>
+                
+                  <li onclick="toggle('pre129353190846912', 'post129353190846912')"><pre>            return await view_func(request, *args, **kwargs)</pre></li>
+                
+                  <li onclick="toggle('pre129353190846912', 'post129353190846912')"><pre></pre></li>
+                
+                  <li onclick="toggle('pre129353190846912', 'post129353190846912')"><pre>    else:</pre></li>
+                
+                  <li onclick="toggle('pre129353190846912', 'post129353190846912')"><pre></pre></li>
+                
+                  <li onclick="toggle('pre129353190846912', 'post129353190846912')"><pre>        def _view_wrapper(request, *args, **kwargs):</pre></li>
+                
+                </ol>
+              
+              <ol start="65" class="context-line">
+                <li onclick="toggle('pre129353190846912', 'post129353190846912')"><pre>            return view_func(request, *args, **kwargs)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</pre> <span>…</span></li>
+              </ol>
+              
+                <ol start='66' class="post-context" id="post129353190846912">
+                  
+                  <li onclick="toggle('pre129353190846912', 'post129353190846912')"><pre></pre></li>
+                  
+                  <li onclick="toggle('pre129353190846912', 'post129353190846912')"><pre>    _view_wrapper.csrf_exempt = True</pre></li>
+                  
+                  <li onclick="toggle('pre129353190846912', 'post129353190846912')"><pre></pre></li>
+                  
+                  <li onclick="toggle('pre129353190846912', 'post129353190846912')"><pre>    return wraps(view_func)(_view_wrapper)</pre></li>
+                  
+              </ol>
+              
+            </div>
+          
+
+          
+            
+              <details>
+                <summary class="commands">Local vars</summary>
+            
+            <table class="vars" id="v129353190846912">
+              <thead>
+                <tr>
+                  <th>Variable</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                  <tr>
+                    <td>args</td>
+                    <td class="code"><pre>()</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>kwargs</td>
+                    <td class="code"><pre>{}</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>request</td>
+                    <td class="code"><pre>&lt;WSGIRequest: GET &#x27;/swagger/?format=openapi&#x27;&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>view_func</td>
+                    <td class="code"><pre>&lt;function View.as_view.&lt;locals&gt;.view at 0x75a572f4fb00&gt;</pre></td>
+                  </tr>
+                
+              </tbody>
+            </table>
+            </details>
+          
+        </li>
+      
+        
+        <li class="frame django">
+          
+            <code class="fname">/home/tanyamushonga/Desktop/development/django_rest/skymarshal-api/venv/lib/python3.12/site-packages/django/views/generic/base.py</code>, line 104, in view
+          
+
+          
+            <div class="context" id="c129353450657088">
+              
+                <ol start="97" class="pre-context" id="pre129353450657088">
+                
+                  <li onclick="toggle('pre129353450657088', 'post129353450657088')"><pre>            self = cls(**initkwargs)</pre></li>
+                
+                  <li onclick="toggle('pre129353450657088', 'post129353450657088')"><pre>            self.setup(request, *args, **kwargs)</pre></li>
+                
+                  <li onclick="toggle('pre129353450657088', 'post129353450657088')"><pre>            if not hasattr(self, &quot;request&quot;):</pre></li>
+                
+                  <li onclick="toggle('pre129353450657088', 'post129353450657088')"><pre>                raise AttributeError(</pre></li>
+                
+                  <li onclick="toggle('pre129353450657088', 'post129353450657088')"><pre>                    &quot;%s instance has no &#x27;request&#x27; attribute. Did you override &quot;</pre></li>
+                
+                  <li onclick="toggle('pre129353450657088', 'post129353450657088')"><pre>                    &quot;setup() and forget to call super()?&quot; % cls.__name__</pre></li>
+                
+                  <li onclick="toggle('pre129353450657088', 'post129353450657088')"><pre>                )</pre></li>
+                
+                </ol>
+              
+              <ol start="104" class="context-line">
+                <li onclick="toggle('pre129353450657088', 'post129353450657088')"><pre>            return self.dispatch(request, *args, **kwargs)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</pre> <span>…</span></li>
+              </ol>
+              
+                <ol start='105' class="post-context" id="post129353450657088">
+                  
+                  <li onclick="toggle('pre129353450657088', 'post129353450657088')"><pre></pre></li>
+                  
+                  <li onclick="toggle('pre129353450657088', 'post129353450657088')"><pre>        view.view_class = cls</pre></li>
+                  
+                  <li onclick="toggle('pre129353450657088', 'post129353450657088')"><pre>        view.view_initkwargs = initkwargs</pre></li>
+                  
+                  <li onclick="toggle('pre129353450657088', 'post129353450657088')"><pre></pre></li>
+                  
+                  <li onclick="toggle('pre129353450657088', 'post129353450657088')"><pre>        # __name__ and __qualname__ are intentionally left unchanged as</pre></li>
+                  
+                  <li onclick="toggle('pre129353450657088', 'post129353450657088')"><pre>        # view_class should be used to robustly determine the name of the view</pre></li>
+                  
+              </ol>
+              
+            </div>
+          
+
+          
+            
+              <details>
+                <summary class="commands">Local vars</summary>
+            
+            <table class="vars" id="v129353450657088">
+              <thead>
+                <tr>
+                  <th>Variable</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                  <tr>
+                    <td>args</td>
+                    <td class="code"><pre>()</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>cls</td>
+                    <td class="code"><pre>&lt;class &#x27;drf_yasg.views.get_schema_view.&lt;locals&gt;.SchemaView&#x27;&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>initkwargs</td>
+                    <td class="code"><pre>{&#x27;renderer_classes&#x27;: (&lt;class &#x27;drf_yasg.renderers.SwaggerUIRenderer&#x27;&gt;,
+                      &lt;class &#x27;drf_yasg.renderers.ReDocRenderer&#x27;&gt;,
+                      &lt;class &#x27;drf_yasg.renderers.SwaggerYAMLRenderer&#x27;&gt;,
+                      &lt;class &#x27;drf_yasg.renderers.SwaggerJSONRenderer&#x27;&gt;,
+                      &lt;class &#x27;drf_yasg.renderers.OpenAPIRenderer&#x27;&gt;)}</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>kwargs</td>
+                    <td class="code"><pre>{}</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>request</td>
+                    <td class="code"><pre>&lt;WSGIRequest: GET &#x27;/swagger/?format=openapi&#x27;&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>self</td>
+                    <td class="code"><pre>&lt;drf_yasg.views.get_schema_view.&lt;locals&gt;.SchemaView object at 0x75a5724746e0&gt;</pre></td>
+                  </tr>
+                
+              </tbody>
+            </table>
+            </details>
+          
+        </li>
+      
+        
+        <li class="frame user">
+          
+            <code class="fname">/home/tanyamushonga/Desktop/development/django_rest/skymarshal-api/venv/lib/python3.12/site-packages/rest_framework/views.py</code>, line 509, in dispatch
+          
+
+          
+            <div class="context" id="c129353190846848">
+              
+                <ol start="502" class="pre-context" id="pre129353190846848">
+                
+                  <li onclick="toggle('pre129353190846848', 'post129353190846848')"><pre>                                  self.http_method_not_allowed)</pre></li>
+                
+                  <li onclick="toggle('pre129353190846848', 'post129353190846848')"><pre>            else:</pre></li>
+                
+                  <li onclick="toggle('pre129353190846848', 'post129353190846848')"><pre>                handler = self.http_method_not_allowed</pre></li>
+                
+                  <li onclick="toggle('pre129353190846848', 'post129353190846848')"><pre></pre></li>
+                
+                  <li onclick="toggle('pre129353190846848', 'post129353190846848')"><pre>            response = handler(request, *args, **kwargs)</pre></li>
+                
+                  <li onclick="toggle('pre129353190846848', 'post129353190846848')"><pre></pre></li>
+                
+                  <li onclick="toggle('pre129353190846848', 'post129353190846848')"><pre>        except Exception as exc:</pre></li>
+                
+                </ol>
+              
+              <ol start="509" class="context-line">
+                <li onclick="toggle('pre129353190846848', 'post129353190846848')"><pre>            response = self.handle_exception(exc)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^</pre> <span>…</span></li>
+              </ol>
+              
+                <ol start='510' class="post-context" id="post129353190846848">
+                  
+                  <li onclick="toggle('pre129353190846848', 'post129353190846848')"><pre></pre></li>
+                  
+                  <li onclick="toggle('pre129353190846848', 'post129353190846848')"><pre>        self.response = self.finalize_response(request, response, *args, **kwargs)</pre></li>
+                  
+                  <li onclick="toggle('pre129353190846848', 'post129353190846848')"><pre>        return self.response</pre></li>
+                  
+                  <li onclick="toggle('pre129353190846848', 'post129353190846848')"><pre></pre></li>
+                  
+                  <li onclick="toggle('pre129353190846848', 'post129353190846848')"><pre>    def options(self, request, *args, **kwargs):</pre></li>
+                  
+                  <li onclick="toggle('pre129353190846848', 'post129353190846848')"><pre>        &quot;&quot;&quot;</pre></li>
+                  
+              </ol>
+              
+            </div>
+          
+
+          
+            
+              <details>
+                <summary class="commands">Local vars</summary>
+            
+            <table class="vars" id="v129353190846848">
+              <thead>
+                <tr>
+                  <th>Variable</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                  <tr>
+                    <td>args</td>
+                    <td class="code"><pre>()</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>handler</td>
+                    <td class="code"><pre>&lt;bound method get_schema_view.&lt;locals&gt;.SchemaView.get of &lt;drf_yasg.views.get_schema_view.&lt;locals&gt;.SchemaView object at 0x75a5724746e0&gt;&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>kwargs</td>
+                    <td class="code"><pre>{}</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>request</td>
+                    <td class="code"><pre>&lt;rest_framework.request.Request: GET &#x27;/swagger/?format=openapi&#x27;&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>self</td>
+                    <td class="code"><pre>&lt;drf_yasg.views.get_schema_view.&lt;locals&gt;.SchemaView object at 0x75a5724746e0&gt;</pre></td>
+                  </tr>
+                
+              </tbody>
+            </table>
+            </details>
+          
+        </li>
+      
+        
+        <li class="frame user">
+          
+            <code class="fname">/home/tanyamushonga/Desktop/development/django_rest/skymarshal-api/venv/lib/python3.12/site-packages/rest_framework/views.py</code>, line 469, in handle_exception
+          
+
+          
+            <div class="context" id="c129353190846784">
+              
+                <ol start="462" class="pre-context" id="pre129353190846784">
+                
+                  <li onclick="toggle('pre129353190846784', 'post129353190846784')"><pre></pre></li>
+                
+                  <li onclick="toggle('pre129353190846784', 'post129353190846784')"><pre>        exception_handler = self.get_exception_handler()</pre></li>
+                
+                  <li onclick="toggle('pre129353190846784', 'post129353190846784')"><pre></pre></li>
+                
+                  <li onclick="toggle('pre129353190846784', 'post129353190846784')"><pre>        context = self.get_exception_handler_context()</pre></li>
+                
+                  <li onclick="toggle('pre129353190846784', 'post129353190846784')"><pre>        response = exception_handler(exc, context)</pre></li>
+                
+                  <li onclick="toggle('pre129353190846784', 'post129353190846784')"><pre></pre></li>
+                
+                  <li onclick="toggle('pre129353190846784', 'post129353190846784')"><pre>        if response is None:</pre></li>
+                
+                </ol>
+              
+              <ol start="469" class="context-line">
+                <li onclick="toggle('pre129353190846784', 'post129353190846784')"><pre>            self.raise_uncaught_exception(exc)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</pre> <span>…</span></li>
+              </ol>
+              
+                <ol start='470' class="post-context" id="post129353190846784">
+                  
+                  <li onclick="toggle('pre129353190846784', 'post129353190846784')"><pre></pre></li>
+                  
+                  <li onclick="toggle('pre129353190846784', 'post129353190846784')"><pre>        response.exception = True</pre></li>
+                  
+                  <li onclick="toggle('pre129353190846784', 'post129353190846784')"><pre>        return response</pre></li>
+                  
+                  <li onclick="toggle('pre129353190846784', 'post129353190846784')"><pre></pre></li>
+                  
+                  <li onclick="toggle('pre129353190846784', 'post129353190846784')"><pre>    def raise_uncaught_exception(self, exc):</pre></li>
+                  
+                  <li onclick="toggle('pre129353190846784', 'post129353190846784')"><pre>        if settings.DEBUG:</pre></li>
+                  
+              </ol>
+              
+            </div>
+          
+
+          
+            
+              <details>
+                <summary class="commands">Local vars</summary>
+            
+            <table class="vars" id="v129353190846784">
+              <thead>
+                <tr>
+                  <th>Variable</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                  <tr>
+                    <td>context</td>
+                    <td class="code"><pre>{&#x27;args&#x27;: (),
+ &#x27;kwargs&#x27;: {},
+ &#x27;request&#x27;: &lt;rest_framework.request.Request: GET &#x27;/swagger/?format=openapi&#x27;&gt;,
+ &#x27;view&#x27;: &lt;drf_yasg.views.get_schema_view.&lt;locals&gt;.SchemaView object at 0x75a5724746e0&gt;}</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>exc</td>
+                    <td class="code"><pre>TypeError(&quot;&#x27;Meta.fields&#x27; must not contain non-model field names: type&quot;)</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>exception_handler</td>
+                    <td class="code"><pre>&lt;function exception_handler at 0x75a5813cf880&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>response</td>
+                    <td class="code"><pre>None</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>self</td>
+                    <td class="code"><pre>&lt;drf_yasg.views.get_schema_view.&lt;locals&gt;.SchemaView object at 0x75a5724746e0&gt;</pre></td>
+                  </tr>
+                
+              </tbody>
+            </table>
+            </details>
+          
+        </li>
+      
+        
+        <li class="frame user">
+          
+            <code class="fname">/home/tanyamushonga/Desktop/development/django_rest/skymarshal-api/venv/lib/python3.12/site-packages/rest_framework/views.py</code>, line 480, in raise_uncaught_exception
+          
+
+          
+            <div class="context" id="c129353190846720">
+              
+                <ol start="473" class="pre-context" id="pre129353190846720">
+                
+                  <li onclick="toggle('pre129353190846720', 'post129353190846720')"><pre></pre></li>
+                
+                  <li onclick="toggle('pre129353190846720', 'post129353190846720')"><pre>    def raise_uncaught_exception(self, exc):</pre></li>
+                
+                  <li onclick="toggle('pre129353190846720', 'post129353190846720')"><pre>        if settings.DEBUG:</pre></li>
+                
+                  <li onclick="toggle('pre129353190846720', 'post129353190846720')"><pre>            request = self.request</pre></li>
+                
+                  <li onclick="toggle('pre129353190846720', 'post129353190846720')"><pre>            renderer_format = getattr(request.accepted_renderer, &#x27;format&#x27;)</pre></li>
+                
+                  <li onclick="toggle('pre129353190846720', 'post129353190846720')"><pre>            use_plaintext_traceback = renderer_format not in (&#x27;html&#x27;, &#x27;api&#x27;, &#x27;admin&#x27;)</pre></li>
+                
+                  <li onclick="toggle('pre129353190846720', 'post129353190846720')"><pre>            request.force_plaintext_errors(use_plaintext_traceback)</pre></li>
+                
+                </ol>
+              
+              <ol start="480" class="context-line">
+                <li onclick="toggle('pre129353190846720', 'post129353190846720')"><pre>        raise exc
+             ^^^^^^^^^</pre> <span>…</span></li>
+              </ol>
+              
+                <ol start='481' class="post-context" id="post129353190846720">
+                  
+                  <li onclick="toggle('pre129353190846720', 'post129353190846720')"><pre></pre></li>
+                  
+                  <li onclick="toggle('pre129353190846720', 'post129353190846720')"><pre>    # Note: Views are made CSRF exempt from within `as_view` as to prevent</pre></li>
+                  
+                  <li onclick="toggle('pre129353190846720', 'post129353190846720')"><pre>    # accidental removal of this exemption in cases where `dispatch` needs to</pre></li>
+                  
+                  <li onclick="toggle('pre129353190846720', 'post129353190846720')"><pre>    # be overridden.</pre></li>
+                  
+                  <li onclick="toggle('pre129353190846720', 'post129353190846720')"><pre>    def dispatch(self, request, *args, **kwargs):</pre></li>
+                  
+                  <li onclick="toggle('pre129353190846720', 'post129353190846720')"><pre>        &quot;&quot;&quot;</pre></li>
+                  
+              </ol>
+              
+            </div>
+          
+
+          
+            
+              <details>
+                <summary class="commands">Local vars</summary>
+            
+            <table class="vars" id="v129353190846720">
+              <thead>
+                <tr>
+                  <th>Variable</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                  <tr>
+                    <td>exc</td>
+                    <td class="code"><pre>TypeError(&quot;&#x27;Meta.fields&#x27; must not contain non-model field names: type&quot;)</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>renderer_format</td>
+                    <td class="code"><pre>&#x27;openapi&#x27;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>request</td>
+                    <td class="code"><pre>&lt;rest_framework.request.Request: GET &#x27;/swagger/?format=openapi&#x27;&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>self</td>
+                    <td class="code"><pre>&lt;drf_yasg.views.get_schema_view.&lt;locals&gt;.SchemaView object at 0x75a5724746e0&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>use_plaintext_traceback</td>
+                    <td class="code"><pre>True</pre></td>
+                  </tr>
+                
+              </tbody>
+            </table>
+            </details>
+          
+        </li>
+      
+        
+        <li class="frame user">
+          
+            <code class="fname">/home/tanyamushonga/Desktop/development/django_rest/skymarshal-api/venv/lib/python3.12/site-packages/rest_framework/views.py</code>, line 506, in dispatch
+          
+
+          
+            <div class="context" id="c129353190846656">
+              
+                <ol start="499" class="pre-context" id="pre129353190846656">
+                
+                  <li onclick="toggle('pre129353190846656', 'post129353190846656')"><pre>            # Get the appropriate handler method</pre></li>
+                
+                  <li onclick="toggle('pre129353190846656', 'post129353190846656')"><pre>            if request.method.lower() in self.http_method_names:</pre></li>
+                
+                  <li onclick="toggle('pre129353190846656', 'post129353190846656')"><pre>                handler = getattr(self, request.method.lower(),</pre></li>
+                
+                  <li onclick="toggle('pre129353190846656', 'post129353190846656')"><pre>                                  self.http_method_not_allowed)</pre></li>
+                
+                  <li onclick="toggle('pre129353190846656', 'post129353190846656')"><pre>            else:</pre></li>
+                
+                  <li onclick="toggle('pre129353190846656', 'post129353190846656')"><pre>                handler = self.http_method_not_allowed</pre></li>
+                
+                  <li onclick="toggle('pre129353190846656', 'post129353190846656')"><pre></pre></li>
+                
+                </ol>
+              
+              <ol start="506" class="context-line">
+                <li onclick="toggle('pre129353190846656', 'post129353190846656')"><pre>            response = handler(request, *args, **kwargs)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</pre> <span>…</span></li>
+              </ol>
+              
+                <ol start='507' class="post-context" id="post129353190846656">
+                  
+                  <li onclick="toggle('pre129353190846656', 'post129353190846656')"><pre></pre></li>
+                  
+                  <li onclick="toggle('pre129353190846656', 'post129353190846656')"><pre>        except Exception as exc:</pre></li>
+                  
+                  <li onclick="toggle('pre129353190846656', 'post129353190846656')"><pre>            response = self.handle_exception(exc)</pre></li>
+                  
+                  <li onclick="toggle('pre129353190846656', 'post129353190846656')"><pre></pre></li>
+                  
+                  <li onclick="toggle('pre129353190846656', 'post129353190846656')"><pre>        self.response = self.finalize_response(request, response, *args, **kwargs)</pre></li>
+                  
+                  <li onclick="toggle('pre129353190846656', 'post129353190846656')"><pre>        return self.response</pre></li>
+                  
+              </ol>
+              
+            </div>
+          
+
+          
+            
+              <details>
+                <summary class="commands">Local vars</summary>
+            
+            <table class="vars" id="v129353190846656">
+              <thead>
+                <tr>
+                  <th>Variable</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                  <tr>
+                    <td>args</td>
+                    <td class="code"><pre>()</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>handler</td>
+                    <td class="code"><pre>&lt;bound method get_schema_view.&lt;locals&gt;.SchemaView.get of &lt;drf_yasg.views.get_schema_view.&lt;locals&gt;.SchemaView object at 0x75a5724746e0&gt;&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>kwargs</td>
+                    <td class="code"><pre>{}</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>request</td>
+                    <td class="code"><pre>&lt;rest_framework.request.Request: GET &#x27;/swagger/?format=openapi&#x27;&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>self</td>
+                    <td class="code"><pre>&lt;drf_yasg.views.get_schema_view.&lt;locals&gt;.SchemaView object at 0x75a5724746e0&gt;</pre></td>
+                  </tr>
+                
+              </tbody>
+            </table>
+            </details>
+          
+        </li>
+      
+        
+        <li class="frame user">
+          
+            <code class="fname">/home/tanyamushonga/Desktop/development/django_rest/skymarshal-api/venv/lib/python3.12/site-packages/drf_yasg/views.py</code>, line 96, in get
+          
+
+          
+            <div class="context" id="c129353190846592">
+              
+                <ol start="89" class="pre-context" id="pre129353190846592">
+                
+                  <li onclick="toggle('pre129353190846592', 'post129353190846592')"><pre>        def get(self, request, version=&#x27;&#x27;, format=None):</pre></li>
+                
+                  <li onclick="toggle('pre129353190846592', 'post129353190846592')"><pre>            version = request.version or version or &#x27;&#x27;</pre></li>
+                
+                  <li onclick="toggle('pre129353190846592', 'post129353190846592')"><pre>            if isinstance(request.accepted_renderer, _SpecRenderer):</pre></li>
+                
+                  <li onclick="toggle('pre129353190846592', 'post129353190846592')"><pre>                generator = self.generator_class(info, version, url, patterns, urlconf)</pre></li>
+                
+                  <li onclick="toggle('pre129353190846592', 'post129353190846592')"><pre>            else:</pre></li>
+                
+                  <li onclick="toggle('pre129353190846592', 'post129353190846592')"><pre>                generator = self.generator_class(info, version, url, patterns=[])</pre></li>
+                
+                  <li onclick="toggle('pre129353190846592', 'post129353190846592')"><pre></pre></li>
+                
+                </ol>
+              
+              <ol start="96" class="context-line">
+                <li onclick="toggle('pre129353190846592', 'post129353190846592')"><pre>            schema = generator.get_schema(request, self.public)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</pre> <span>…</span></li>
+              </ol>
+              
+                <ol start='97' class="post-context" id="post129353190846592">
+                  
+                  <li onclick="toggle('pre129353190846592', 'post129353190846592')"><pre>            if schema is None:</pre></li>
+                  
+                  <li onclick="toggle('pre129353190846592', 'post129353190846592')"><pre>                raise exceptions.PermissionDenied()  # pragma: no cover</pre></li>
+                  
+                  <li onclick="toggle('pre129353190846592', 'post129353190846592')"><pre>            return Response(schema)</pre></li>
+                  
+                  <li onclick="toggle('pre129353190846592', 'post129353190846592')"><pre></pre></li>
+                  
+                  <li onclick="toggle('pre129353190846592', 'post129353190846592')"><pre>        @classmethod</pre></li>
+                  
+                  <li onclick="toggle('pre129353190846592', 'post129353190846592')"><pre>        def apply_cache(cls, view, cache_timeout, cache_kwargs):</pre></li>
+                  
+              </ol>
+              
+            </div>
+          
+
+          
+            
+              <details>
+                <summary class="commands">Local vars</summary>
+            
+            <table class="vars" id="v129353190846592">
+              <thead>
+                <tr>
+                  <th>Variable</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                  <tr>
+                    <td>format</td>
+                    <td class="code"><pre>None</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>generator</td>
+                    <td class="code"><pre>&lt;drf_yasg.generators.OpenAPISchemaGenerator object at 0x75a572474d70&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>info</td>
+                    <td class="code"><pre>Info([(&#x27;title&#x27;, &#x27;Sky Marshal API&#x27;),
+      (&#x27;description&#x27;,
+       &#x27;API documentation for Sky Marshal Drone Management System&#x27;),
+      (&#x27;termsOfService&#x27;, &#x27;https://www.google.com/policies/terms/&#x27;),
+      (&#x27;contact&#x27;, Contact({&#x27;email&#x27;: &#x27;contact@skymarshal.local&#x27;})),
+      (&#x27;license&#x27;, License({&#x27;name&#x27;: &#x27;BSD License&#x27;})),
+      (&#x27;version&#x27;, &#x27;v1&#x27;)])</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>patterns</td>
+                    <td class="code"><pre>None</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>request</td>
+                    <td class="code"><pre>&lt;rest_framework.request.Request: GET &#x27;/swagger/?format=openapi&#x27;&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>self</td>
+                    <td class="code"><pre>&lt;drf_yasg.views.get_schema_view.&lt;locals&gt;.SchemaView object at 0x75a5724746e0&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>url</td>
+                    <td class="code"><pre>None</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>urlconf</td>
+                    <td class="code"><pre>None</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>version</td>
+                    <td class="code"><pre>&#x27;&#x27;</pre></td>
+                  </tr>
+                
+              </tbody>
+            </table>
+            </details>
+          
+        </li>
+      
+        
+        <li class="frame user">
+          
+            <code class="fname">/home/tanyamushonga/Desktop/development/django_rest/skymarshal-api/venv/lib/python3.12/site-packages/drf_yasg/generators.py</code>, line 276, in get_schema
+          
+
+          
+            <div class="context" id="c129353190846528">
+              
+                <ol start="269" class="pre-context" id="pre129353190846528">
+                
+                  <li onclick="toggle('pre129353190846528', 'post129353190846528')"><pre>        :return: the generated Swagger specification</pre></li>
+                
+                  <li onclick="toggle('pre129353190846528', 'post129353190846528')"><pre>        :rtype: openapi.Swagger</pre></li>
+                
+                  <li onclick="toggle('pre129353190846528', 'post129353190846528')"><pre>        &quot;&quot;&quot;</pre></li>
+                
+                  <li onclick="toggle('pre129353190846528', 'post129353190846528')"><pre>        endpoints = self.get_endpoints(request)</pre></li>
+                
+                  <li onclick="toggle('pre129353190846528', 'post129353190846528')"><pre>        components = self.reference_resolver_class(openapi.SCHEMA_DEFINITIONS, force_init=True)</pre></li>
+                
+                  <li onclick="toggle('pre129353190846528', 'post129353190846528')"><pre>        self.consumes = get_consumes(api_settings.DEFAULT_PARSER_CLASSES)</pre></li>
+                
+                  <li onclick="toggle('pre129353190846528', 'post129353190846528')"><pre>        self.produces = get_produces(api_settings.DEFAULT_RENDERER_CLASSES)</pre></li>
+                
+                </ol>
+              
+              <ol start="276" class="context-line">
+                <li onclick="toggle('pre129353190846528', 'post129353190846528')"><pre>        paths, prefix = self.get_paths(endpoints, components, request, public)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</pre> <span>…</span></li>
+              </ol>
+              
+                <ol start='277' class="post-context" id="post129353190846528">
+                  
+                  <li onclick="toggle('pre129353190846528', 'post129353190846528')"><pre></pre></li>
+                  
+                  <li onclick="toggle('pre129353190846528', 'post129353190846528')"><pre>        security_definitions = self.get_security_definitions()</pre></li>
+                  
+                  <li onclick="toggle('pre129353190846528', 'post129353190846528')"><pre>        if security_definitions:</pre></li>
+                  
+                  <li onclick="toggle('pre129353190846528', 'post129353190846528')"><pre>            security_requirements = self.get_security_requirements(security_definitions)</pre></li>
+                  
+                  <li onclick="toggle('pre129353190846528', 'post129353190846528')"><pre>        else:</pre></li>
+                  
+                  <li onclick="toggle('pre129353190846528', 'post129353190846528')"><pre>            security_requirements = None</pre></li>
+                  
+              </ol>
+              
+            </div>
+          
+
+          
+            
+              <details>
+                <summary class="commands">Local vars</summary>
+            
+            <table class="vars" id="v129353190846528">
+              <thead>
+                <tr>
+                  <th>Variable</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                  <tr>
+                    <td>components</td>
+                    <td class="code"><pre>&lt;drf_yasg.openapi.ReferenceResolver object at 0x75a5724c5310&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>endpoints</td>
+                    <td class="code"><pre>{&#x27;/api/v1/analytics/admin/dashboard/&#x27;: (&lt;class &#x27;apps.analytics.views.AdminAnalyticsViewSet&#x27;&gt;,
+                                        [(&#x27;GET&#x27;,
+                                          &lt;apps.analytics.views.AdminAnalyticsViewSet object at 0x75a5724bcf80&gt;)]),
+ &#x27;/api/v1/analytics/admin/heatmap/&#x27;: (&lt;class &#x27;apps.analytics.views.AdminAnalyticsViewSet&#x27;&gt;,
+                                      [(&#x27;GET&#x27;,
+                                        &lt;apps.analytics.views.AdminAnalyticsViewSet object at 0x75a5724bc200&gt;)]),
+ &#x27;/api/v1/analytics/admin/metrics/&#x27;: (&lt;class &#x27;apps.analytics.views.AdminAnalyticsViewSet&#x27;&gt;,
+                                      [(&#x27;GET&#x27;,
+                                        &lt;apps.analytics.views.AdminAnalyticsViewSet object at 0x75a5724be210&gt;)]),
+ &#x27;/api/v1/analytics/admin/patterns/&#x27;: (&lt;class &#x27;apps.analytics.views.AdminAnalyticsViewSet&#x27;&gt;,
+                                       [(&#x27;GET&#x27;,
+                                         &lt;apps.analytics.views.AdminAnalyticsViewSet object at 0x75a5724bd8b0&gt;)]),
+ &#x27;/api/v1/analytics/admin/reports/&#x27;: (&lt;class &#x27;apps.analytics.views.AdminAnalyticsViewSet&#x27;&gt;,
+                                      [(&#x27;GET&#x27;,
+                                        &lt;apps.analytics.views.AdminAnalyticsViewSet object at 0x75a5724be7b0&gt;)]),
+ &#x27;/api/v1/analytics/admin/run_inference/&#x27;: (&lt;class &#x27;apps.analytics.views.AdminAnalyticsViewSet&#x27;&gt;,
+                                            [(&#x27;POST&#x27;,
+                                              &lt;apps.analytics.views.AdminAnalyticsViewSet object at 0x75a5724bf650&gt;)]),
+ &#x27;/api/v1/analytics/officer/my_stats/&#x27;: (&lt;class &#x27;apps.analytics.views.OfficerAnalyticsViewSet&#x27;&gt;,
+                                         [(&#x27;GET&#x27;,
+                                           &lt;apps.analytics.views.OfficerAnalyticsViewSet object at 0x75a5724be840&gt;)]),
+ &#x27;/api/v1/auth/login/admin/&#x27;: (&lt;class &#x27;apps.users.views.admin_auth.AdminLoginView&#x27;&gt;,
+                               [(&#x27;POST&#x27;,
+                                 &lt;apps.users.views.admin_auth.AdminLoginView object at 0x75a5724bcdd0&gt;)]),
+ &#x27;/api/v1/auth/login/officer/&#x27;: (&lt;class &#x27;apps.users.views.officer_auth.OfficerLoginView&#x27;&gt;,
+                                 [(&#x27;POST&#x27;,
+                                   &lt;apps.users.views.officer_auth.OfficerLoginView object at 0x75a5724bc8f0&gt;)]),
+ &#x27;/api/v1/auth/password-reset/admin/&#x27;: (&lt;class &#x27;apps.users.views.admin_auth.AdminPasswordResetRequestView&#x27;&gt;,
+                                        [(&#x27;POST&#x27;,
+                                          &lt;apps.users.views.admin_auth.AdminPasswordResetRequestView object at 0x75a5724bebd0&gt;)]),
+ &#x27;/api/v1/auth/password-reset/confirm/&#x27;: (&lt;class &#x27;apps.users.views.shared_auth.PasswordResetConfirmView&#x27;&gt;,
+                                          [(&#x27;POST&#x27;,
+                                            &lt;apps.users.views.shared_auth.PasswordResetConfirmView object at 0x75a5724bcb90&gt;)]),
+ &#x27;/api/v1/auth/password-reset/officer/request/&#x27;: (&lt;class &#x27;apps.users.views.officer_auth.OfficerPasswordResetRequestView&#x27;&gt;,
+                                                  [(&#x27;POST&#x27;,
+                                                    &lt;apps.users.views.officer_auth.OfficerPasswordResetRequestView object at 0x75a5724bd250&gt;)]),
+ &#x27;/api/v1/auth/password-reset/officer/verify/&#x27;: (&lt;class &#x27;apps.users.views.officer_auth.OfficerPasswordResetVerifyView&#x27;&gt;,
+                                                 [(&#x27;POST&#x27;,
+                                                   &lt;apps.users.views.officer_auth.OfficerPasswordResetVerifyView object at 0x75a5724bea80&gt;)]),
+ &#x27;/api/v1/auth/verify-2fa/&#x27;: (&lt;class &#x27;apps.users.views.shared_auth.Verify2FAView&#x27;&gt;,
+                              [(&#x27;POST&#x27;,
+                                &lt;apps.users.views.shared_auth.Verify2FAView object at 0x75a5724bd520&gt;)]),
+ &#x27;/api/v1/compliance/lotteries/&#x27;: (&lt;class &#x27;apps.compliance.views.LotteryViewSet&#x27;&gt;,
+                                   [(&#x27;GET&#x27;,
+                                     &lt;apps.compliance.views.LotteryViewSet object at 0x75a5724bcd70&gt;),
+                                    (&#x27;POST&#x27;,
+                                     &lt;apps.compliance.views.LotteryVie… &lt;trimmed 17626 bytes string&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>public</td>
+                    <td class="code"><pre>True</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>request</td>
+                    <td class="code"><pre>&lt;rest_framework.request.Request: GET &#x27;/swagger/?format=openapi&#x27;&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>self</td>
+                    <td class="code"><pre>&lt;drf_yasg.generators.OpenAPISchemaGenerator object at 0x75a572474d70&gt;</pre></td>
+                  </tr>
+                
+              </tbody>
+            </table>
+            </details>
+          
+        </li>
+      
+        
+        <li class="frame user">
+          
+            <code class="fname">/home/tanyamushonga/Desktop/development/django_rest/skymarshal-api/venv/lib/python3.12/site-packages/drf_yasg/generators.py</code>, line 482, in get_paths
+          
+
+          
+            <div class="context" id="c129353190846464">
+              
+                <ol start="475" class="pre-context" id="pre129353190846464">
+                
+                  <li onclick="toggle('pre129353190846464', 'post129353190846464')"><pre>        paths = OrderedDict()</pre></li>
+                
+                  <li onclick="toggle('pre129353190846464', 'post129353190846464')"><pre>        for path, (view_cls, methods) in sorted(endpoints.items()):</pre></li>
+                
+                  <li onclick="toggle('pre129353190846464', 'post129353190846464')"><pre>            operations = {}</pre></li>
+                
+                  <li onclick="toggle('pre129353190846464', 'post129353190846464')"><pre>            for method, view in methods:</pre></li>
+                
+                  <li onclick="toggle('pre129353190846464', 'post129353190846464')"><pre>                if not self.should_include_endpoint(path, method, view, public):</pre></li>
+                
+                  <li onclick="toggle('pre129353190846464', 'post129353190846464')"><pre>                    continue</pre></li>
+                
+                  <li onclick="toggle('pre129353190846464', 'post129353190846464')"><pre></pre></li>
+                
+                </ol>
+              
+              <ol start="482" class="context-line">
+                <li onclick="toggle('pre129353190846464', 'post129353190846464')"><pre>                operation = self.get_operation(view, path, prefix, method, components, request)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</pre> <span>…</span></li>
+              </ol>
+              
+                <ol start='483' class="post-context" id="post129353190846464">
+                  
+                  <li onclick="toggle('pre129353190846464', 'post129353190846464')"><pre>                if operation is not None:</pre></li>
+                  
+                  <li onclick="toggle('pre129353190846464', 'post129353190846464')"><pre>                    operations[method.lower()] = operation</pre></li>
+                  
+                  <li onclick="toggle('pre129353190846464', 'post129353190846464')"><pre></pre></li>
+                  
+                  <li onclick="toggle('pre129353190846464', 'post129353190846464')"><pre>            if operations:</pre></li>
+                  
+                  <li onclick="toggle('pre129353190846464', 'post129353190846464')"><pre>                # since the common prefix is used as the API basePath, it must be stripped</pre></li>
+                  
+                  <li onclick="toggle('pre129353190846464', 'post129353190846464')"><pre>                # from individual paths when writing them into the swagger document</pre></li>
+                  
+              </ol>
+              
+            </div>
+          
+
+          
+            
+              <details>
+                <summary class="commands">Local vars</summary>
+            
+            <table class="vars" id="v129353190846464">
+              <thead>
+                <tr>
+                  <th>Variable</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                  <tr>
+                    <td>components</td>
+                    <td class="code"><pre>&lt;drf_yasg.openapi.ReferenceResolver object at 0x75a5724c5310&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>endpoints</td>
+                    <td class="code"><pre>{&#x27;/api/v1/analytics/admin/dashboard/&#x27;: (&lt;class &#x27;apps.analytics.views.AdminAnalyticsViewSet&#x27;&gt;,
+                                        [(&#x27;GET&#x27;,
+                                          &lt;apps.analytics.views.AdminAnalyticsViewSet object at 0x75a5724bcf80&gt;)]),
+ &#x27;/api/v1/analytics/admin/heatmap/&#x27;: (&lt;class &#x27;apps.analytics.views.AdminAnalyticsViewSet&#x27;&gt;,
+                                      [(&#x27;GET&#x27;,
+                                        &lt;apps.analytics.views.AdminAnalyticsViewSet object at 0x75a5724bc200&gt;)]),
+ &#x27;/api/v1/analytics/admin/metrics/&#x27;: (&lt;class &#x27;apps.analytics.views.AdminAnalyticsViewSet&#x27;&gt;,
+                                      [(&#x27;GET&#x27;,
+                                        &lt;apps.analytics.views.AdminAnalyticsViewSet object at 0x75a5724be210&gt;)]),
+ &#x27;/api/v1/analytics/admin/patterns/&#x27;: (&lt;class &#x27;apps.analytics.views.AdminAnalyticsViewSet&#x27;&gt;,
+                                       [(&#x27;GET&#x27;,
+                                         &lt;apps.analytics.views.AdminAnalyticsViewSet object at 0x75a5724bd8b0&gt;)]),
+ &#x27;/api/v1/analytics/admin/reports/&#x27;: (&lt;class &#x27;apps.analytics.views.AdminAnalyticsViewSet&#x27;&gt;,
+                                      [(&#x27;GET&#x27;,
+                                        &lt;apps.analytics.views.AdminAnalyticsViewSet object at 0x75a5724be7b0&gt;)]),
+ &#x27;/api/v1/analytics/admin/run_inference/&#x27;: (&lt;class &#x27;apps.analytics.views.AdminAnalyticsViewSet&#x27;&gt;,
+                                            [(&#x27;POST&#x27;,
+                                              &lt;apps.analytics.views.AdminAnalyticsViewSet object at 0x75a5724bf650&gt;)]),
+ &#x27;/api/v1/analytics/officer/my_stats/&#x27;: (&lt;class &#x27;apps.analytics.views.OfficerAnalyticsViewSet&#x27;&gt;,
+                                         [(&#x27;GET&#x27;,
+                                           &lt;apps.analytics.views.OfficerAnalyticsViewSet object at 0x75a5724be840&gt;)]),
+ &#x27;/api/v1/auth/login/admin/&#x27;: (&lt;class &#x27;apps.users.views.admin_auth.AdminLoginView&#x27;&gt;,
+                               [(&#x27;POST&#x27;,
+                                 &lt;apps.users.views.admin_auth.AdminLoginView object at 0x75a5724bcdd0&gt;)]),
+ &#x27;/api/v1/auth/login/officer/&#x27;: (&lt;class &#x27;apps.users.views.officer_auth.OfficerLoginView&#x27;&gt;,
+                                 [(&#x27;POST&#x27;,
+                                   &lt;apps.users.views.officer_auth.OfficerLoginView object at 0x75a5724bc8f0&gt;)]),
+ &#x27;/api/v1/auth/password-reset/admin/&#x27;: (&lt;class &#x27;apps.users.views.admin_auth.AdminPasswordResetRequestView&#x27;&gt;,
+                                        [(&#x27;POST&#x27;,
+                                          &lt;apps.users.views.admin_auth.AdminPasswordResetRequestView object at 0x75a5724bebd0&gt;)]),
+ &#x27;/api/v1/auth/password-reset/confirm/&#x27;: (&lt;class &#x27;apps.users.views.shared_auth.PasswordResetConfirmView&#x27;&gt;,
+                                          [(&#x27;POST&#x27;,
+                                            &lt;apps.users.views.shared_auth.PasswordResetConfirmView object at 0x75a5724bcb90&gt;)]),
+ &#x27;/api/v1/auth/password-reset/officer/request/&#x27;: (&lt;class &#x27;apps.users.views.officer_auth.OfficerPasswordResetRequestView&#x27;&gt;,
+                                                  [(&#x27;POST&#x27;,
+                                                    &lt;apps.users.views.officer_auth.OfficerPasswordResetRequestView object at 0x75a5724bd250&gt;)]),
+ &#x27;/api/v1/auth/password-reset/officer/verify/&#x27;: (&lt;class &#x27;apps.users.views.officer_auth.OfficerPasswordResetVerifyView&#x27;&gt;,
+                                                 [(&#x27;POST&#x27;,
+                                                   &lt;apps.users.views.officer_auth.OfficerPasswordResetVerifyView object at 0x75a5724bea80&gt;)]),
+ &#x27;/api/v1/auth/verify-2fa/&#x27;: (&lt;class &#x27;apps.users.views.shared_auth.Verify2FAView&#x27;&gt;,
+                              [(&#x27;POST&#x27;,
+                                &lt;apps.users.views.shared_auth.Verify2FAView object at 0x75a5724bd520&gt;)]),
+ &#x27;/api/v1/compliance/lotteries/&#x27;: (&lt;class &#x27;apps.compliance.views.LotteryViewSet&#x27;&gt;,
+                                   [(&#x27;GET&#x27;,
+                                     &lt;apps.compliance.views.LotteryViewSet object at 0x75a5724bcd70&gt;),
+                                    (&#x27;POST&#x27;,
+                                     &lt;apps.compliance.views.LotteryVie… &lt;trimmed 17626 bytes string&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>method</td>
+                    <td class="code"><pre>&#x27;GET&#x27;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>methods</td>
+                    <td class="code"><pre>[(&#x27;GET&#x27;,
+  &lt;apps.drones.views.drone_viewset.DroneViewSet object at 0x75a5724bda30&gt;),
+ (&#x27;POST&#x27;,
+  &lt;apps.drones.views.drone_viewset.DroneViewSet object at 0x75a5724bd880&gt;)]</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>operation</td>
+                    <td class="code"><pre>Operation([(&#x27;operationId&#x27;, &#x27;drone-status_read&#x27;),
+           (&#x27;description&#x27;,
+            &#x27;ViewSet for drone status monitoring.\n&#x27;
+            &#x27;- Read operations: authenticated users\n&#x27;
+            &#x27;- Write operations: Disabled (Drones update their own status via &#x27;
+            &#x27;DroneViewSet)&#x27;),
+           (&#x27;parameters&#x27;, []),
+           (&#x27;responses&#x27;,
+            Responses([(&#x27;200&#x27;,
+                        Response([(&#x27;description&#x27;, &#x27;&#x27;),
+                                  (&#x27;schema&#x27;,
+                                   SchemaRef([(&#x27;$ref&#x27;,
+                                               &#x27;#/definitions/DroneStatus&#x27;)]))]))])),
+           (&#x27;tags&#x27;, [&#x27;drone-status&#x27;])])</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>operations</td>
+                    <td class="code"><pre>{}</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>path</td>
+                    <td class="code"><pre>&#x27;/api/v1/drones/&#x27;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>path_suffix</td>
+                    <td class="code"><pre>&#x27;/drone-status/{id}/&#x27;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>paths</td>
+                    <td class="code"><pre>OrderedDict([(&#x27;/analytics/admin/dashboard/&#x27;,
+              PathItem([(&#x27;get&#x27;,
+                         Operation([(&#x27;operationId&#x27;,
+                                     &#x27;analytics_admin_dashboard&#x27;),
+                                    (&#x27;description&#x27;,
+                                     &#x27;Main Admin Dashboard API.\n&#x27;
+                                     &#x27;Returns metrics + active &#x27;
+                                     &#x27;recommendations.&#x27;),
+                                    (&#x27;parameters&#x27;, []),
+                                    (&#x27;responses&#x27;,
+                                     Responses([(&#x27;200&#x27;,
+                                                 Response([(&#x27;description&#x27;,
+                                                            &#x27;&#x27;)]))])),
+                                    (&#x27;tags&#x27;, [&#x27;analytics&#x27;])])),
+                        (&#x27;parameters&#x27;, [])])),
+             (&#x27;/analytics/admin/heatmap/&#x27;,
+              PathItem([(&#x27;get&#x27;,
+                         Operation([(&#x27;operationId&#x27;, &#x27;analytics_admin_heatmap&#x27;),
+                                    (&#x27;description&#x27;,
+                                     &#x27;Get heatmap. Filters: date (YYYY-MM-DD), &#x27;
+                                     &#x27;hour (0-23), metric_type.\n&#x27;
+                                     &#x27;Defaults to latest available if no &#x27;
+                                     &#x27;filters.&#x27;),
+                                    (&#x27;parameters&#x27;, []),
+                                    (&#x27;responses&#x27;,
+                                     Responses([(&#x27;200&#x27;,
+                                                 Response([(&#x27;description&#x27;,
+                                                            &#x27;&#x27;)]))])),
+                                    (&#x27;tags&#x27;, [&#x27;analytics&#x27;])])),
+                        (&#x27;parameters&#x27;, [])])),
+             (&#x27;/analytics/admin/metrics/&#x27;,
+              PathItem([(&#x27;get&#x27;,
+                         Operation([(&#x27;operationId&#x27;, &#x27;analytics_admin_metrics&#x27;),
+                                    (&#x27;description&#x27;,
+                                     &#x27;Get time-series traffic metrics.\n&#x27;
+                                     &#x27;Supports filtering: drone_id, &#x27;
+                                     &#x27;start_date, end_date&#x27;),
+                                    (&#x27;parameters&#x27;, []),
+                                    (&#x27;responses&#x27;,
+                                     Responses([(&#x27;200&#x27;,
+                                                 Response([(&#x27;description&#x27;,
+                                                            &#x27;&#x27;)]))])),
+                                    (&#x27;tags&#x27;, [&#x27;analytics&#x27;])])),
+                        (&#x27;parameters&#x27;, [])])),
+             (&#x27;/analytics/admin/patterns/&#x27;,
+              PathItem([(&#x27;get&#x27;,
+                         Operation([(&#x27;operationId&#x27;, &#x27;analytics_admin_patterns&#x27;),
+                                    (&#x27;description&#x27;,
+                                     &#x27;Get identified traffic patterns.&#x27;),
+                                    (&#x27;parameters&#x27;, []),
+                                    (&#x27;responses&#x27;,
+                                     Responses([(&#x27;200&#x27;,
+                                                 Response([(&#x27;description&#x27;,
+                                                            &#x27;&#x27;)]))])),
+                                    (&#x27;tags&#x27;, [&#x27;analytics&#x27;])])),
+                        (&#x27;parameters&#x27;, [])])),
+             (&#x27;/analytics/admin/reports/&#x27;,
+              PathItem([(&#x27;get&#x27;,
+                         Operation([(&#x27;operationId&#x27;, &#x27;analytics_admin_reports&#x27;),
+                                    (&#x27;description&#x27;, &#x27;List generated reports.&#x27;),
+                                    (&#x27;parameters&#x27;, []),
+                                    (&#x27;responses&#x27;,
+                                     Responses([(&#x27;200&#x27;,
+                                                 Response([(&#x27;description&#x27;,
+                                                            &#x27;&#x27;)]))])),
+                                    (&#x27;tags&#x27;, [&#x27;analytics&#x27;])])),
+                        (&#x27;parameters&#x27;, [])])),
+             (&#x27;/analytics/admin/run_inference/&#x27;,
+              PathItem([(&#x27;post&#x27;,
+                         Operation([(&#x27;operationId&#x27;,
+                  … &lt;trimmed 37789 bytes string&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>prefix</td>
+                    <td class="code"><pre>&#x27;/api/v1&#x27;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>public</td>
+                    <td class="code"><pre>True</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>request</td>
+                    <td class="code"><pre>&lt;rest_framework.request.Request: GET &#x27;/swagger/?format=openapi&#x27;&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>self</td>
+                    <td class="code"><pre>&lt;drf_yasg.generators.OpenAPISchemaGenerator object at 0x75a572474d70&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>view</td>
+                    <td class="code"><pre>&lt;apps.drones.views.drone_viewset.DroneViewSet object at 0x75a5724bda30&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>view_cls</td>
+                    <td class="code"><pre>&lt;class &#x27;apps.drones.views.drone_viewset.DroneViewSet&#x27;&gt;</pre></td>
+                  </tr>
+                
+              </tbody>
+            </table>
+            </details>
+          
+        </li>
+      
+        
+        <li class="frame user">
+          
+            <code class="fname">/home/tanyamushonga/Desktop/development/django_rest/skymarshal-api/venv/lib/python3.12/site-packages/drf_yasg/generators.py</code>, line 524, in get_operation
+          
+
+          
+            <div class="context" id="c129353190846400">
+              
+                <ol start="517" class="pre-context" id="pre129353190846400">
+                
+                  <li onclick="toggle('pre129353190846400', 'post129353190846400')"><pre>        #   3. on the swagger_auto_schema decorator</pre></li>
+                
+                  <li onclick="toggle('pre129353190846400', 'post129353190846400')"><pre>        view_inspector_cls = overrides.get(&#x27;auto_schema&#x27;, view_inspector_cls)</pre></li>
+                
+                  <li onclick="toggle('pre129353190846400', 'post129353190846400')"><pre></pre></li>
+                
+                  <li onclick="toggle('pre129353190846400', 'post129353190846400')"><pre>        if view_inspector_cls is None:</pre></li>
+                
+                  <li onclick="toggle('pre129353190846400', 'post129353190846400')"><pre>            return None</pre></li>
+                
+                  <li onclick="toggle('pre129353190846400', 'post129353190846400')"><pre></pre></li>
+                
+                  <li onclick="toggle('pre129353190846400', 'post129353190846400')"><pre>        view_inspector = view_inspector_cls(view, path, method, components, request, overrides, operation_keys)</pre></li>
+                
+                </ol>
+              
+              <ol start="524" class="context-line">
+                <li onclick="toggle('pre129353190846400', 'post129353190846400')"><pre>        operation = view_inspector.get_operation(operation_keys)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</pre> <span>…</span></li>
+              </ol>
+              
+                <ol start='525' class="post-context" id="post129353190846400">
+                  
+                  <li onclick="toggle('pre129353190846400', 'post129353190846400')"><pre>        if operation is None:</pre></li>
+                  
+                  <li onclick="toggle('pre129353190846400', 'post129353190846400')"><pre>            return None</pre></li>
+                  
+                  <li onclick="toggle('pre129353190846400', 'post129353190846400')"><pre></pre></li>
+                  
+                  <li onclick="toggle('pre129353190846400', 'post129353190846400')"><pre>        if &#x27;consumes&#x27; in operation and set(operation.consumes) == set(self.consumes):</pre></li>
+                  
+                  <li onclick="toggle('pre129353190846400', 'post129353190846400')"><pre>            del operation.consumes</pre></li>
+                  
+                  <li onclick="toggle('pre129353190846400', 'post129353190846400')"><pre>        if &#x27;produces&#x27; in operation and set(operation.produces) == set(self.produces):</pre></li>
+                  
+              </ol>
+              
+            </div>
+          
+
+          
+            
+              <details>
+                <summary class="commands">Local vars</summary>
+            
+            <table class="vars" id="v129353190846400">
+              <thead>
+                <tr>
+                  <th>Variable</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                  <tr>
+                    <td>components</td>
+                    <td class="code"><pre>&lt;drf_yasg.openapi.ReferenceResolver object at 0x75a5724c5310&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>method</td>
+                    <td class="code"><pre>&#x27;GET&#x27;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>operation_keys</td>
+                    <td class="code"><pre>[&#x27;drones&#x27;, &#x27;list&#x27;]</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>overrides</td>
+                    <td class="code"><pre>{}</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>path</td>
+                    <td class="code"><pre>&#x27;/api/v1/drones/&#x27;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>prefix</td>
+                    <td class="code"><pre>&#x27;/api/v1&#x27;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>request</td>
+                    <td class="code"><pre>&lt;rest_framework.request.Request: GET &#x27;/swagger/?format=openapi&#x27;&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>self</td>
+                    <td class="code"><pre>&lt;drf_yasg.generators.OpenAPISchemaGenerator object at 0x75a572474d70&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>view</td>
+                    <td class="code"><pre>&lt;apps.drones.views.drone_viewset.DroneViewSet object at 0x75a5724bda30&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>view_inspector</td>
+                    <td class="code"><pre>&lt;drf_yasg.inspectors.view.SwaggerAutoSchema object at 0x75a5701b6450&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>view_inspector_cls</td>
+                    <td class="code"><pre>&lt;class &#x27;drf_yasg.inspectors.view.SwaggerAutoSchema&#x27;&gt;</pre></td>
+                  </tr>
+                
+              </tbody>
+            </table>
+            </details>
+          
+        </li>
+      
+        
+        <li class="frame user">
+          
+            <code class="fname">/home/tanyamushonga/Desktop/development/django_rest/skymarshal-api/venv/lib/python3.12/site-packages/drf_yasg/inspectors/view.py</code>, line 33, in get_operation
+          
+
+          
+            <div class="context" id="c129353190846336">
+              
+                <ol start="26" class="pre-context" id="pre129353190846336">
+                
+                  <li onclick="toggle('pre129353190846336', 'post129353190846336')"><pre>    def get_operation(self, operation_keys=None):</pre></li>
+                
+                  <li onclick="toggle('pre129353190846336', 'post129353190846336')"><pre>        operation_keys = operation_keys or self.operation_keys</pre></li>
+                
+                  <li onclick="toggle('pre129353190846336', 'post129353190846336')"><pre></pre></li>
+                
+                  <li onclick="toggle('pre129353190846336', 'post129353190846336')"><pre>        consumes = self.get_consumes()</pre></li>
+                
+                  <li onclick="toggle('pre129353190846336', 'post129353190846336')"><pre>        produces = self.get_produces()</pre></li>
+                
+                  <li onclick="toggle('pre129353190846336', 'post129353190846336')"><pre></pre></li>
+                
+                  <li onclick="toggle('pre129353190846336', 'post129353190846336')"><pre>        body = self.get_request_body_parameters(consumes)</pre></li>
+                
+                </ol>
+              
+              <ol start="33" class="context-line">
+                <li onclick="toggle('pre129353190846336', 'post129353190846336')"><pre>        query = self.get_query_parameters()
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^</pre> <span>…</span></li>
+              </ol>
+              
+                <ol start='34' class="post-context" id="post129353190846336">
+                  
+                  <li onclick="toggle('pre129353190846336', 'post129353190846336')"><pre>        parameters = body + query</pre></li>
+                  
+                  <li onclick="toggle('pre129353190846336', 'post129353190846336')"><pre>        parameters = filter_none(parameters)</pre></li>
+                  
+                  <li onclick="toggle('pre129353190846336', 'post129353190846336')"><pre>        parameters = self.add_manual_parameters(parameters)</pre></li>
+                  
+                  <li onclick="toggle('pre129353190846336', 'post129353190846336')"><pre></pre></li>
+                  
+                  <li onclick="toggle('pre129353190846336', 'post129353190846336')"><pre>        operation_id = self.get_operation_id(operation_keys)</pre></li>
+                  
+                  <li onclick="toggle('pre129353190846336', 'post129353190846336')"><pre>        summary, description = self.get_summary_and_description()</pre></li>
+                  
+              </ol>
+              
+            </div>
+          
+
+          
+            
+              <details>
+                <summary class="commands">Local vars</summary>
+            
+            <table class="vars" id="v129353190846336">
+              <thead>
+                <tr>
+                  <th>Variable</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                  <tr>
+                    <td>body</td>
+                    <td class="code"><pre>[]</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>consumes</td>
+                    <td class="code"><pre>[&#x27;application/json&#x27;]</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>operation_keys</td>
+                    <td class="code"><pre>[&#x27;drones&#x27;, &#x27;list&#x27;]</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>produces</td>
+                    <td class="code"><pre>[&#x27;application/json&#x27;]</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>self</td>
+                    <td class="code"><pre>&lt;drf_yasg.inspectors.view.SwaggerAutoSchema object at 0x75a5701b6450&gt;</pre></td>
+                  </tr>
+                
+              </tbody>
+            </table>
+            </details>
+          
+        </li>
+      
+        
+        <li class="frame user">
+          
+            <code class="fname">/home/tanyamushonga/Desktop/development/django_rest/skymarshal-api/venv/lib/python3.12/site-packages/drf_yasg/inspectors/view.py</code>, line 293, in get_query_parameters
+          
+
+          
+            <div class="context" id="c129353190846272">
+              
+                <ol start="286" class="pre-context" id="pre129353190846272">
+                
+                  <li onclick="toggle('pre129353190846272', 'post129353190846272')"><pre>        return query_serializer</pre></li>
+                
+                  <li onclick="toggle('pre129353190846272', 'post129353190846272')"><pre></pre></li>
+                
+                  <li onclick="toggle('pre129353190846272', 'post129353190846272')"><pre>    def get_query_parameters(self):</pre></li>
+                
+                  <li onclick="toggle('pre129353190846272', 'post129353190846272')"><pre>        &quot;&quot;&quot;Return the query parameters accepted by this view.</pre></li>
+                
+                  <li onclick="toggle('pre129353190846272', 'post129353190846272')"><pre></pre></li>
+                
+                  <li onclick="toggle('pre129353190846272', 'post129353190846272')"><pre>        :rtype: list[openapi.Parameter]</pre></li>
+                
+                  <li onclick="toggle('pre129353190846272', 'post129353190846272')"><pre>        &quot;&quot;&quot;</pre></li>
+                
+                </ol>
+              
+              <ol start="293" class="context-line">
+                <li onclick="toggle('pre129353190846272', 'post129353190846272')"><pre>        natural_parameters = self.get_filter_parameters() + self.get_pagination_parameters()
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^</pre> <span>…</span></li>
+              </ol>
+              
+                <ol start='294' class="post-context" id="post129353190846272">
+                  
+                  <li onclick="toggle('pre129353190846272', 'post129353190846272')"><pre></pre></li>
+                  
+                  <li onclick="toggle('pre129353190846272', 'post129353190846272')"><pre>        query_serializer = self.get_query_serializer()</pre></li>
+                  
+                  <li onclick="toggle('pre129353190846272', 'post129353190846272')"><pre>        serializer_parameters = []</pre></li>
+                  
+                  <li onclick="toggle('pre129353190846272', 'post129353190846272')"><pre>        if query_serializer is not None:</pre></li>
+                  
+                  <li onclick="toggle('pre129353190846272', 'post129353190846272')"><pre>            serializer_parameters = self.serializer_to_parameters(query_serializer, in_=openapi.IN_QUERY)</pre></li>
+                  
+                  <li onclick="toggle('pre129353190846272', 'post129353190846272')"><pre></pre></li>
+                  
+              </ol>
+              
+            </div>
+          
+
+          
+            
+              <details>
+                <summary class="commands">Local vars</summary>
+            
+            <table class="vars" id="v129353190846272">
+              <thead>
+                <tr>
+                  <th>Variable</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                  <tr>
+                    <td>self</td>
+                    <td class="code"><pre>&lt;drf_yasg.inspectors.view.SwaggerAutoSchema object at 0x75a5701b6450&gt;</pre></td>
+                  </tr>
+                
+              </tbody>
+            </table>
+            </details>
+          
+        </li>
+      
+        
+        <li class="frame user">
+          
+            <code class="fname">/home/tanyamushonga/Desktop/development/django_rest/skymarshal-api/venv/lib/python3.12/site-packages/drf_yasg/inspectors/base.py</code>, line 409, in get_filter_parameters
+          
+
+          
+            <div class="context" id="c129353190846208">
+              
+                <ol start="402" class="pre-context" id="pre129353190846208">
+                
+                  <li onclick="toggle('pre129353190846208', 'post129353190846208')"><pre>        :rtype: list[openapi.Parameter]</pre></li>
+                
+                  <li onclick="toggle('pre129353190846208', 'post129353190846208')"><pre>        &quot;&quot;&quot;</pre></li>
+                
+                  <li onclick="toggle('pre129353190846208', 'post129353190846208')"><pre>        if not self.should_filter():</pre></li>
+                
+                  <li onclick="toggle('pre129353190846208', 'post129353190846208')"><pre>            return []</pre></li>
+                
+                  <li onclick="toggle('pre129353190846208', 'post129353190846208')"><pre></pre></li>
+                
+                  <li onclick="toggle('pre129353190846208', 'post129353190846208')"><pre>        fields = []</pre></li>
+                
+                  <li onclick="toggle('pre129353190846208', 'post129353190846208')"><pre>        for filter_backend in getattr(self.view, &#x27;filter_backends&#x27;):</pre></li>
+                
+                </ol>
+              
+              <ol start="409" class="context-line">
+                <li onclick="toggle('pre129353190846208', 'post129353190846208')"><pre>            fields += self.probe_inspectors(self.filter_inspectors, &#x27;get_filter_parameters&#x27;, filter_backend()) or []
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</pre> <span>…</span></li>
+              </ol>
+              
+                <ol start='410' class="post-context" id="post129353190846208">
+                  
+                  <li onclick="toggle('pre129353190846208', 'post129353190846208')"><pre></pre></li>
+                  
+                  <li onclick="toggle('pre129353190846208', 'post129353190846208')"><pre>        return fields</pre></li>
+                  
+                  <li onclick="toggle('pre129353190846208', 'post129353190846208')"><pre></pre></li>
+                  
+                  <li onclick="toggle('pre129353190846208', 'post129353190846208')"><pre>    def should_page(self):</pre></li>
+                  
+                  <li onclick="toggle('pre129353190846208', 'post129353190846208')"><pre>        &quot;&quot;&quot;Determine whether paging parameters and structure should be added to this operation&#x27;s request and response.</pre></li>
+                  
+                  <li onclick="toggle('pre129353190846208', 'post129353190846208')"><pre></pre></li>
+                  
+              </ol>
+              
+            </div>
+          
+
+          
+            
+              <details>
+                <summary class="commands">Local vars</summary>
+            
+            <table class="vars" id="v129353190846208">
+              <thead>
+                <tr>
+                  <th>Variable</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                  <tr>
+                    <td>fields</td>
+                    <td class="code"><pre>[]</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>filter_backend</td>
+                    <td class="code"><pre>&lt;class &#x27;django_filters.rest_framework.backends.DjangoFilterBackend&#x27;&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>self</td>
+                    <td class="code"><pre>&lt;drf_yasg.inspectors.view.SwaggerAutoSchema object at 0x75a5701b6450&gt;</pre></td>
+                  </tr>
+                
+              </tbody>
+            </table>
+            </details>
+          
+        </li>
+      
+        
+        <li class="frame user">
+          
+            <code class="fname">/home/tanyamushonga/Desktop/development/django_rest/skymarshal-api/venv/lib/python3.12/site-packages/drf_yasg/inspectors/base.py</code>, line 110, in probe_inspectors
+          
+
+          
+            <div class="context" id="c129353190842880">
+              
+                <ol start="103" class="pre-context" id="pre129353190842880">
+                
+                  <li onclick="toggle('pre129353190842880', 'post129353190842880')"><pre></pre></li>
+                
+                  <li onclick="toggle('pre129353190842880', 'post129353190842880')"><pre>            inspector = inspector(self.view, self.path, self.method, self.components, self.request, **initkwargs)</pre></li>
+                
+                  <li onclick="toggle('pre129353190842880', 'post129353190842880')"><pre>            tried_inspectors.append(inspector)</pre></li>
+                
+                  <li onclick="toggle('pre129353190842880', 'post129353190842880')"><pre>            method = getattr(inspector, method_name, None)</pre></li>
+                
+                  <li onclick="toggle('pre129353190842880', 'post129353190842880')"><pre>            if method is None:</pre></li>
+                
+                  <li onclick="toggle('pre129353190842880', 'post129353190842880')"><pre>                continue</pre></li>
+                
+                  <li onclick="toggle('pre129353190842880', 'post129353190842880')"><pre></pre></li>
+                
+                </ol>
+              
+              <ol start="110" class="context-line">
+                <li onclick="toggle('pre129353190842880', 'post129353190842880')"><pre>            result = method(obj, **kwargs)
+                          ^^^^^^^^^^^^^^^^^^^^^</pre> <span>…</span></li>
+              </ol>
+              
+                <ol start='111' class="post-context" id="post129353190842880">
+                  
+                  <li onclick="toggle('pre129353190842880', 'post129353190842880')"><pre>            if result is not NotHandled:</pre></li>
+                  
+                  <li onclick="toggle('pre129353190842880', 'post129353190842880')"><pre>                break</pre></li>
+                  
+                  <li onclick="toggle('pre129353190842880', 'post129353190842880')"><pre>        else:  # pragma: no cover</pre></li>
+                  
+                  <li onclick="toggle('pre129353190842880', 'post129353190842880')"><pre>            logger.warning(&quot;%s ignored because no inspector in %s handled it (operation: %s)&quot;,</pre></li>
+                  
+                  <li onclick="toggle('pre129353190842880', 'post129353190842880')"><pre>                           obj, inspectors, method_name)</pre></li>
+                  
+                  <li onclick="toggle('pre129353190842880', 'post129353190842880')"><pre>            result = None</pre></li>
+                  
+              </ol>
+              
+            </div>
+          
+
+          
+            
+              <details>
+                <summary class="commands">Local vars</summary>
+            
+            <table class="vars" id="v129353190842880">
+              <thead>
+                <tr>
+                  <th>Variable</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                  <tr>
+                    <td>initkwargs</td>
+                    <td class="code"><pre>{}</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>inspector</td>
+                    <td class="code"><pre>&lt;drf_yasg.inspectors.query.DrfAPICompatInspector object at 0x75a562faf050&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>inspectors</td>
+                    <td class="code"><pre>[&lt;class &#x27;drf_yasg.inspectors.query.DrfAPICompatInspector&#x27;&gt;,
+ &lt;class &#x27;drf_yasg.inspectors.query.CoreAPICompatInspector&#x27;&gt;]</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>kwargs</td>
+                    <td class="code"><pre>{}</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>method</td>
+                    <td class="code"><pre>&lt;bound method DrfAPICompatInspector.get_filter_parameters of &lt;drf_yasg.inspectors.query.DrfAPICompatInspector object at 0x75a562faf050&gt;&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>method_name</td>
+                    <td class="code"><pre>&#x27;get_filter_parameters&#x27;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>obj</td>
+                    <td class="code"><pre>&lt;django_filters.rest_framework.backends.DjangoFilterBackend object at 0x75a562faf7a0&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>self</td>
+                    <td class="code"><pre>&lt;drf_yasg.inspectors.view.SwaggerAutoSchema object at 0x75a5701b6450&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>tried_inspectors</td>
+                    <td class="code"><pre>[&lt;drf_yasg.inspectors.query.DrfAPICompatInspector object at 0x75a562faf050&gt;]</pre></td>
+                  </tr>
+                
+              </tbody>
+            </table>
+            </details>
+          
+        </li>
+      
+        
+        <li class="frame user">
+          
+            <code class="fname">/home/tanyamushonga/Desktop/development/django_rest/skymarshal-api/venv/lib/python3.12/site-packages/drf_yasg/inspectors/query.py</code>, line 42, in get_filter_parameters
+          
+
+          
+            <div class="context" id="c129353190846144">
+              
+                <ol start="35" class="pre-context" id="pre129353190846144">
+                
+                  <li onclick="toggle('pre129353190846144', 'post129353190846144')"><pre>    def get_paginator_parameters(self, paginator):</pre></li>
+                
+                  <li onclick="toggle('pre129353190846144', 'post129353190846144')"><pre>        if hasattr(paginator, &#x27;get_schema_operation_parameters&#x27;):</pre></li>
+                
+                  <li onclick="toggle('pre129353190846144', 'post129353190846144')"><pre>            return list(map(self.param_to_schema, paginator.get_schema_operation_parameters(self.view)))</pre></li>
+                
+                  <li onclick="toggle('pre129353190846144', 'post129353190846144')"><pre>        return NotHandled</pre></li>
+                
+                  <li onclick="toggle('pre129353190846144', 'post129353190846144')"><pre></pre></li>
+                
+                  <li onclick="toggle('pre129353190846144', 'post129353190846144')"><pre>    def get_filter_parameters(self, filter_backend):</pre></li>
+                
+                  <li onclick="toggle('pre129353190846144', 'post129353190846144')"><pre>        if hasattr(filter_backend, &#x27;get_schema_operation_parameters&#x27;):</pre></li>
+                
+                </ol>
+              
+              <ol start="42" class="context-line">
+                <li onclick="toggle('pre129353190846144', 'post129353190846144')"><pre>            return list(map(self.param_to_schema, filter_backend.get_schema_operation_parameters(self.view)))
+                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</pre> <span>…</span></li>
+              </ol>
+              
+                <ol start='43' class="post-context" id="post129353190846144">
+                  
+                  <li onclick="toggle('pre129353190846144', 'post129353190846144')"><pre>        return NotHandled</pre></li>
+                  
+                  <li onclick="toggle('pre129353190846144', 'post129353190846144')"><pre></pre></li>
+                  
+                  <li onclick="toggle('pre129353190846144', 'post129353190846144')"><pre></pre></li>
+                  
+                  <li onclick="toggle('pre129353190846144', 'post129353190846144')"><pre>class CoreAPICompatInspector(PaginatorInspector, FilterInspector):</pre></li>
+                  
+                  <li onclick="toggle('pre129353190846144', 'post129353190846144')"><pre>    &quot;&quot;&quot;Converts ``coreapi.Field``\\ s to :class:`.openapi.Parameter`\\ s for filters and paginators that implement a</pre></li>
+                  
+                  <li onclick="toggle('pre129353190846144', 'post129353190846144')"><pre>    ``get_schema_fields`` method.</pre></li>
+                  
+              </ol>
+              
+            </div>
+          
+
+          
+            
+              <details>
+                <summary class="commands">Local vars</summary>
+            
+            <table class="vars" id="v129353190846144">
+              <thead>
+                <tr>
+                  <th>Variable</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                  <tr>
+                    <td>filter_backend</td>
+                    <td class="code"><pre>&lt;django_filters.rest_framework.backends.DjangoFilterBackend object at 0x75a562faf7a0&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>self</td>
+                    <td class="code"><pre>&lt;drf_yasg.inspectors.query.DrfAPICompatInspector object at 0x75a562faf050&gt;</pre></td>
+                  </tr>
+                
+              </tbody>
+            </table>
+            </details>
+          
+        </li>
+      
+        
+        <li class="frame user">
+          
+            <code class="fname">/home/tanyamushonga/Desktop/development/django_rest/skymarshal-api/venv/lib/python3.12/site-packages/django_filters/rest_framework/backends.py</code>, line 146, in get_schema_operation_parameters
+          
+
+          
+            <div class="context" id="c129353190846080">
+              
+                <ol start="139" class="pre-context" id="pre129353190846080">
+                
+                  <li onclick="toggle('pre129353190846080', 'post129353190846080')"><pre>            queryset = view.get_queryset()</pre></li>
+                
+                  <li onclick="toggle('pre129353190846080', 'post129353190846080')"><pre>        except Exception:</pre></li>
+                
+                  <li onclick="toggle('pre129353190846080', 'post129353190846080')"><pre>            queryset = None</pre></li>
+                
+                  <li onclick="toggle('pre129353190846080', 'post129353190846080')"><pre>            warnings.warn(</pre></li>
+                
+                  <li onclick="toggle('pre129353190846080', 'post129353190846080')"><pre>                &quot;{} is not compatible with schema generation&quot;.format(view.__class__)</pre></li>
+                
+                  <li onclick="toggle('pre129353190846080', 'post129353190846080')"><pre>            )</pre></li>
+                
+                  <li onclick="toggle('pre129353190846080', 'post129353190846080')"><pre></pre></li>
+                
+                </ol>
+              
+              <ol start="146" class="context-line">
+                <li onclick="toggle('pre129353190846080', 'post129353190846080')"><pre>        filterset_class = self.get_filterset_class(view, queryset)
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</pre> <span>…</span></li>
+              </ol>
+              
+                <ol start='147' class="post-context" id="post129353190846080">
+                  
+                  <li onclick="toggle('pre129353190846080', 'post129353190846080')"><pre></pre></li>
+                  
+                  <li onclick="toggle('pre129353190846080', 'post129353190846080')"><pre>        if not filterset_class:</pre></li>
+                  
+                  <li onclick="toggle('pre129353190846080', 'post129353190846080')"><pre>            return []</pre></li>
+                  
+                  <li onclick="toggle('pre129353190846080', 'post129353190846080')"><pre></pre></li>
+                  
+                  <li onclick="toggle('pre129353190846080', 'post129353190846080')"><pre>        parameters = []</pre></li>
+                  
+                  <li onclick="toggle('pre129353190846080', 'post129353190846080')"><pre>        for field_name, field in filterset_class.base_filters.items():</pre></li>
+                  
+              </ol>
+              
+            </div>
+          
+
+          
+            
+              <details>
+                <summary class="commands">Local vars</summary>
+            
+            <table class="vars" id="v129353190846080">
+              <thead>
+                <tr>
+                  <th>Variable</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                  <tr>
+                    <td>RemovedInDjangoFilter25Warning</td>
+                    <td class="code"><pre>&lt;class &#x27;django_filters.RemovedInDjangoFilter25Warning&#x27;&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>queryset</td>
+                    <td class="code"><pre>&lt;QuerySet []&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>self</td>
+                    <td class="code"><pre>&lt;django_filters.rest_framework.backends.DjangoFilterBackend object at 0x75a562faf7a0&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>view</td>
+                    <td class="code"><pre>&lt;apps.drones.views.drone_viewset.DroneViewSet object at 0x75a5724bda30&gt;</pre></td>
+                  </tr>
+                
+              </tbody>
+            </table>
+            </details>
+          
+        </li>
+      
+        
+        <li class="frame user">
+          
+            <code class="fname">/home/tanyamushonga/Desktop/development/django_rest/skymarshal-api/venv/lib/python3.12/site-packages/django_filters/rest_framework/backends.py</code>, line 51, in get_filterset_class
+          
+
+          
+            <div class="context" id="c129353190845952">
+              
+                <ol start="44" class="pre-context" id="pre129353190845952">
+                
+                  <li onclick="toggle('pre129353190845952', 'post129353190845952')"><pre>                )</pre></li>
+                
+                  <li onclick="toggle('pre129353190845952', 'post129353190845952')"><pre></pre></li>
+                
+                  <li onclick="toggle('pre129353190845952', 'post129353190845952')"><pre>            return filterset_class</pre></li>
+                
+                  <li onclick="toggle('pre129353190845952', 'post129353190845952')"><pre></pre></li>
+                
+                  <li onclick="toggle('pre129353190845952', 'post129353190845952')"><pre>        if filterset_fields and queryset is not None:</pre></li>
+                
+                  <li onclick="toggle('pre129353190845952', 'post129353190845952')"><pre>            MetaBase = getattr(self.filterset_base, &quot;Meta&quot;, object)</pre></li>
+                
+                  <li onclick="toggle('pre129353190845952', 'post129353190845952')"><pre></pre></li>
+                
+                </ol>
+              
+              <ol start="51" class="context-line">
+                <li onclick="toggle('pre129353190845952', 'post129353190845952')"><pre>            class AutoFilterSet(self.filterset_base):
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</pre> <span>…</span></li>
+              </ol>
+              
+                <ol start='52' class="post-context" id="post129353190845952">
+                  
+                  <li onclick="toggle('pre129353190845952', 'post129353190845952')"><pre>                class Meta(MetaBase):</pre></li>
+                  
+                  <li onclick="toggle('pre129353190845952', 'post129353190845952')"><pre>                    model = queryset.model</pre></li>
+                  
+                  <li onclick="toggle('pre129353190845952', 'post129353190845952')"><pre>                    fields = filterset_fields</pre></li>
+                  
+                  <li onclick="toggle('pre129353190845952', 'post129353190845952')"><pre></pre></li>
+                  
+                  <li onclick="toggle('pre129353190845952', 'post129353190845952')"><pre>            return AutoFilterSet</pre></li>
+                  
+                  <li onclick="toggle('pre129353190845952', 'post129353190845952')"><pre></pre></li>
+                  
+              </ol>
+              
+            </div>
+          
+
+          
+            
+              <details>
+                <summary class="commands">Local vars</summary>
+            
+            <table class="vars" id="v129353190845952">
+              <thead>
+                <tr>
+                  <th>Variable</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                  <tr>
+                    <td>MetaBase</td>
+                    <td class="code"><pre>&lt;class &#x27;object&#x27;&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>filterset_class</td>
+                    <td class="code"><pre>None</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>filterset_fields</td>
+                    <td class="code"><pre>[&#x27;status__status&#x27;, &#x27;is_active&#x27;, &#x27;type&#x27;]</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>queryset</td>
+                    <td class="code"><pre>&lt;QuerySet []&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>self</td>
+                    <td class="code"><pre>&lt;django_filters.rest_framework.backends.DjangoFilterBackend object at 0x75a562faf7a0&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>view</td>
+                    <td class="code"><pre>&lt;apps.drones.views.drone_viewset.DroneViewSet object at 0x75a5724bda30&gt;</pre></td>
+                  </tr>
+                
+              </tbody>
+            </table>
+            </details>
+          
+        </li>
+      
+        
+        <li class="frame user">
+          
+            <code class="fname">/home/tanyamushonga/Desktop/development/django_rest/skymarshal-api/venv/lib/python3.12/site-packages/django_filters/filterset.py</code>, line 62, in __new__
+          
+
+          
+            <div class="context" id="c129353190846016">
+              
+                <ol start="55" class="pre-context" id="pre129353190846016">
+                
+                  <li onclick="toggle('pre129353190846016', 'post129353190846016')"><pre></pre></li>
+                
+                  <li onclick="toggle('pre129353190846016', 'post129353190846016')"><pre>class FilterSetMetaclass(type):</pre></li>
+                
+                  <li onclick="toggle('pre129353190846016', 'post129353190846016')"><pre>    def __new__(cls, name, bases, attrs):</pre></li>
+                
+                  <li onclick="toggle('pre129353190846016', 'post129353190846016')"><pre>        attrs[&quot;declared_filters&quot;] = cls.get_declared_filters(bases, attrs)</pre></li>
+                
+                  <li onclick="toggle('pre129353190846016', 'post129353190846016')"><pre></pre></li>
+                
+                  <li onclick="toggle('pre129353190846016', 'post129353190846016')"><pre>        new_class = super().__new__(cls, name, bases, attrs)</pre></li>
+                
+                  <li onclick="toggle('pre129353190846016', 'post129353190846016')"><pre>        new_class._meta = FilterSetOptions(getattr(new_class, &quot;Meta&quot;, None))</pre></li>
+                
+                </ol>
+              
+              <ol start="62" class="context-line">
+                <li onclick="toggle('pre129353190846016', 'post129353190846016')"><pre>        new_class.base_filters = new_class.get_filters()
+                                     ^^^^^^^^^^^^^^^^^^^^^^^</pre> <span>…</span></li>
+              </ol>
+              
+                <ol start='63' class="post-context" id="post129353190846016">
+                  
+                  <li onclick="toggle('pre129353190846016', 'post129353190846016')"><pre></pre></li>
+                  
+                  <li onclick="toggle('pre129353190846016', 'post129353190846016')"><pre>        return new_class</pre></li>
+                  
+                  <li onclick="toggle('pre129353190846016', 'post129353190846016')"><pre></pre></li>
+                  
+                  <li onclick="toggle('pre129353190846016', 'post129353190846016')"><pre>    @classmethod</pre></li>
+                  
+                  <li onclick="toggle('pre129353190846016', 'post129353190846016')"><pre>    def get_declared_filters(cls, bases, attrs):</pre></li>
+                  
+                  <li onclick="toggle('pre129353190846016', 'post129353190846016')"><pre>        filters = [</pre></li>
+                  
+              </ol>
+              
+            </div>
+          
+
+          
+            
+              <details>
+                <summary class="commands">Local vars</summary>
+            
+            <table class="vars" id="v129353190846016">
+              <thead>
+                <tr>
+                  <th>Variable</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                  <tr>
+                    <td>__class__</td>
+                    <td class="code"><pre>&lt;class &#x27;django_filters.filterset.FilterSetMetaclass&#x27;&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>attrs</td>
+                    <td class="code"><pre>{&#x27;Meta&#x27;: &lt;class &#x27;django_filters.rest_framework.backends.DjangoFilterBackend.get_filterset_class.&lt;locals&gt;.AutoFilterSet.Meta&#x27;&gt;,
+ &#x27;__module__&#x27;: &#x27;django_filters.rest_framework.backends&#x27;,
+ &#x27;__qualname__&#x27;: &#x27;DjangoFilterBackend.get_filterset_class.&lt;locals&gt;.AutoFilterSet&#x27;,
+ &#x27;declared_filters&#x27;: OrderedDict()}</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>bases</td>
+                    <td class="code"><pre>(&lt;class &#x27;django_filters.rest_framework.filterset.FilterSet&#x27;&gt;,)</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>cls</td>
+                    <td class="code"><pre>&lt;class &#x27;django_filters.filterset.FilterSetMetaclass&#x27;&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>name</td>
+                    <td class="code"><pre>&#x27;AutoFilterSet&#x27;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>new_class</td>
+                    <td class="code"><pre>&lt;class &#x27;django_filters.rest_framework.backends.DjangoFilterBackend.get_filterset_class.&lt;locals&gt;.AutoFilterSet&#x27;&gt;</pre></td>
+                  </tr>
+                
+              </tbody>
+            </table>
+            </details>
+          
+        </li>
+      
+        
+        <li class="frame user">
+          
+            <code class="fname">/home/tanyamushonga/Desktop/development/django_rest/skymarshal-api/venv/lib/python3.12/site-packages/django_filters/filterset.py</code>, line 349, in get_filters
+          
+
+          
+            <div class="context" id="c129353190845888">
+              
+                <ol start="342" class="pre-context" id="pre129353190845888">
+                
+                  <li onclick="toggle('pre129353190845888', 'post129353190845888')"><pre>                    )</pre></li>
+                
+                  <li onclick="toggle('pre129353190845888', 'post129353190845888')"><pre></pre></li>
+                
+                  <li onclick="toggle('pre129353190845888', 'post129353190845888')"><pre>        # Allow Meta.fields to contain declared filters *only* when a list/tuple</pre></li>
+                
+                  <li onclick="toggle('pre129353190845888', 'post129353190845888')"><pre>        if isinstance(cls._meta.fields, (list, tuple)):</pre></li>
+                
+                  <li onclick="toggle('pre129353190845888', 'post129353190845888')"><pre>            undefined = [f for f in undefined if f not in cls.declared_filters]</pre></li>
+                
+                  <li onclick="toggle('pre129353190845888', 'post129353190845888')"><pre></pre></li>
+                
+                  <li onclick="toggle('pre129353190845888', 'post129353190845888')"><pre>        if undefined:</pre></li>
+                
+                </ol>
+              
+              <ol start="349" class="context-line">
+                <li onclick="toggle('pre129353190845888', 'post129353190845888')"><pre>            raise TypeError(
+                 ^</pre> <span>…</span></li>
+              </ol>
+              
+                <ol start='350' class="post-context" id="post129353190845888">
+                  
+                  <li onclick="toggle('pre129353190845888', 'post129353190845888')"><pre>                &quot;&#x27;Meta.fields&#x27; must not contain non-model field names: %s&quot;</pre></li>
+                  
+                  <li onclick="toggle('pre129353190845888', 'post129353190845888')"><pre>                % &quot;, &quot;.join(undefined)</pre></li>
+                  
+                  <li onclick="toggle('pre129353190845888', 'post129353190845888')"><pre>            )</pre></li>
+                  
+                  <li onclick="toggle('pre129353190845888', 'post129353190845888')"><pre></pre></li>
+                  
+                  <li onclick="toggle('pre129353190845888', 'post129353190845888')"><pre>        # Add in declared filters. This is necessary since we don&#x27;t enforce adding</pre></li>
+                  
+                  <li onclick="toggle('pre129353190845888', 'post129353190845888')"><pre>        # declared filters to the &#x27;Meta.fields&#x27; option</pre></li>
+                  
+              </ol>
+              
+            </div>
+          
+
+          
+            
+              <details>
+                <summary class="commands">Local vars</summary>
+            
+            <table class="vars" id="v129353190845888">
+              <thead>
+                <tr>
+                  <th>Variable</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                  <tr>
+                    <td>cls</td>
+                    <td class="code"><pre>&lt;class &#x27;django_filters.rest_framework.backends.DjangoFilterBackend.get_filterset_class.&lt;locals&gt;.AutoFilterSet&#x27;&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>field</td>
+                    <td class="code"><pre>None</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>field_name</td>
+                    <td class="code"><pre>&#x27;type&#x27;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>fields</td>
+                    <td class="code"><pre>OrderedDict([(&#x27;status__status&#x27;, [&#x27;exact&#x27;]),
+             (&#x27;is_active&#x27;, [&#x27;exact&#x27;]),
+             (&#x27;type&#x27;, [&#x27;exact&#x27;])])</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>filter_name</td>
+                    <td class="code"><pre>&#x27;type&#x27;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>filters</td>
+                    <td class="code"><pre>OrderedDict([(&#x27;status__status&#x27;,
+              &lt;django_filters.filters.ChoiceFilter object at 0x75a5724bdd90&gt;),
+             (&#x27;is_active&#x27;,
+              &lt;django_filters.rest_framework.filters.BooleanFilter object at 0x75a571aa3fe0&gt;)])</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>lookup_expr</td>
+                    <td class="code"><pre>&#x27;exact&#x27;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>lookups</td>
+                    <td class="code"><pre>[&#x27;exact&#x27;]</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>undefined</td>
+                    <td class="code"><pre>[&#x27;type&#x27;]</pre></td>
+                  </tr>
+                
+              </tbody>
+            </table>
+            </details>
+          
+        </li>
+      
+    </ul>
+  </div>
+
+  <form action="https://dpaste.com/" name="pasteform" id="pasteform" method="post">
+  <div id="pastebinTraceback" class="pastebin">
+    <input type="hidden" name="language" value="PythonConsole">
+    <input type="hidden" name="title"
+      value="TypeError at /swagger/">
+    <input type="hidden" name="source" value="Django Dpaste Agent">
+    <input type="hidden" name="poster" value="Django">
+    <textarea name="content" id="traceback_area" cols="140" rows="25">
+Environment:
+
+
+Request Method: GET
+Request URL: http://127.0.0.1:8000/swagger/?format=openapi
+
+Django Version: 5.0.14
+Python Version: 3.12.3
+Installed Applications:
+[&#x27;django.contrib.admin&#x27;,
+ &#x27;django.contrib.auth&#x27;,
+ &#x27;django.contrib.contenttypes&#x27;,
+ &#x27;django.contrib.sessions&#x27;,
+ &#x27;django.contrib.messages&#x27;,
+ &#x27;django.contrib.staticfiles&#x27;,
+ &#x27;django.contrib.gis&#x27;,
+ &#x27;rest_framework&#x27;,
+ &#x27;rest_framework_simplejwt&#x27;,
+ &#x27;channels&#x27;,
+ &#x27;corsheaders&#x27;,
+ &#x27;django_filters&#x27;,
+ &#x27;drf_yasg&#x27;,
+ &#x27;django_celery_beat&#x27;,
+ &#x27;apps.core&#x27;,
+ &#x27;apps.users&#x27;,
+ &#x27;apps.drones&#x27;,
+ &#x27;apps.stream_ingestion&#x27;,
+ &#x27;apps.detections&#x27;,
+ &#x27;apps.violations&#x27;,
+ &#x27;apps.analytics&#x27;,
+ &#x27;apps.notifications&#x27;,
+ &#x27;apps.vehicle_lookup&#x27;,
+ &#x27;apps.compliance&#x27;,
+ &#x27;apps.patrols&#x27;]
+Installed Middleware:
+[&#x27;django.middleware.security.SecurityMiddleware&#x27;,
+ &#x27;corsheaders.middleware.CorsMiddleware&#x27;,
+ &#x27;django.contrib.sessions.middleware.SessionMiddleware&#x27;,
+ &#x27;django.middleware.common.CommonMiddleware&#x27;,
+ &#x27;django.middleware.csrf.CsrfViewMiddleware&#x27;,
+ &#x27;django.contrib.auth.middleware.AuthenticationMiddleware&#x27;,
+ &#x27;django.contrib.messages.middleware.MessageMiddleware&#x27;,
+ &#x27;django.middleware.clickjacking.XFrameOptionsMiddleware&#x27;]
+
+
+
+Traceback (most recent call last):
+  File "/home/tanyamushonga/Desktop/development/django_rest/skymarshal-api/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tanyamushonga/Desktop/development/django_rest/skymarshal-api/venv/lib/python3.12/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tanyamushonga/Desktop/development/django_rest/skymarshal-api/venv/lib/python3.12/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tanyamushonga/Desktop/development/django_rest/skymarshal-api/venv/lib/python3.12/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tanyamushonga/Desktop/development/django_rest/skymarshal-api/venv/lib/python3.12/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tanyamushonga/Desktop/development/django_rest/skymarshal-api/venv/lib/python3.12/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tanyamushonga/Desktop/development/django_rest/skymarshal-api/venv/lib/python3.12/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+    ^^^^^^^^^
+  File "/home/tanyamushonga/Desktop/development/django_rest/skymarshal-api/venv/lib/python3.12/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tanyamushonga/Desktop/development/django_rest/skymarshal-api/venv/lib/python3.12/site-packages/drf_yasg/views.py", line 96, in get
+    schema = generator.get_schema(request, self.public)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tanyamushonga/Desktop/development/django_rest/skymarshal-api/venv/lib/python3.12/site-packages/drf_yasg/generators.py", line 276, in get_schema
+    paths, prefix = self.get_paths(endpoints, components, request, public)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tanyamushonga/Desktop/development/django_rest/skymarshal-api/venv/lib/python3.12/site-packages/drf_yasg/generators.py", line 482, in get_paths
+    operation = self.get_operation(view, path, prefix, method, components, request)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tanyamushonga/Desktop/development/django_rest/skymarshal-api/venv/lib/python3.12/site-packages/drf_yasg/generators.py", line 524, in get_operation
+    operation = view_inspector.get_operation(operation_keys)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tanyamushonga/Desktop/development/django_rest/skymarshal-api/venv/lib/python3.12/site-packages/drf_yasg/inspectors/view.py", line 33, in get_operation
+    query = self.get_query_parameters()
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tanyamushonga/Desktop/development/django_rest/skymarshal-api/venv/lib/python3.12/site-packages/drf_yasg/inspectors/view.py", line 293, in get_query_parameters
+    natural_parameters = self.get_filter_parameters() + self.get_pagination_parameters()
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tanyamushonga/Desktop/development/django_rest/skymarshal-api/venv/lib/python3.12/site-packages/drf_yasg/inspectors/base.py", line 409, in get_filter_parameters
+    fields += self.probe_inspectors(self.filter_inspectors, &#x27;get_filter_parameters&#x27;, filter_backend()) or []
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tanyamushonga/Desktop/development/django_rest/skymarshal-api/venv/lib/python3.12/site-packages/drf_yasg/inspectors/base.py", line 110, in probe_inspectors
+    result = method(obj, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tanyamushonga/Desktop/development/django_rest/skymarshal-api/venv/lib/python3.12/site-packages/drf_yasg/inspectors/query.py", line 42, in get_filter_parameters
+    return list(map(self.param_to_schema, filter_backend.get_schema_operation_parameters(self.view)))
+                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tanyamushonga/Desktop/development/django_rest/skymarshal-api/venv/lib/python3.12/site-packages/django_filters/rest_framework/backends.py", line 146, in get_schema_operation_parameters
+    filterset_class = self.get_filterset_class(view, queryset)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tanyamushonga/Desktop/development/django_rest/skymarshal-api/venv/lib/python3.12/site-packages/django_filters/rest_framework/backends.py", line 51, in get_filterset_class
+    class AutoFilterSet(self.filterset_base):
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tanyamushonga/Desktop/development/django_rest/skymarshal-api/venv/lib/python3.12/site-packages/django_filters/filterset.py", line 62, in __new__
+    new_class.base_filters = new_class.get_filters()
+                             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tanyamushonga/Desktop/development/django_rest/skymarshal-api/venv/lib/python3.12/site-packages/django_filters/filterset.py", line 349, in get_filters
+    raise TypeError(
+    ^
+
+Exception Type: TypeError at /swagger/
+Exception Value: &#x27;Meta.fields&#x27; must not contain non-model field names: type
+</textarea>
+  <br><br>
+  <input type="submit" value="Share this traceback on a public website">
+  </div>
+</form>
+
+</div>
+
+
+<div id="requestinfo">
+  <h2>Request information</h2>
+
+
+  
+    <h3 id="user-info">USER</h3>
+    <p>AnonymousUser</p>
+  
+
+  <h3 id="get-info">GET</h3>
+  
+    <table class="req">
+      <thead>
+        <tr>
+          <th>Variable</th>
+          <th>Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+          <tr>
+            <td>format</td>
+            <td class="code"><pre>&#x27;openapi&#x27;</pre></td>
+          </tr>
+        
+      </tbody>
+    </table>
+  
+
+  <h3 id="post-info">POST</h3>
+  
+    <p>No POST data</p>
+  
+
+  <h3 id="files-info">FILES</h3>
+  
+    <p>No FILES data</p>
+  
+
+  <h3 id="cookie-info">COOKIES</h3>
+  
+    <p>No cookie data</p>
+  
+
+  <h3 id="meta-info">META</h3>
+  <table class="req">
+    <thead>
+      <tr>
+        <th>Variable</th>
+        <th>Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      
+        <tr>
+          <td>ANDROID_HOME</td>
+          <td class="code"><pre>&#x27;/home/tanyamushonga/Android/Sdk&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>ANTIGRAVITY_CLI_ALIAS</td>
+          <td class="code"><pre>&#x27;agy&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>BUNDLED_DEBUGPY_PATH</td>
+          <td class="code"><pre>&#x27;/home/tanyamushonga/.antigravity/extensions/ms-python.debugpy-2025.18.0-linux-x64/bundled/libs/debugpy&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CHROME_DESKTOP</td>
+          <td class="code"><pre>&#x27;antigravity.desktop&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>COLORTERM</td>
+          <td class="code"><pre>&#x27;truecolor&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CONTENT_LENGTH</td>
+          <td class="code"><pre>&#x27;&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CONTENT_TYPE</td>
+          <td class="code"><pre>&#x27;text/plain&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DBUS_SESSION_BUS_ADDRESS</td>
+          <td class="code"><pre>&#x27;unix:path=/run/user/1000/bus,guid=f7e695a2a089dfe1d0326707697efcae&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DBUS_STARTER_ADDRESS</td>
+          <td class="code"><pre>&#x27;unix:path=/run/user/1000/bus,guid=f7e695a2a089dfe1d0326707697efcae&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DBUS_STARTER_BUS_TYPE</td>
+          <td class="code"><pre>&#x27;session&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DESKTOP_SESSION</td>
+          <td class="code"><pre>&#x27;ubuntu&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DISPLAY</td>
+          <td class="code"><pre>&#x27;:0&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DJANGO_SETTINGS_MODULE</td>
+          <td class="code"><pre>&#x27;api.settings&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>GATEWAY_INTERFACE</td>
+          <td class="code"><pre>&#x27;CGI/1.1&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>GDK_BACKEND</td>
+          <td class="code"><pre>&#x27;x11&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>GDMSESSION</td>
+          <td class="code"><pre>&#x27;ubuntu&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>GIT_ASKPASS</td>
+          <td class="code"><pre>&#x27;********************&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>GNOME_DESKTOP_SESSION_ID</td>
+          <td class="code"><pre>&#x27;this-is-deprecated&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>GNOME_SETUP_DISPLAY</td>
+          <td class="code"><pre>&#x27;:1&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>GNOME_SHELL_SESSION_MODE</td>
+          <td class="code"><pre>&#x27;ubuntu&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>GNOME_TERMINAL_SCREEN</td>
+          <td class="code"><pre>&#x27;/org/gnome/Terminal/screen/a0f071cd_8c33_4bab_9414_9e45844c398c&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>GNOME_TERMINAL_SERVICE</td>
+          <td class="code"><pre>&#x27;:1.136&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>GSM_SKIP_SSH_AGENT_WORKAROUND</td>
+          <td class="code"><pre>&#x27;true&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>GTK_MODULES</td>
+          <td class="code"><pre>&#x27;gail:atk-bridge&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>HOME</td>
+          <td class="code"><pre>&#x27;/home/tanyamushonga&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>HTTP_ACCEPT</td>
+          <td class="code"><pre>&#x27;*/*&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>HTTP_HOST</td>
+          <td class="code"><pre>&#x27;127.0.0.1:8000&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>HTTP_USER_AGENT</td>
+          <td class="code"><pre>&#x27;curl/8.5.0&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LANG</td>
+          <td class="code"><pre>&#x27;en_US.UTF-8&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LESS</td>
+          <td class="code"><pre>&#x27;-R&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LOGNAME</td>
+          <td class="code"><pre>&#x27;tanyamushonga&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LSCOLORS</td>
+          <td class="code"><pre>&#x27;Gxfxcxdxbxegedabagacad&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LS_COLORS</td>
+          <td class="code"><pre>&#x27;rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.avif=01;35:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:*~=00;90:*#=00;90:*.bak=00;90:*.crdownload=00;90:*.dpkg-dist=00;90:*.dpkg-new=00;90:*.dpkg-old=00;90:*.dpkg-tmp=00;90:*.old=00;90:*.orig=00;90:*.part=00;90:*.rej=00;90:*.rpmnew=00;90:*.rpmorig=00;90:*.rpmsave=00;90:*.swp=00;90:*.tmp=00;90:*.ucf-dist=00;90:*.ucf-new=00;90:*.ucf-old=00;90:&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>MEMORY_PRESSURE_WATCH</td>
+          <td class="code"><pre>&#x27;/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/app.slice/app-gnome\\x2dsession\\x2dmanager.slice/gnome-session-manager@ubuntu.service/memory.pressure&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>MEMORY_PRESSURE_WRITE</td>
+          <td class="code"><pre>&#x27;c29tZSAyMDAwMDAgMjAwMDAwMAA=&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>NVM_BIN</td>
+          <td class="code"><pre>&#x27;/home/tanyamushonga/.nvm/versions/node/v22.21.1/bin&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>NVM_CD_FLAGS</td>
+          <td class="code"><pre>&#x27;-q&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>NVM_DIR</td>
+          <td class="code"><pre>&#x27;/home/tanyamushonga/.nvm&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>NVM_INC</td>
+          <td class="code"><pre>&#x27;/home/tanyamushonga/.nvm/versions/node/v22.21.1/include/node&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>OLDPWD</td>
+          <td class="code"><pre>&#x27;/home/tanyamushonga/Desktop/development/django_rest/skymarshal-api&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>ORIGINAL_XDG_CURRENT_DESKTOP</td>
+          <td class="code"><pre>&#x27;ubuntu:GNOME&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>PAGER</td>
+          <td class="code"><pre>&#x27;less&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>PATH</td>
+          <td class="code"><pre>&#x27;/home/tanyamushonga/Desktop/development/django_rest/skymarshal-api/venv/bin:/home/tanyamushonga/Android/Sdk/platform-tools:/home/tanyamushonga/Android/Sdk/emulator:/home/tanyamushonga/Android/Sdk/tools:/opt/gradle/bin:/home/tanyamushonga/.nvm/versions/node/v22.21.1/bin:/home/tanyamushonga/Android/Sdk/platform-tools:/home/tanyamushonga/Android/Sdk/emulator:/home/tanyamushonga/Android/Sdk/tools:/opt/gradle/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin:/home/tanyamushonga/.antigravity/extensions/ms-python.debugpy-2025.18.0-linux-x64/bundled/scripts/noConfigScripts&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>PATH_INFO</td>
+          <td class="code"><pre>&#x27;/swagger/&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>PS1</td>
+          <td class="code"><pre>(&#x27;(venv) %(?:%{\x1b[01;32m%}%1{➜%} :%{\x1b[01;31m%}%1{➜%} ) &#x27;
+ &#x27;%{\x1b[36m%}%c%{\x1b[00m%} $(git_prompt_info)&#x27;)</pre></td>
+        </tr>
+      
+        <tr>
+          <td>PWD</td>
+          <td class="code"><pre>&#x27;/home/tanyamushonga/Desktop/development/django_rest/skymarshal-api&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>PYDEVD_DISABLE_FILE_VALIDATION</td>
+          <td class="code"><pre>&#x27;1&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>PYTHONSTARTUP</td>
+          <td class="code"><pre>&#x27;/home/tanyamushonga/.config/Antigravity/User/workspaceStorage/41a21c8ee7a9bb0d38342fba7849bea4/ms-python.python/pythonrc.py&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>PYTHON_BASIC_REPL</td>
+          <td class="code"><pre>&#x27;1&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>QT_ACCESSIBILITY</td>
+          <td class="code"><pre>&#x27;1&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>QT_IM_MODULE</td>
+          <td class="code"><pre>&#x27;ibus&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>QUERY_STRING</td>
+          <td class="code"><pre>&#x27;format=openapi&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>REMOTE_ADDR</td>
+          <td class="code"><pre>&#x27;127.0.0.1&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>REMOTE_HOST</td>
+          <td class="code"><pre>&#x27;&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>REQUEST_METHOD</td>
+          <td class="code"><pre>&#x27;GET&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>RUN_MAIN</td>
+          <td class="code"><pre>&#x27;true&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SBX_CHROME_API_RQ</td>
+          <td class="code"><pre>&#x27;********************&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SCRIPT_NAME</td>
+          <td class="code"><pre>&#x27;&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SERVER_NAME</td>
+          <td class="code"><pre>&#x27;localhost&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SERVER_PORT</td>
+          <td class="code"><pre>&#x27;8000&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SERVER_PROTOCOL</td>
+          <td class="code"><pre>&#x27;HTTP/1.1&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SERVER_SOFTWARE</td>
+          <td class="code"><pre>&#x27;WSGIServer/0.2&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SESSION_MANAGER</td>
+          <td class="code"><pre>&#x27;local/tanyamushonga:@/tmp/.ICE-unix/29943,unix/tanyamushonga:/tmp/.ICE-unix/29943&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SHELL</td>
+          <td class="code"><pre>&#x27;/usr/bin/zsh&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SHLVL</td>
+          <td class="code"><pre>&#x27;2&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SSH_AUTH_SOCK</td>
+          <td class="code"><pre>&#x27;/run/user/1000/keyring/ssh&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SYSTEMD_EXEC_PID</td>
+          <td class="code"><pre>&#x27;29943&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>TERM</td>
+          <td class="code"><pre>&#x27;xterm-256color&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>TERM_PROGRAM</td>
+          <td class="code"><pre>&#x27;vscode&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>TERM_PROGRAM_VERSION</td>
+          <td class="code"><pre>&#x27;1.104.0&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>TZ</td>
+          <td class="code"><pre>&#x27;America/Chicago&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>USER</td>
+          <td class="code"><pre>&#x27;tanyamushonga&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>USERNAME</td>
+          <td class="code"><pre>&#x27;tanyamushonga&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>USER_ZDOTDIR</td>
+          <td class="code"><pre>&#x27;/home/tanyamushonga&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>VIRTUAL_ENV</td>
+          <td class="code"><pre>&#x27;/home/tanyamushonga/Desktop/development/django_rest/skymarshal-api/venv&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>VIRTUAL_ENV_PROMPT</td>
+          <td class="code"><pre>&#x27;(venv) &#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>VSCODE_DEBUGPY_ADAPTER_ENDPOINTS</td>
+          <td class="code"><pre>&#x27;/home/tanyamushonga/.antigravity/extensions/ms-python.debugpy-2025.18.0-linux-x64/.noConfigDebugAdapterEndpoints/endpoint-4ef28774d3138147.txt&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>VSCODE_GIT_ASKPASS_EXTRA_ARGS</td>
+          <td class="code"><pre>&#x27;********************&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>VSCODE_GIT_ASKPASS_MAIN</td>
+          <td class="code"><pre>&#x27;********************&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>VSCODE_GIT_ASKPASS_NODE</td>
+          <td class="code"><pre>&#x27;********************&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>VSCODE_GIT_IPC_HANDLE</td>
+          <td class="code"><pre>&#x27;/run/user/1000/vscode-git-7306e962cd.sock&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>VSCODE_INJECTION</td>
+          <td class="code"><pre>&#x27;1&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>VSCODE_PYTHON_AUTOACTIVATE_GUARD</td>
+          <td class="code"><pre>&#x27;1&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>VTE_VERSION</td>
+          <td class="code"><pre>&#x27;7600&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>WAYLAND_DISPLAY</td>
+          <td class="code"><pre>&#x27;wayland-0&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>XAUTHORITY</td>
+          <td class="code"><pre>&#x27;/run/user/1000/.mutter-Xwaylandauth.MDYLJ3&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>XDG_CURRENT_DESKTOP</td>
+          <td class="code"><pre>&#x27;Unity&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>XDG_DATA_DIRS</td>
+          <td class="code"><pre>&#x27;/usr/local/share/:/usr/share/:/var/lib/snapd/desktop&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>XDG_MENU_PREFIX</td>
+          <td class="code"><pre>&#x27;gnome-&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>XDG_RUNTIME_DIR</td>
+          <td class="code"><pre>&#x27;/run/user/1000&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>XDG_SESSION_CLASS</td>
+          <td class="code"><pre>&#x27;user&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>XDG_SESSION_DESKTOP</td>
+          <td class="code"><pre>&#x27;ubuntu&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>XDG_SESSION_TYPE</td>
+          <td class="code"><pre>&#x27;wayland&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>XMODIFIERS</td>
+          <td class="code"><pre>&#x27;@im=ibus&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>ZDOTDIR</td>
+          <td class="code"><pre>&#x27;/home/tanyamushonga&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>ZSH</td>
+          <td class="code"><pre>&#x27;/home/tanyamushonga/.oh-my-zsh&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>_</td>
+          <td class="code"><pre>&#x27;/home/tanyamushonga/Desktop/development/django_rest/skymarshal-api/venv/bin/python&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>wsgi.errors</td>
+          <td class="code"><pre>&lt;_io.TextIOWrapper name=&#x27;&lt;stderr&gt;&#x27; mode=&#x27;w&#x27; encoding=&#x27;utf-8&#x27;&gt;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>wsgi.file_wrapper</td>
+          <td class="code"><pre>&lt;class &#x27;wsgiref.util.FileWrapper&#x27;&gt;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>wsgi.input</td>
+          <td class="code"><pre>&lt;django.core.handlers.wsgi.LimitedStream object at 0x75a571a2bf70&gt;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>wsgi.multiprocess</td>
+          <td class="code"><pre>False</pre></td>
+        </tr>
+      
+        <tr>
+          <td>wsgi.multithread</td>
+          <td class="code"><pre>True</pre></td>
+        </tr>
+      
+        <tr>
+          <td>wsgi.run_once</td>
+          <td class="code"><pre>False</pre></td>
+        </tr>
+      
+        <tr>
+          <td>wsgi.url_scheme</td>
+          <td class="code"><pre>&#x27;http&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>wsgi.version</td>
+          <td class="code"><pre>(1, 0)</pre></td>
+        </tr>
+      
+    </tbody>
+  </table>
+
+
+  <h3 id="settings-info">Settings</h3>
+  <h4>Using settings module <code>api.settings</code></h4>
+  <table class="req">
+    <thead>
+      <tr>
+        <th>Setting</th>
+        <th>Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      
+        <tr>
+          <td>ABSOLUTE_URL_OVERRIDES</td>
+          <td class="code"><pre>{}</pre></td>
+        </tr>
+      
+        <tr>
+          <td>ADMINS</td>
+          <td class="code"><pre>[]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>ALLOWED_HOSTS</td>
+          <td class="code"><pre>[&#x27;localhost&#x27;, &#x27;127.0.0.1&#x27;]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>APPEND_SLASH</td>
+          <td class="code"><pre>True</pre></td>
+        </tr>
+      
+        <tr>
+          <td>ASGI_APPLICATION</td>
+          <td class="code"><pre>&#x27;api.asgi.application&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>AUTHENTICATION_BACKENDS</td>
+          <td class="code"><pre>[&#x27;django.contrib.auth.backends.ModelBackend&#x27;]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>AUTH_PASSWORD_VALIDATORS</td>
+          <td class="code"><pre>&#x27;********************&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>AUTH_USER_MODEL</td>
+          <td class="code"><pre>&#x27;users.User&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>AWS_ACCESS_KEY_ID</td>
+          <td class="code"><pre>&#x27;********************&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>AWS_S3_CUSTOM_DOMAIN</td>
+          <td class="code"><pre>&#x27;clicknchow.s3.amazonaws.com&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>AWS_S3_REGION_NAME</td>
+          <td class="code"><pre>&#x27;us-east-1&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>AWS_SECRET_ACCESS_KEY</td>
+          <td class="code"><pre>&#x27;********************&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>AWS_SES_REGION_NAME</td>
+          <td class="code"><pre>&#x27;us-east-1&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>AWS_SNS_REGION_NAME</td>
+          <td class="code"><pre>&#x27;us-east-1&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>AWS_STORAGE_BUCKET_NAME</td>
+          <td class="code"><pre>&#x27;clicknchow&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>BASE_DIR</td>
+          <td class="code"><pre>PosixPath(&#x27;/home/tanyamushonga/Desktop/development/django_rest/skymarshal-api&#x27;)</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CACHES</td>
+          <td class="code"><pre>{&#x27;default&#x27;: {&#x27;BACKEND&#x27;: &#x27;django_redis.cache.RedisCache&#x27;,
+             &#x27;LOCATION&#x27;: &#x27;redis://localhost:6380/0&#x27;}}</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CACHE_MIDDLEWARE_ALIAS</td>
+          <td class="code"><pre>&#x27;default&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CACHE_MIDDLEWARE_KEY_PREFIX</td>
+          <td class="code"><pre>&#x27;********************&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CACHE_MIDDLEWARE_SECONDS</td>
+          <td class="code"><pre>600</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CELERY_ACCEPT_CONTENT</td>
+          <td class="code"><pre>[&#x27;json&#x27;]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CELERY_BROKER_URL</td>
+          <td class="code"><pre>&#x27;amqp://guest:guest@localhost:5672//&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CELERY_RESULT_BACKEND</td>
+          <td class="code"><pre>&#x27;redis://localhost:6380/0&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CELERY_RESULT_SERIALIZER</td>
+          <td class="code"><pre>&#x27;json&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CELERY_TASK_ROUTES</td>
+          <td class="code"><pre>{&#x27;analytics.tasks.*&#x27;: {&#x27;queue&#x27;: &#x27;analytics&#x27;},
+ &#x27;computer_vision.tasks.*&#x27;: {&#x27;queue&#x27;: &#x27;cv_processing&#x27;},
+ &#x27;stream_ingestion.tasks.*&#x27;: {&#x27;queue&#x27;: &#x27;default&#x27;},
+ &#x27;violations.tasks.*&#x27;: {&#x27;queue&#x27;: &#x27;citations&#x27;}}</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CELERY_TASK_SERIALIZER</td>
+          <td class="code"><pre>&#x27;json&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CELERY_TIMEZONE</td>
+          <td class="code"><pre>&#x27;UTC&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CHANNEL_LAYERS</td>
+          <td class="code"><pre>{&#x27;default&#x27;: {&#x27;BACKEND&#x27;: &#x27;channels_redis.core.RedisChannelLayer&#x27;,
+             &#x27;CONFIG&#x27;: {&#x27;hosts&#x27;: [&#x27;redis://localhost:6380/0&#x27;]}}}</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CORS_ALLOWED_ORIGINS</td>
+          <td class="code"><pre>[&#x27;http://localhost:3000&#x27;, &#x27;http://localhost:8080&#x27;]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CORS_ALLOW_CREDENTIALS</td>
+          <td class="code"><pre>True</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CSRF_COOKIE_AGE</td>
+          <td class="code"><pre>31449600</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CSRF_COOKIE_DOMAIN</td>
+          <td class="code"><pre>None</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CSRF_COOKIE_HTTPONLY</td>
+          <td class="code"><pre>False</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CSRF_COOKIE_NAME</td>
+          <td class="code"><pre>&#x27;csrftoken&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CSRF_COOKIE_PATH</td>
+          <td class="code"><pre>&#x27;/&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CSRF_COOKIE_SAMESITE</td>
+          <td class="code"><pre>&#x27;Lax&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CSRF_COOKIE_SECURE</td>
+          <td class="code"><pre>False</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CSRF_FAILURE_VIEW</td>
+          <td class="code"><pre>&#x27;django.views.csrf.csrf_failure&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CSRF_HEADER_NAME</td>
+          <td class="code"><pre>&#x27;HTTP_X_CSRFTOKEN&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CSRF_TRUSTED_ORIGINS</td>
+          <td class="code"><pre>[]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CSRF_USE_SESSIONS</td>
+          <td class="code"><pre>False</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CV_CONFIDENCE_THRESHOLD</td>
+          <td class="code"><pre>0.5</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CV_MODELS</td>
+          <td class="code"><pre>{&#x27;PLATE_DETECTION&#x27;: PosixPath(&#x27;/home/tanyamushonga/Desktop/development/django_rest/skymarshal-api/models/plate_yolov8.pt&#x27;),
+ &#x27;VEHICLE_DETECTION&#x27;: PosixPath(&#x27;/home/tanyamushonga/Desktop/development/django_rest/skymarshal-api/models/yolov8n.pt&#x27;)}</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CV_SPEED_LIMIT_DEFAULT</td>
+          <td class="code"><pre>60.0</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DATABASES</td>
+          <td class="code"><pre>{&#x27;default&#x27;: {&#x27;ATOMIC_REQUESTS&#x27;: False,
+             &#x27;AUTOCOMMIT&#x27;: True,
+             &#x27;CONN_HEALTH_CHECKS&#x27;: False,
+             &#x27;CONN_MAX_AGE&#x27;: 0,
+             &#x27;ENGINE&#x27;: &#x27;django.contrib.gis.db.backends.postgis&#x27;,
+             &#x27;HOST&#x27;: &#x27;localhost&#x27;,
+             &#x27;NAME&#x27;: &#x27;skymarshal_db&#x27;,
+             &#x27;OPTIONS&#x27;: {},
+             &#x27;PASSWORD&#x27;: &#x27;********************&#x27;,
+             &#x27;PORT&#x27;: &#x27;5433&#x27;,
+             &#x27;TEST&#x27;: {&#x27;CHARSET&#x27;: None,
+                      &#x27;COLLATION&#x27;: None,
+                      &#x27;MIGRATE&#x27;: True,
+                      &#x27;MIRROR&#x27;: None,
+                      &#x27;NAME&#x27;: None},
+             &#x27;TIME_ZONE&#x27;: None,
+             &#x27;USER&#x27;: &#x27;admin&#x27;}}</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DATABASE_ROUTERS</td>
+          <td class="code"><pre>[]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DATA_UPLOAD_MAX_MEMORY_SIZE</td>
+          <td class="code"><pre>2621440</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DATA_UPLOAD_MAX_NUMBER_FIELDS</td>
+          <td class="code"><pre>1000</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DATA_UPLOAD_MAX_NUMBER_FILES</td>
+          <td class="code"><pre>100</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DATETIME_FORMAT</td>
+          <td class="code"><pre>&#x27;N j, Y, P&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DATETIME_INPUT_FORMATS</td>
+          <td class="code"><pre>[&#x27;%Y-%m-%d %H:%M:%S&#x27;,
+ &#x27;%Y-%m-%d %H:%M:%S.%f&#x27;,
+ &#x27;%Y-%m-%d %H:%M&#x27;,
+ &#x27;%m/%d/%Y %H:%M:%S&#x27;,
+ &#x27;%m/%d/%Y %H:%M:%S.%f&#x27;,
+ &#x27;%m/%d/%Y %H:%M&#x27;,
+ &#x27;%m/%d/%y %H:%M:%S&#x27;,
+ &#x27;%m/%d/%y %H:%M:%S.%f&#x27;,
+ &#x27;%m/%d/%y %H:%M&#x27;]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DATE_FORMAT</td>
+          <td class="code"><pre>&#x27;N j, Y&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DATE_INPUT_FORMATS</td>
+          <td class="code"><pre>[&#x27;%Y-%m-%d&#x27;,
+ &#x27;%m/%d/%Y&#x27;,
+ &#x27;%m/%d/%y&#x27;,
+ &#x27;%b %d %Y&#x27;,
+ &#x27;%b %d, %Y&#x27;,
+ &#x27;%d %b %Y&#x27;,
+ &#x27;%d %b, %Y&#x27;,
+ &#x27;%B %d %Y&#x27;,
+ &#x27;%B %d, %Y&#x27;,
+ &#x27;%d %B %Y&#x27;,
+ &#x27;%d %B, %Y&#x27;]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DEBUG</td>
+          <td class="code"><pre>True</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DEBUG_PROPAGATE_EXCEPTIONS</td>
+          <td class="code"><pre>False</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DECIMAL_SEPARATOR</td>
+          <td class="code"><pre>&#x27;.&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DEFAULT_AUTO_FIELD</td>
+          <td class="code"><pre>&#x27;django.db.models.BigAutoField&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DEFAULT_CHARSET</td>
+          <td class="code"><pre>&#x27;utf-8&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DEFAULT_EXCEPTION_REPORTER</td>
+          <td class="code"><pre>&#x27;django.views.debug.ExceptionReporter&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DEFAULT_EXCEPTION_REPORTER_FILTER</td>
+          <td class="code"><pre>&#x27;django.views.debug.SafeExceptionReporterFilter&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DEFAULT_FILE_STORAGE</td>
+          <td class="code"><pre>&#x27;storages.backends.s3boto3.S3Boto3Storage&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DEFAULT_FROM_EMAIL</td>
+          <td class="code"><pre>&#x27;tanyaradzwatmushonga@gmail.com&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DEFAULT_INDEX_TABLESPACE</td>
+          <td class="code"><pre>&#x27;&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DEFAULT_TABLESPACE</td>
+          <td class="code"><pre>&#x27;&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DISALLOWED_USER_AGENTS</td>
+          <td class="code"><pre>[]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>EMAIL_BACKEND</td>
+          <td class="code"><pre>&#x27;django_ses.SESBackend&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>EMAIL_HOST</td>
+          <td class="code"><pre>&#x27;localhost&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>EMAIL_HOST_PASSWORD</td>
+          <td class="code"><pre>&#x27;********************&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>EMAIL_HOST_USER</td>
+          <td class="code"><pre>&#x27;&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>EMAIL_PORT</td>
+          <td class="code"><pre>25</pre></td>
+        </tr>
+      
+        <tr>
+          <td>EMAIL_SSL_CERTFILE</td>
+          <td class="code"><pre>None</pre></td>
+        </tr>
+      
+        <tr>
+          <td>EMAIL_SSL_KEYFILE</td>
+          <td class="code"><pre>&#x27;********************&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>EMAIL_SUBJECT_PREFIX</td>
+          <td class="code"><pre>&#x27;[Django] &#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>EMAIL_TIMEOUT</td>
+          <td class="code"><pre>None</pre></td>
+        </tr>
+      
+        <tr>
+          <td>EMAIL_USE_LOCALTIME</td>
+          <td class="code"><pre>False</pre></td>
+        </tr>
+      
+        <tr>
+          <td>EMAIL_USE_SSL</td>
+          <td class="code"><pre>False</pre></td>
+        </tr>
+      
+        <tr>
+          <td>EMAIL_USE_TLS</td>
+          <td class="code"><pre>False</pre></td>
+        </tr>
+      
+        <tr>
+          <td>FILE_UPLOAD_DIRECTORY_PERMISSIONS</td>
+          <td class="code"><pre>None</pre></td>
+        </tr>
+      
+        <tr>
+          <td>FILE_UPLOAD_HANDLERS</td>
+          <td class="code"><pre>[&#x27;django.core.files.uploadhandler.MemoryFileUploadHandler&#x27;,
+ &#x27;django.core.files.uploadhandler.TemporaryFileUploadHandler&#x27;]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>FILE_UPLOAD_MAX_MEMORY_SIZE</td>
+          <td class="code"><pre>2621440</pre></td>
+        </tr>
+      
+        <tr>
+          <td>FILE_UPLOAD_PERMISSIONS</td>
+          <td class="code"><pre>420</pre></td>
+        </tr>
+      
+        <tr>
+          <td>FILE_UPLOAD_TEMP_DIR</td>
+          <td class="code"><pre>None</pre></td>
+        </tr>
+      
+        <tr>
+          <td>FIRST_DAY_OF_WEEK</td>
+          <td class="code"><pre>0</pre></td>
+        </tr>
+      
+        <tr>
+          <td>FIXTURE_DIRS</td>
+          <td class="code"><pre>[]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>FORCE_SCRIPT_NAME</td>
+          <td class="code"><pre>None</pre></td>
+        </tr>
+      
+        <tr>
+          <td>FORMAT_MODULE_PATH</td>
+          <td class="code"><pre>None</pre></td>
+        </tr>
+      
+        <tr>
+          <td>FORMS_URLFIELD_ASSUME_HTTPS</td>
+          <td class="code"><pre>False</pre></td>
+        </tr>
+      
+        <tr>
+          <td>FORM_RENDERER</td>
+          <td class="code"><pre>&#x27;django.forms.renderers.DjangoTemplates&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>GDAL_LIBRARY_PATH</td>
+          <td class="code"><pre>&#x27;/usr/lib/x86_64-linux-gnu/libgdal.so&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>IGNORABLE_404_URLS</td>
+          <td class="code"><pre>[]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>INSTALLED_APPS</td>
+          <td class="code"><pre>[&#x27;django.contrib.admin&#x27;,
+ &#x27;django.contrib.auth&#x27;,
+ &#x27;django.contrib.contenttypes&#x27;,
+ &#x27;django.contrib.sessions&#x27;,
+ &#x27;django.contrib.messages&#x27;,
+ &#x27;django.contrib.staticfiles&#x27;,
+ &#x27;django.contrib.gis&#x27;,
+ &#x27;rest_framework&#x27;,
+ &#x27;rest_framework_simplejwt&#x27;,
+ &#x27;channels&#x27;,
+ &#x27;corsheaders&#x27;,
+ &#x27;django_filters&#x27;,
+ &#x27;drf_yasg&#x27;,
+ &#x27;django_celery_beat&#x27;,
+ &#x27;apps.core&#x27;,
+ &#x27;apps.users&#x27;,
+ &#x27;apps.drones&#x27;,
+ &#x27;apps.stream_ingestion&#x27;,
+ &#x27;apps.detections&#x27;,
+ &#x27;apps.violations&#x27;,
+ &#x27;apps.analytics&#x27;,
+ &#x27;apps.notifications&#x27;,
+ &#x27;apps.vehicle_lookup&#x27;,
+ &#x27;apps.compliance&#x27;,
+ &#x27;apps.patrols&#x27;]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>INTERNAL_IPS</td>
+          <td class="code"><pre>[]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>KAFKA_BOOTSTRAP_SERVERS</td>
+          <td class="code"><pre>[&#x27;localhost:9092&#x27;]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>KAFKA_TOPICS</td>
+          <td class="code"><pre>{&#x27;ANALYTICS&#x27;: &#x27;analytics_events&#x27;,
+ &#x27;CITATIONS&#x27;: &#x27;citation_events&#x27;,
+ &#x27;DETECTIONS&#x27;: &#x27;detection_events&#x27;,
+ &#x27;RAW_FRAMES&#x27;: &#x27;raw_video_frames&#x27;,
+ &#x27;VIOLATIONS&#x27;: &#x27;violation_events&#x27;}</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LANGUAGES</td>
+          <td class="code"><pre>[(&#x27;af&#x27;, &#x27;Afrikaans&#x27;),
+ (&#x27;ar&#x27;, &#x27;Arabic&#x27;),
+ (&#x27;ar-dz&#x27;, &#x27;Algerian Arabic&#x27;),
+ (&#x27;ast&#x27;, &#x27;Asturian&#x27;),
+ (&#x27;az&#x27;, &#x27;Azerbaijani&#x27;),
+ (&#x27;bg&#x27;, &#x27;Bulgarian&#x27;),
+ (&#x27;be&#x27;, &#x27;Belarusian&#x27;),
+ (&#x27;bn&#x27;, &#x27;Bengali&#x27;),
+ (&#x27;br&#x27;, &#x27;Breton&#x27;),
+ (&#x27;bs&#x27;, &#x27;Bosnian&#x27;),
+ (&#x27;ca&#x27;, &#x27;Catalan&#x27;),
+ (&#x27;ckb&#x27;, &#x27;Central Kurdish (Sorani)&#x27;),
+ (&#x27;cs&#x27;, &#x27;Czech&#x27;),
+ (&#x27;cy&#x27;, &#x27;Welsh&#x27;),
+ (&#x27;da&#x27;, &#x27;Danish&#x27;),
+ (&#x27;de&#x27;, &#x27;German&#x27;),
+ (&#x27;dsb&#x27;, &#x27;Lower Sorbian&#x27;),
+ (&#x27;el&#x27;, &#x27;Greek&#x27;),
+ (&#x27;en&#x27;, &#x27;English&#x27;),
+ (&#x27;en-au&#x27;, &#x27;Australian English&#x27;),
+ (&#x27;en-gb&#x27;, &#x27;British English&#x27;),
+ (&#x27;eo&#x27;, &#x27;Esperanto&#x27;),
+ (&#x27;es&#x27;, &#x27;Spanish&#x27;),
+ (&#x27;es-ar&#x27;, &#x27;Argentinian Spanish&#x27;),
+ (&#x27;es-co&#x27;, &#x27;Colombian Spanish&#x27;),
+ (&#x27;es-mx&#x27;, &#x27;Mexican Spanish&#x27;),
+ (&#x27;es-ni&#x27;, &#x27;Nicaraguan Spanish&#x27;),
+ (&#x27;es-ve&#x27;, &#x27;Venezuelan Spanish&#x27;),
+ (&#x27;et&#x27;, &#x27;Estonian&#x27;),
+ (&#x27;eu&#x27;, &#x27;Basque&#x27;),
+ (&#x27;fa&#x27;, &#x27;Persian&#x27;),
+ (&#x27;fi&#x27;, &#x27;Finnish&#x27;),
+ (&#x27;fr&#x27;, &#x27;French&#x27;),
+ (&#x27;fy&#x27;, &#x27;Frisian&#x27;),
+ (&#x27;ga&#x27;, &#x27;Irish&#x27;),
+ (&#x27;gd&#x27;, &#x27;Scottish Gaelic&#x27;),
+ (&#x27;gl&#x27;, &#x27;Galician&#x27;),
+ (&#x27;he&#x27;, &#x27;Hebrew&#x27;),
+ (&#x27;hi&#x27;, &#x27;Hindi&#x27;),
+ (&#x27;hr&#x27;, &#x27;Croatian&#x27;),
+ (&#x27;hsb&#x27;, &#x27;Upper Sorbian&#x27;),
+ (&#x27;hu&#x27;, &#x27;Hungarian&#x27;),
+ (&#x27;hy&#x27;, &#x27;Armenian&#x27;),
+ (&#x27;ia&#x27;, &#x27;Interlingua&#x27;),
+ (&#x27;id&#x27;, &#x27;Indonesian&#x27;),
+ (&#x27;ig&#x27;, &#x27;Igbo&#x27;),
+ (&#x27;io&#x27;, &#x27;Ido&#x27;),
+ (&#x27;is&#x27;, &#x27;Icelandic&#x27;),
+ (&#x27;it&#x27;, &#x27;Italian&#x27;),
+ (&#x27;ja&#x27;, &#x27;Japanese&#x27;),
+ (&#x27;ka&#x27;, &#x27;Georgian&#x27;),
+ (&#x27;kab&#x27;, &#x27;Kabyle&#x27;),
+ (&#x27;kk&#x27;, &#x27;Kazakh&#x27;),
+ (&#x27;km&#x27;, &#x27;Khmer&#x27;),
+ (&#x27;kn&#x27;, &#x27;Kannada&#x27;),
+ (&#x27;ko&#x27;, &#x27;Korean&#x27;),
+ (&#x27;ky&#x27;, &#x27;Kyrgyz&#x27;),
+ (&#x27;lb&#x27;, &#x27;Luxembourgish&#x27;),
+ (&#x27;lt&#x27;, &#x27;Lithuanian&#x27;),
+ (&#x27;lv&#x27;, &#x27;Latvian&#x27;),
+ (&#x27;mk&#x27;, &#x27;Macedonian&#x27;),
+ (&#x27;ml&#x27;, &#x27;Malayalam&#x27;),
+ (&#x27;mn&#x27;, &#x27;Mongolian&#x27;),
+ (&#x27;mr&#x27;, &#x27;Marathi&#x27;),
+ (&#x27;ms&#x27;, &#x27;Malay&#x27;),
+ (&#x27;my&#x27;, &#x27;Burmese&#x27;),
+ (&#x27;nb&#x27;, &#x27;Norwegian Bokmål&#x27;),
+ (&#x27;ne&#x27;, &#x27;Nepali&#x27;),
+ (&#x27;nl&#x27;, &#x27;Dutch&#x27;),
+ (&#x27;nn&#x27;, &#x27;Norwegian Nynorsk&#x27;),
+ (&#x27;os&#x27;, &#x27;Ossetic&#x27;),
+ (&#x27;pa&#x27;, &#x27;Punjabi&#x27;),
+ (&#x27;pl&#x27;, &#x27;Polish&#x27;),
+ (&#x27;pt&#x27;, &#x27;Portuguese&#x27;),
+ (&#x27;pt-br&#x27;, &#x27;Brazilian Portuguese&#x27;),
+ (&#x27;ro&#x27;, &#x27;Romanian&#x27;),
+ (&#x27;ru&#x27;, &#x27;Russian&#x27;),
+ (&#x27;sk&#x27;, &#x27;Slovak&#x27;),
+ (&#x27;sl&#x27;, &#x27;Slovenian&#x27;),
+ (&#x27;sq&#x27;, &#x27;Albanian&#x27;),
+ (&#x27;sr&#x27;, &#x27;Serbian&#x27;),
+ (&#x27;sr-latn&#x27;, &#x27;Serbian Latin&#x27;),
+ (&#x27;sv&#x27;, &#x27;Swedish&#x27;),
+ (&#x27;sw&#x27;, &#x27;Swahili&#x27;),
+ (&#x27;ta&#x27;, &#x27;Tamil&#x27;),
+ (&#x27;te&#x27;, &#x27;Telugu&#x27;),
+ (&#x27;tg&#x27;, &#x27;Tajik&#x27;),
+ (&#x27;th&#x27;, &#x27;Thai&#x27;),
+ (&#x27;tk&#x27;, &#x27;Turkmen&#x27;),
+ (&#x27;tr&#x27;, &#x27;Turkish&#x27;),
+ (&#x27;tt&#x27;, &#x27;Tatar&#x27;),
+ (&#x27;udm&#x27;, &#x27;Udmurt&#x27;),
+ (&#x27;ug&#x27;, &#x27;Uyghur&#x27;),
+ (&#x27;uk&#x27;, &#x27;Ukrainian&#x27;),
+ (&#x27;ur&#x27;, &#x27;Urdu&#x27;),
+ (&#x27;uz&#x27;, &#x27;Uzbek&#x27;),
+ (&#x27;vi&#x27;, &#x27;Vietnamese&#x27;),
+ (&#x27;zh-hans&#x27;, &#x27;Simplified Chinese&#x27;),
+ (&#x27;zh-hant&#x27;, &#x27;Traditional Chinese&#x27;)]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LANGUAGES_BIDI</td>
+          <td class="code"><pre>[&#x27;he&#x27;, &#x27;ar&#x27;, &#x27;ar-dz&#x27;, &#x27;ckb&#x27;, &#x27;fa&#x27;, &#x27;ug&#x27;, &#x27;ur&#x27;]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LANGUAGE_CODE</td>
+          <td class="code"><pre>&#x27;en-us&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LANGUAGE_COOKIE_AGE</td>
+          <td class="code"><pre>None</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LANGUAGE_COOKIE_DOMAIN</td>
+          <td class="code"><pre>None</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LANGUAGE_COOKIE_HTTPONLY</td>
+          <td class="code"><pre>False</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LANGUAGE_COOKIE_NAME</td>
+          <td class="code"><pre>&#x27;django_language&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LANGUAGE_COOKIE_PATH</td>
+          <td class="code"><pre>&#x27;/&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LANGUAGE_COOKIE_SAMESITE</td>
+          <td class="code"><pre>None</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LANGUAGE_COOKIE_SECURE</td>
+          <td class="code"><pre>False</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LOCALE_PATHS</td>
+          <td class="code"><pre>[]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LOGGING</td>
+          <td class="code"><pre>{&#x27;disable_existing_loggers&#x27;: False,
+ &#x27;handlers&#x27;: {&#x27;console&#x27;: {&#x27;class&#x27;: &#x27;logging.StreamHandler&#x27;}},
+ &#x27;root&#x27;: {&#x27;handlers&#x27;: [&#x27;console&#x27;], &#x27;level&#x27;: &#x27;INFO&#x27;},
+ &#x27;version&#x27;: 1}</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LOGGING_CONFIG</td>
+          <td class="code"><pre>&#x27;logging.config.dictConfig&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LOGIN_REDIRECT_URL</td>
+          <td class="code"><pre>&#x27;/accounts/profile/&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LOGIN_URL</td>
+          <td class="code"><pre>&#x27;rest_framework:login&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LOGOUT_REDIRECT_URL</td>
+          <td class="code"><pre>None</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LOGOUT_URL</td>
+          <td class="code"><pre>&#x27;rest_framework:logout&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>MANAGERS</td>
+          <td class="code"><pre>[]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>MEDIA_ROOT</td>
+          <td class="code"><pre>PosixPath(&#x27;/home/tanyamushonga/Desktop/development/django_rest/skymarshal-api/media&#x27;)</pre></td>
+        </tr>
+      
+        <tr>
+          <td>MEDIA_URL</td>
+          <td class="code"><pre>&#x27;/media/&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>MESSAGE_STORAGE</td>
+          <td class="code"><pre>&#x27;django.contrib.messages.storage.fallback.FallbackStorage&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>MIDDLEWARE</td>
+          <td class="code"><pre>[&#x27;django.middleware.security.SecurityMiddleware&#x27;,
+ &#x27;corsheaders.middleware.CorsMiddleware&#x27;,
+ &#x27;django.contrib.sessions.middleware.SessionMiddleware&#x27;,
+ &#x27;django.middleware.common.CommonMiddleware&#x27;,
+ &#x27;django.middleware.csrf.CsrfViewMiddleware&#x27;,
+ &#x27;django.contrib.auth.middleware.AuthenticationMiddleware&#x27;,
+ &#x27;django.contrib.messages.middleware.MessageMiddleware&#x27;,
+ &#x27;django.middleware.clickjacking.XFrameOptionsMiddleware&#x27;]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>MIGRATION_MODULES</td>
+          <td class="code"><pre>{}</pre></td>
+        </tr>
+      
+        <tr>
+          <td>MONTH_DAY_FORMAT</td>
+          <td class="code"><pre>&#x27;F j&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>NUMBER_GROUPING</td>
+          <td class="code"><pre>0</pre></td>
+        </tr>
+      
+        <tr>
+          <td>PASSWORD_HASHERS</td>
+          <td class="code"><pre>&#x27;********************&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>PASSWORD_RESET_TIMEOUT</td>
+          <td class="code"><pre>&#x27;********************&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>PREPEND_WWW</td>
+          <td class="code"><pre>False</pre></td>
+        </tr>
+      
+        <tr>
+          <td>REDIS_URL</td>
+          <td class="code"><pre>&#x27;redis://localhost:6380/0&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>REST_FRAMEWORK</td>
+          <td class="code"><pre>{&#x27;DEFAULT_AUTHENTICATION_CLASSES&#x27;: (&#x27;rest_framework_simplejwt.authentication.JWTAuthentication&#x27;,
+                                    &#x27;apps.core.drone_authentication.DroneAPIKeyAuthentication&#x27;,
+                                    &#x27;rest_framework.authentication.SessionAuthentication&#x27;),
+ &#x27;DEFAULT_PERMISSION_CLASSES&#x27;: (&#x27;rest_framework.permissions.IsAuthenticated&#x27;,),
+ &#x27;DEFAULT_THROTTLE_CLASSES&#x27;: [&#x27;rest_framework.throttling.AnonRateThrottle&#x27;,
+                              &#x27;rest_framework.throttling.UserRateThrottle&#x27;],
+ &#x27;DEFAULT_THROTTLE_RATES&#x27;: {&#x27;anon&#x27;: &#x27;100/day&#x27;, &#x27;user&#x27;: &#x27;1000/day&#x27;},
+ &#x27;LOGIN_URL&#x27;: &#x27;rest_framework:login&#x27;,
+ &#x27;LOGOUT_URL&#x27;: &#x27;rest_framework:logout&#x27;}</pre></td>
+        </tr>
+      
+        <tr>
+          <td>ROOT_URLCONF</td>
+          <td class="code"><pre>&#x27;api.urls&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SECRET_KEY</td>
+          <td class="code"><pre>&#x27;********************&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SECRET_KEY_FALLBACKS</td>
+          <td class="code"><pre>&#x27;********************&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SECURE_CONTENT_TYPE_NOSNIFF</td>
+          <td class="code"><pre>True</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SECURE_CROSS_ORIGIN_OPENER_POLICY</td>
+          <td class="code"><pre>&#x27;same-origin&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SECURE_HSTS_INCLUDE_SUBDOMAINS</td>
+          <td class="code"><pre>False</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SECURE_HSTS_PRELOAD</td>
+          <td class="code"><pre>False</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SECURE_HSTS_SECONDS</td>
+          <td class="code"><pre>0</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SECURE_PROXY_SSL_HEADER</td>
+          <td class="code"><pre>None</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SECURE_REDIRECT_EXEMPT</td>
+          <td class="code"><pre>[]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SECURE_REFERRER_POLICY</td>
+          <td class="code"><pre>&#x27;same-origin&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SECURE_SSL_HOST</td>
+          <td class="code"><pre>None</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SECURE_SSL_REDIRECT</td>
+          <td class="code"><pre>False</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SERVER_EMAIL</td>
+          <td class="code"><pre>&#x27;root@localhost&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SESSION_CACHE_ALIAS</td>
+          <td class="code"><pre>&#x27;default&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SESSION_COOKIE_AGE</td>
+          <td class="code"><pre>1209600</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SESSION_COOKIE_DOMAIN</td>
+          <td class="code"><pre>None</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SESSION_COOKIE_HTTPONLY</td>
+          <td class="code"><pre>True</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SESSION_COOKIE_NAME</td>
+          <td class="code"><pre>&#x27;sessionid&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SESSION_COOKIE_PATH</td>
+          <td class="code"><pre>&#x27;/&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SESSION_COOKIE_SAMESITE</td>
+          <td class="code"><pre>&#x27;Lax&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SESSION_COOKIE_SECURE</td>
+          <td class="code"><pre>False</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SESSION_ENGINE</td>
+          <td class="code"><pre>&#x27;django.contrib.sessions.backends.db&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SESSION_EXPIRE_AT_BROWSER_CLOSE</td>
+          <td class="code"><pre>False</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SESSION_FILE_PATH</td>
+          <td class="code"><pre>None</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SESSION_SAVE_EVERY_REQUEST</td>
+          <td class="code"><pre>False</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SESSION_SERIALIZER</td>
+          <td class="code"><pre>&#x27;django.contrib.sessions.serializers.JSONSerializer&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SETTINGS_MODULE</td>
+          <td class="code"><pre>&#x27;api.settings&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SHORT_DATETIME_FORMAT</td>
+          <td class="code"><pre>&#x27;m/d/Y P&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SHORT_DATE_FORMAT</td>
+          <td class="code"><pre>&#x27;m/d/Y&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SIGNING_BACKEND</td>
+          <td class="code"><pre>&#x27;django.core.signing.TimestampSigner&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SILENCED_SYSTEM_CHECKS</td>
+          <td class="code"><pre>[]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SIMPLE_JWT</td>
+          <td class="code"><pre>{&#x27;ACCESS_TOKEN_LIFETIME&#x27;: &#x27;********************&#x27;,
+ &#x27;AUTH_HEADER_TYPES&#x27;: (&#x27;Bearer&#x27;,),
+ &#x27;AUTH_TOKEN_CLASSES&#x27;: &#x27;********************&#x27;,
+ &#x27;BLACKLIST_AFTER_ROTATION&#x27;: True,
+ &#x27;REFRESH_TOKEN_LIFETIME&#x27;: &#x27;********************&#x27;,
+ &#x27;ROTATE_REFRESH_TOKENS&#x27;: &#x27;********************&#x27;}</pre></td>
+        </tr>
+      
+        <tr>
+          <td>STATICFILES_DIRS</td>
+          <td class="code"><pre>[PosixPath(&#x27;/home/tanyamushonga/Desktop/development/django_rest/skymarshal-api/static&#x27;)]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>STATICFILES_FINDERS</td>
+          <td class="code"><pre>[&#x27;django.contrib.staticfiles.finders.FileSystemFinder&#x27;,
+ &#x27;django.contrib.staticfiles.finders.AppDirectoriesFinder&#x27;]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>STATICFILES_STORAGE</td>
+          <td class="code"><pre>&#x27;django.contrib.staticfiles.storage.StaticFilesStorage&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>STATIC_ROOT</td>
+          <td class="code"><pre>PosixPath(&#x27;/home/tanyamushonga/Desktop/development/django_rest/skymarshal-api/staticfiles&#x27;)</pre></td>
+        </tr>
+      
+        <tr>
+          <td>STATIC_URL</td>
+          <td class="code"><pre>&#x27;/static/&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>STORAGES</td>
+          <td class="code"><pre>{&#x27;default&#x27;: {&#x27;BACKEND&#x27;: &#x27;storages.backends.s3boto3.S3Boto3Storage&#x27;},
+ &#x27;staticfiles&#x27;: {&#x27;BACKEND&#x27;: &#x27;django.contrib.staticfiles.storage.StaticFilesStorage&#x27;}}</pre></td>
+        </tr>
+      
+        <tr>
+          <td>TEMPLATES</td>
+          <td class="code"><pre>[{&#x27;APP_DIRS&#x27;: True,
+  &#x27;BACKEND&#x27;: &#x27;django.template.backends.django.DjangoTemplates&#x27;,
+  &#x27;DIRS&#x27;: [PosixPath(&#x27;/home/tanyamushonga/Desktop/development/django_rest/skymarshal-api/templates&#x27;)],
+  &#x27;OPTIONS&#x27;: {&#x27;context_processors&#x27;: [&#x27;django.template.context_processors.debug&#x27;,
+                                     &#x27;django.template.context_processors.request&#x27;,
+                                     &#x27;django.contrib.auth.context_processors.auth&#x27;,
+                                     &#x27;django.contrib.messages.context_processors.messages&#x27;]}}]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>TEST_NON_SERIALIZED_APPS</td>
+          <td class="code"><pre>[]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>TEST_RUNNER</td>
+          <td class="code"><pre>&#x27;django.test.runner.DiscoverRunner&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>THOUSAND_SEPARATOR</td>
+          <td class="code"><pre>&#x27;,&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>TIME_FORMAT</td>
+          <td class="code"><pre>&#x27;P&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>TIME_INPUT_FORMATS</td>
+          <td class="code"><pre>[&#x27;%H:%M:%S&#x27;, &#x27;%H:%M:%S.%f&#x27;, &#x27;%H:%M&#x27;]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>TIME_ZONE</td>
+          <td class="code"><pre>&#x27;America/Chicago&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>USE_I18N</td>
+          <td class="code"><pre>True</pre></td>
+        </tr>
+      
+        <tr>
+          <td>USE_THOUSAND_SEPARATOR</td>
+          <td class="code"><pre>False</pre></td>
+        </tr>
+      
+        <tr>
+          <td>USE_TZ</td>
+          <td class="code"><pre>True</pre></td>
+        </tr>
+      
+        <tr>
+          <td>USE_X_FORWARDED_HOST</td>
+          <td class="code"><pre>False</pre></td>
+        </tr>
+      
+        <tr>
+          <td>USE_X_FORWARDED_PORT</td>
+          <td class="code"><pre>False</pre></td>
+        </tr>
+      
+        <tr>
+          <td>WSGI_APPLICATION</td>
+          <td class="code"><pre>&#x27;api.wsgi.application&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>X_FRAME_OPTIONS</td>
+          <td class="code"><pre>&#x27;DENY&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>YEAR_MONTH_FORMAT</td>
+          <td class="code"><pre>&#x27;F Y&#x27;</pre></td>
+        </tr>
+      
+    </tbody>
+  </table>
+
+</div>
+
+  <div id="explanation">
+    <p>
+      You’re seeing this error because you have <code>DEBUG = True</code> in your
+      Django settings file. Change that to <code>False</code>, and Django will
+      display a standard page generated by the handler for this status code.
+    </p>
+  </div>
+
+</body>
+</html>
