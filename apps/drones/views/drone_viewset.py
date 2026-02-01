@@ -15,7 +15,7 @@ from ..serializers import (
     GPSLocationSerializer, DroneStatusUpdateSerializer,
     DroneAssignSerializer, GPSLocationUpdateSerializer
 )
-from ..permissions import IsDroneAuthenticated
+from apps.core.permissions import IsDroneAuthenticated
 
 from rest_framework.filters import SearchFilter, OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
@@ -34,9 +34,9 @@ class DroneViewSet(viewsets.ModelViewSet):
     
     pagination_class = StandardResultsSetPagination
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = ['status__status', 'is_active', 'type']
+    filterset_fields = ['status__status', 'is_active', 'model']
     search_fields = ['name', 'drone_id', 'model']
-    ordering_fields = ['created_at', 'last_seen']
+    ordering_fields = ['created_at', 'updated_at']
 
     def get_permissions(self):
         """
