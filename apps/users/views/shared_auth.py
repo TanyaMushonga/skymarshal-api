@@ -6,6 +6,7 @@ from django.core.cache import cache
 from django.utils.crypto import get_random_string
 
 from ..serializers.auth import Verify2FASerializer, PasswordResetConfirmSerializer, RequestOTPSerializer
+from ..serializers.users import UserSerializer
 from apps.core.tasks import send_email_task, send_sms_task
 from ..models import User
 
@@ -25,23 +26,13 @@ class BaseLoginView(generics.GenericAPIView):
             access_token = str(refresh.access_token)
             refresh_token = str(refresh)
             
-            response = Response({
+            return Response({
                 "access": access_token,
                 "refresh": refresh_token,
+                "user": UserSerializer(user).data,
                 "requires_password_change": user.requires_password_change,
                 "detail": "Login successful"
             }, status=status.HTTP_200_OK)
-            
-            if self.request.headers.get('Platform') == 'web':
-                response.set_cookie(
-                    settings.SIMPLE_JWT.get('AUTH_COOKIE', 'access_token'),
-                    access_token,
-                    max_age=settings.SIMPLE_JWT.get('ACCESS_TOKEN_LIFETIME').total_seconds(),
-                    httponly=True,
-                    samesite='Lax',
-                    secure=not settings.DEBUG
-                )
-            return response
 
         # Generate 2FA Code
         code = get_random_string(length=6, allowed_chars='0123456789')
@@ -92,22 +83,12 @@ class Verify2FAView(generics.GenericAPIView):
         access_token = str(refresh.access_token)
         refresh_token = str(refresh)
         
-        response = Response({
+        return Response({
             "access": access_token,
             "refresh": refresh_token,
+            "user": UserSerializer(user).data,
             "requires_password_change": user.requires_password_change
-        })
-        
-        if request.headers.get('Platform') == 'web':
-            response.set_cookie(
-                settings.SIMPLE_JWT.get('AUTH_COOKIE', 'access_token'),
-                access_token,
-                max_age=settings.SIMPLE_JWT.get('ACCESS_TOKEN_LIFETIME').total_seconds(),
-                httponly=True,
-                samesite='Lax',
-                secure=not settings.DEBUG
-            )
-        return response
+        }, status=status.HTTP_200_OK)
 
 class PasswordResetConfirmView(generics.GenericAPIView):
     permission_classes = [permissions.AllowAny]
