@@ -144,7 +144,7 @@ CELERY_TASK_ROUTES = {
 # JWT Authentication
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'apps.users.authentication.HybridAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
         'apps.drones.authentication.DroneAPIKeyAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ),
