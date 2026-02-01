@@ -1,4 +1,4 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, permissions
 from apps.core.permissions import IsAdminOrReadOnly
 from ..models import DroneStatus
 from ..serializers import DroneStatusSerializer
