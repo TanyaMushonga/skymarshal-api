@@ -10,7 +10,12 @@ class UserViewSet(viewsets.ModelViewSet):
     Only accessible by Admins.
     """
     queryset = User.objects.all().order_by('-date_joined')
-    permission_classes = [permissions.IsAdminUser]
+    # permission_classes = [permissions.IsAdminUser] # Removed in favor of get_permissions
+
+    def get_permissions(self):
+        if self.action == 'create':
+            return [permissions.AllowAny()]
+        return [permissions.IsAdminUser()]
 
     def get_serializer_class(self):
         if self.action == 'create':
