@@ -63,7 +63,7 @@ class DroneStatusSerializer(serializers.ModelSerializer):
 class DroneSerializer(serializers.ModelSerializer):
     """Serializer for drone information"""
     status = DroneStatusSerializer(read_only=True)
-    latest_location = GPSLocationSerializer(source='gps_locations', read_only=True)
+    latest_location = serializers.SerializerMethodField()
     assigned_officer_name = serializers.CharField(
         source='assigned_officer.get_full_name',
         read_only=True
@@ -78,13 +78,11 @@ class DroneSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ['id', 'created_at', 'updated_at']
 
-    def to_representation(self, instance):
-        """Customize representation to include latest GPS location"""
-        data = super().to_representation(instance)
-        latest_gps = instance.gps_locations.first()
-        if latest_gps:
-            data['latest_location'] = GPSLocationSerializer(latest_gps).data
-        return data
+    def get_latest_location(self, obj):
+        latest = obj.gps_locations.order_by('-timestamp').first()
+        if latest:
+            return GPSLocationSerializer(latest).data
+        return None
 
 
 class DroneCreateSerializer(serializers.ModelSerializer):
