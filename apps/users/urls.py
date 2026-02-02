@@ -6,6 +6,7 @@ from .views.officer_auth import (
 )
 from .views.shared_auth import Verify2FAView, PasswordResetConfirmView
 from .views.users import UserViewSet
+from .views.auth import LogoutView
 
 router = DefaultRouter()
 router.register(r'users', UserViewSet, basename='user')
@@ -13,6 +14,7 @@ router.register(r'users', UserViewSet, basename='user')
 urlpatterns = [
     path('auth/login/admin/', AdminLoginView.as_view(), name='admin_login'),
     path('auth/login/officer/', OfficerLoginView.as_view(), name='officer_login'),
+    path('auth/logout/', LogoutView.as_view(), name='auth_logout'),
     path('auth/verify-2fa/', Verify2FAView.as_view(), name='verify_2fa'),
     path('auth/password-reset/admin/', AdminPasswordResetRequestView.as_view(), name='admin_password_reset_request'),
     path('auth/password-reset/officer/request/', OfficerPasswordResetRequestView.as_view(), name='officer_password_reset_request'),
