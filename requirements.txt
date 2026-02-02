@@ -10,7 +10,7 @@ psycopg2-binary==2.9.9
 django-redis==5.4.0
 celery==5.3.4
 redis==5.0.1
-kafka-python==2.0.2
+kafka-python-ng>=2.2.2
 ultralytics>=8.2.0
 opencv-python==4.9.0.80
 easyocr==1.7.1
@@ -27,3 +27,4 @@ flower==2.0.1
 django-celery-beat==2.6.0
 python-decouple==3.8
 sentry-sdk==1.39.2
+whitenoise==6.6.0

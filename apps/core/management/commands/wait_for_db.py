@@ -14,10 +14,11 @@ class Command(BaseCommand):
         while not db_conn:
             try:
                 db_conn = connections['default']
-                # Try to access the connection to see if it's actually ready
-                db_conn.ensure_connection()
+                with db_conn.cursor() as cursor:
+                    cursor.execute("SELECT 1")
             except OperationalError:
                 self.stdout.write('Database unavailable, waiting 1 second...')
+                db_conn = None
                 time.sleep(1)
 
         self.stdout.write(self.style.SUCCESS('Database available!'))
