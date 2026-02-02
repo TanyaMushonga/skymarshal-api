@@ -26,8 +26,7 @@ class DroneViewSet(viewsets.ModelViewSet):
     ViewSet for managing drones.
     """
     queryset = Drone.objects.prefetch_related(
-        Prefetch('status'),
-        Prefetch('gps_locations', queryset=GPSLocation.objects.order_by('-timestamp')[:1])
+        'status'
     )
     permission_classes = [permissions.IsAuthenticated]
     lookup_field = 'drone_id'
@@ -64,8 +63,7 @@ class DroneViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         """Filter queryset based on user permissions"""
         queryset = Drone.objects.prefetch_related(
-            Prefetch('status'),
-            Prefetch('gps_locations', queryset=GPSLocation.objects.order_by('-timestamp')[:1])
+            'status'
         )
 
         # If not admin, only show active drones assigned to user or unassigned
