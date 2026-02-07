@@ -3,18 +3,19 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.utils.translation import gettext_lazy as _
 from .managers import CustomUserManager
 
+from apps.core.models import TimestampedModel
+
 ROLE_CHOICES = (
     ('admin', 'Admin'),
     ('officer', 'Officer'),
     ('dispatcher', 'Dispatcher'),
 )
-class User(AbstractBaseUser, PermissionsMixin):
+class User(AbstractBaseUser, PermissionsMixin, TimestampedModel):
     email = models.EmailField(_('email address'), unique=True)
     first_name = models.CharField(max_length=150, blank=True)
     last_name = models.CharField(max_length=150, blank=True)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
-    date_joined = models.DateTimeField(auto_now_add=True)
 
     # Role & Hierarchy
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='officer')
