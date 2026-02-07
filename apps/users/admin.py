@@ -7,7 +7,7 @@ class UserAdmin(BaseUserAdmin):
     list_display = ('email', 'first_name', 'last_name', 'role', 'force_number', 'is_on_duty', 'is_certified_pilot')
     list_filter = ('role', 'is_on_duty', 'is_certified_pilot', 'is_2fa_enabled', 'is_active')
     search_fields = ('email', 'first_name', 'last_name', 'force_number', 'phone_number')
-    readonly_fields = ('date_joined', 'last_login', 'created_by')
+    readonly_fields = ('created_at', 'last_login', 'created_by')
     
     # Fieldsets for edit view
     fieldsets = (
@@ -17,7 +17,7 @@ class UserAdmin(BaseUserAdmin):
         ('Certification', {'fields': ('is_certified_pilot', 'pilot_license_number', 'license_expiry_date')}),
         ('Tactical', {'fields': ('is_on_duty', 'last_known_lat', 'last_known_lon')}),
         ('Security', {'fields': ('is_2fa_enabled', 'requires_password_change')}),
-        ('Audit', {'fields': ('date_joined', 'last_login', 'created_by')}),
+        ('Audit', {'fields': ('created_at', 'last_login', 'created_by')}),
     )
     add_fieldsets = (
         (None, {
