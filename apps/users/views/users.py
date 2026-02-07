@@ -9,7 +9,7 @@ class UserViewSet(viewsets.ModelViewSet):
     CRUD ViewSet for Users.
     Only accessible by Admins.
     """
-    queryset = User.objects.all().order_by('-date_joined')
+    queryset = User.objects.all().order_by('-created_at')
     # permission_classes = [permissions.IsAdminUser] # Removed in favor of get_permissions
 
     def get_permissions(self):
