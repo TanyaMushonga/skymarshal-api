@@ -22,5 +22,6 @@ urlpatterns = [
     path('auth/password-reset/officer/request/', OfficerPasswordResetRequestView.as_view(), name='officer_password_reset_request'),
     path('auth/password-reset/officer/verify/', OfficerPasswordResetVerifyView.as_view(), name='officer_password_reset_verify'),
     path('auth/password-reset/confirm/', PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+    path('change-password/', UserViewSet.as_view({'post': 'change_password'}), name='change_password'),
     path('', include(router.urls)),
 ]
