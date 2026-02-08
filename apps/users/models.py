@@ -16,6 +16,7 @@ class User(AbstractBaseUser, PermissionsMixin, TimestampedModel):
     last_name = models.CharField(max_length=150, blank=True)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
+    profile_picture = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
 
     # Role & Hierarchy
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='officer')
