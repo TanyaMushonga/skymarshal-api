@@ -8,7 +8,7 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = (
             'id', 'email', 'first_name', 'last_name', 'role', 
-            'force_number', 'unit_id',
+            'force_number', 'unit_id', 'profile_picture',
             'is_officer', 'is_certified_pilot', 'pilot_license_number', 'license_expiry_date',
             'phone_number', 'is_2fa_enabled', 'requires_password_change',
             'is_on_duty', 'last_known_lat', 'last_known_lon'
