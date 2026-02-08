@@ -8,7 +8,7 @@ services:
              python manage.py migrate &&
              python manage.py collectstatic --noinput &&
              chown -R 1000:1000 /app/staticfiles &&
-             gunicorn api.wsgi:application --bind 0.0.0.0:8000 --reload"
+             daphne -b 0.0.0.0 -p 8000 api.asgi:application"
     volumes:
       - .:/app
       - static_volume:/app/staticfiles
