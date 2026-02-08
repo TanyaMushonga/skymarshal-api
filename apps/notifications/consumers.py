@@ -2,8 +2,6 @@ import json
 import asyncio
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
-from rest_framework_simplejwt.tokens import AccessToken
-from django.contrib.auth.models import AnonymousUser
 
 class NotificationConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -120,11 +118,13 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         Extract and validate user from JWT token
         """
         try:
+            from rest_framework_simplejwt.tokens import AccessToken
             from apps.users.models import User
             access_token = AccessToken(token_string)
             user_id = access_token['user_id']
             return User.objects.get(id=user_id)
         except Exception:
+            from django.contrib.auth.models import AnonymousUser
             return AnonymousUser()
 
     async def notification_message(self, event):
