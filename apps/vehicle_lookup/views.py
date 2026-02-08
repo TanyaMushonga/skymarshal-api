@@ -9,6 +9,11 @@ from apps.detections.models import Detection
 from apps.violations.models import Violation
 
 class VehicleRegistrationViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint for managing vehicle registrations and viewing history.
+    Provides CRUD operations for vehicle records and a specific 'history' action
+    that aggregates data from detections and violations.
+    """
     queryset = VehicleRegistration.objects.all()
     serializer_class = VehicleRegistrationSerializer
     permission_classes = [permissions.IsAdminUser]  # Only admins can manage vehicles
