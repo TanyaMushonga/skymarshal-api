@@ -24,29 +24,41 @@ class PatrolViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
         
-        # Safe handling for schema generation (AnonymousUser)
+        # Handle schema generation and unauthenticated users
         if not user or not user.is_authenticated:
             return Patrol.objects.none()
             
-        # Ordinary officers only see their own patrols
-        if getattr(user, 'role', None) == 'officer':
-            return Patrol.objects.filter(officer=user)
-        return Patrol.objects.all()
+        # Admins (staff) see all patrols, others only see their own
+        if user.is_staff or getattr(user, 'role', None) == 'admin':
+            return Patrol.objects.all().order_by('-start_time')
+            
+        return Patrol.objects.filter(officer=user).order_by('-start_time')
 
     @action(detail=False, methods=['post'], url_path='start')
     def start_patrol(self, request):
         """
-        Start a new patrol for the authenticated officer.
-        Requires 'drone_id' in body.
-        Example: {"drone_id": "DR-123", "config": {"speed_limit": 80}}
+        Start a new patrol.
+        If user is admin, they can specify 'officer' (UUID).
+        Otherwise, defaults to the authenticated user.
+        Example: {"drone_id": "DR-123", "officer": "uuid-here", "config": {}}
         """
         user = request.user
         drone_id = request.data.get('drone_id')
+        officer_id = request.data.get('officer')
         config = request.data.get('config', {})
         
         if not drone_id:
             return Response({"error": "drone_id is required"}, status=status.HTTP_400_BAD_REQUEST)
             
+        # Determine the officer for the patrol
+        patrol_officer = user
+        if officer_id and (user.is_staff or getattr(user, 'role', None) == 'admin'):
+            from apps.users.models import User
+            try:
+                patrol_officer = User.objects.get(id=officer_id)
+            except (User.DoesNotExist, ValueError):
+                return Response({"error": "Specified officer not found"}, status=status.HTTP_404_NOT_FOUND)
+
         try:
             drone = Drone.objects.get(drone_id=drone_id)
         except Drone.DoesNotExist:
@@ -60,7 +72,7 @@ class PatrolViewSet(viewsets.ModelViewSet):
             }, status=status.HTTP_409_CONFLICT)
             
         patrol = Patrol.objects.create(
-            officer=user,
+            officer=patrol_officer,
             drone=drone,
             patrol_config=config,
             status='ACTIVE'
