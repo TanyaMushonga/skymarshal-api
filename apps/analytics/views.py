@@ -174,7 +174,8 @@ class OfficerAnalyticsViewSet(viewsets.ViewSet):
         """
         user = request.user
         return Response({
-            'officer': user.username,
+            'officer': user.email,
+            'officer_name': f"{user.first_name} {user.last_name}".strip() or user.email,
             'hours_patrolled_this_week': 12.5,
             'violations_issued': 4,
             'assigned_zone_risk_level': 'MODERATE',
