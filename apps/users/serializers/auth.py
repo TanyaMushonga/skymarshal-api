@@ -85,3 +85,13 @@ class RequestOTPSerializer(serializers.Serializer):
             raise serializers.ValidationError(_("Provide either 'email' or 'force_number', not both."))
             
         return attrs
+
+class ChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
+
+    def validate_old_password(self, value):
+        user = self.context.get('request').user
+        if not user.check_password(value):
+            raise serializers.ValidationError(_("Old password is incorrect."))
+        return value
