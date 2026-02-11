@@ -4,6 +4,14 @@ from rest_framework.response import Response
 from .models import Recommendation, TrafficMetrics, HeatMap, TrafficPattern, AnalyticsReport
 from .services import InferenceEngine
 from rest_framework import serializers
+from django.db.models import Count, Sum
+from apps.patrols.models import Patrol
+from apps.violations.models import Violation
+from apps.detections.models import Detection
+from apps.patrols.serializers import PatrolSerializer
+from apps.violations.serializers import ViolationSerializer
+from django.utils import timezone
+from datetime import timedelta
 
 # Serializers
 class RecommendationSerializer(serializers.ModelSerializer):
@@ -173,11 +181,68 @@ class OfficerAnalyticsViewSet(viewsets.ViewSet):
         Returns stats specific to the logged-in officer.
         """
         user = request.user
+        
+        # Real stats queries
+        total_patrols = Patrol.objects.filter(officer=user).count()
+        total_violations = Violation.objects.filter(patrol__officer=user).count()
+        total_detections = Detection.objects.filter(patrol__officer=user).count()
+        
+        # Calculate hours patrolled this week
+        one_week_ago = timezone.now() - timedelta(days=7)
+        weekly_patrols = Patrol.objects.filter(
+            officer=user, 
+            start_time__gte=one_week_ago,
+            status='COMPLETED'
+        )
+        
+        total_duration_seconds = 0
+        for p in weekly_patrols:
+            if p.end_time:
+                total_duration_seconds += (p.end_time - p.start_time).total_seconds()
+        
+        hours_patrolled = round(total_duration_seconds / 3600, 1)
+
         return Response({
             'officer': user.email,
             'officer_name': f"{user.first_name} {user.last_name}".strip() or user.email,
-            'hours_patrolled_this_week': 12.5,
-            'violations_issued': 4,
+            'hours_patrolled_this_week': hours_patrolled,
+            'violations_issued': total_violations,
+            'total_detections': total_detections,
+            'total_patrols': total_patrols,
             'assigned_zone_risk_level': 'MODERATE',
             'performance_rating': 4.8 
+        })
+
+class OfficerDashboardViewSet(viewsets.ViewSet):
+    permission_classes = [permissions.IsAuthenticated]
+
+    @action(detail=False, methods=['get'], url_path='summary')
+    def summary(self, request):
+        """
+        Comprehensive dashboard summary for the mobile home page.
+        """
+        user = request.user
+        today_start = timezone.now().replace(hour=0, minute=0, second=0, microsecond=0)
+
+        # 1. Active Patrol
+        active_patrol = Patrol.objects.filter(officer=user, status='ACTIVE').first()
+        active_patrol_data = PatrolSerializer(active_patrol).data if active_patrol else None
+
+        # 2. Today's Stats
+        today_stats = {
+            'patrols': Patrol.objects.filter(officer=user, start_time__gte=today_start).count(),
+            'detections': Detection.objects.filter(patrol__officer=user, timestamp__gte=today_start).count(),
+            'violations': Violation.objects.filter(patrol__officer=user, created_at__gte=today_start).count(),
+        }
+
+        # 3. Recent Violations/Alerts
+        recent_violations = Violation.objects.filter(
+            patrol__officer=user
+        ).order_by('-created_at')[:5]
+        
+        return Response({
+            'active_patrol': active_patrol_data,
+            'today_stats': today_stats,
+            'recent_alerts': ViolationSerializer(recent_violations, many=True).data,
+            'is_on_duty': user.is_on_duty
         })

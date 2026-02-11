@@ -1,7 +1,6 @@
 from rest_framework import generics, permissions, viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.parsers import MultiPartParser, FormParser
 from django.utils.crypto import get_random_string
 from ..serializers.users import AdminCreateUserSerializer, UserSerializer
 from ..models import User
@@ -13,7 +12,7 @@ class UserViewSet(viewsets.ModelViewSet):
     Only accessible by Admins.
     """
     queryset = User.objects.all().order_by('-created_at')
-    parser_classes = (MultiPartParser, FormParser)
+
 
     def get_queryset(self):
         """
@@ -59,6 +58,20 @@ class UserViewSet(viewsets.ModelViewSet):
         
         serializer.save()
         return Response(serializer.data)
+
+    @action(detail=False, methods=['post'], permission_classes=[permissions.IsAuthenticated])
+    def toggle_duty(self, request):
+        """
+        Toggle the currently logged-in officer's duty status.
+        """
+        user = request.user
+        user.is_on_duty = not user.is_on_duty
+        user.save()
+        
+        return Response({
+            "is_on_duty": user.is_on_duty,
+            "detail": f"Officer is now {'on duty' if user.is_on_duty else 'off duty'}."
+        })
 
     @action(detail=False, methods=['post'], permission_classes=[permissions.IsAuthenticated])
     def change_password(self, request):

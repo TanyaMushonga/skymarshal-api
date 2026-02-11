@@ -7,6 +7,7 @@ router = DefaultRouter()
 # or manual paths. Since they are ViewSets (ViewSet), router works if we provide basename.
 router.register(r'admin', AdminAnalyticsViewSet, basename='admin-analytics')
 router.register(r'officer', OfficerAnalyticsViewSet, basename='officer-analytics')
+router.register(r'dashboard', OfficerDashboardViewSet, basename='officer-dashboard')
 
 urlpatterns = [
     path('', include(router.urls)),

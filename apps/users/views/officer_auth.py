@@ -19,11 +19,11 @@ class OfficerLoginView(BaseLoginView):
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
 
-        if user.requires_password_change:
-             return Response(
-                 {"detail": "Password change required.", "requires_password_change": True},
-                 status=status.HTTP_403_FORBIDDEN
-             )
+        # if user.requires_password_change:
+        #      return Response(
+        #          {"detail": "Password change required.", "requires_password_change": True},
+        #          status=status.HTTP_403_FORBIDDEN
+        #      )
 
         return self.process_login(user)
 

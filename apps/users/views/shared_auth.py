@@ -38,6 +38,8 @@ class BaseLoginView(generics.GenericAPIView):
         code = get_random_string(length=6, allowed_chars='0123456789')
         cache_key = f"{OTP_CACHE_PREFIX}{user.id}"
         cache.set(cache_key, code, timeout=OTP_EXPIRY)
+        if settings.DEBUG:
+            print(f"Generated code: {code}")
 
         # Send Code (Strictly Email)
         if user.email:
@@ -152,5 +154,8 @@ class RequestOTPView(generics.GenericAPIView):
                     f"Your login code is: <strong>{code}</strong>", 
                     f"Your login code is: {code}"
                 )
+            
+            if settings.DEBUG:
+                print(f"Generated resend code: {code}")
 
         return Response({"detail": "If an account exists, a code has been sent via Email."}, status=status.HTTP_200_OK)

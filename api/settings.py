@@ -136,6 +136,7 @@ CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'UTC'
+CELERY_TASK_DEFAULT_QUEUE = 'default'
 CELERY_TASK_ROUTES = {
     'stream_ingestion.tasks.*': {'queue': 'default'},
     'computer_vision.tasks.*': {'queue': 'cv_processing'},
