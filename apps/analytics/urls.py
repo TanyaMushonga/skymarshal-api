@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import AdminAnalyticsViewSet, OfficerAnalyticsViewSet
+from .views import AdminAnalyticsViewSet, OfficerAnalyticsViewSet, OfficerDashboardViewSet
 
 router = DefaultRouter()
 # ViewSets are ViewSets not ModelViewSets, so we explicit register if using router 
