@@ -8,9 +8,14 @@ class Notification(TimestampedModel):
     Model to store user notifications
     """
     TYPE_CHOICES = (
+        ('violation_detected', 'Violation Detected'),
+        ('patrol_started', 'Patrol Started'),
+        ('patrol_ended', 'Patrol Ended'),
+        ('low_battery', 'Low Battery'),
         ('stream_health', 'Stream Health'),
         ('mission_update', 'Mission Update'),
         ('system_alert', 'System Alert'),
+        ('emergency', 'Emergency'),
         ('general', 'General'),
     )
 
