@@ -39,6 +39,14 @@ class NotificationViewSet(viewsets.ReadOnlyModelViewSet):
             
         return Response({'status': 'marked as read'})
     
+    @action(detail=False, methods=['get'])
+    def unread_count(self, request):
+        """
+        Return count of unread notifications for current user
+        """
+        count = self.get_queryset().filter(is_read=False).count()
+        return Response({'unread_count': count})
+
     @action(detail=False, methods=['post'])
     def mark_all_read(self, request):
         
