@@ -51,7 +51,7 @@ def aggregate_traffic_metrics():
         
         # Violations
         violations = Violation.objects.filter(
-            drone=drone,
+            detection__drone=drone,
             created_at__gte=five_min_ago,
             created_at__lt=now
         )
@@ -74,7 +74,7 @@ def aggregate_traffic_metrics():
             min_speed=min_speed,
             speed_variance=variance,
             violation_count=violations.count(),
-            citation_count=violations.exclude(citation_number__isnull=True).count(), # Conceptual check
+            citation_count=violations.filter(status='CITATION_SENT').count(), # Corrected from conceptual check
             sample_size=len(speeds)
         )
         logger.info(f"Aggregated metrics for {drone.drone_id}")
