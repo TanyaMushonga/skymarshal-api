@@ -25,7 +25,7 @@ class UserViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         if self.action == 'create':
             return [permissions.AllowAny()]
-        if self.action == 'me':
+        if self.action in ['me', 'toggle_duty', 'change_password']:
             return [permissions.IsAuthenticated()]
         return [permissions.IsAdminUser()]
 
@@ -59,7 +59,7 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer.save()
         return Response(serializer.data)
 
-    @action(detail=False, methods=['post'], permission_classes=[permissions.IsAuthenticated])
+    @action(detail=False, methods=['post'], permission_classes=[permissions.IsAuthenticated], url_path='toggle-duty')
     def toggle_duty(self, request):
         """
         Toggle the currently logged-in officer's duty status.
