@@ -48,7 +48,7 @@ def check_for_violations(sender, instance, created, **kwargs):
                 },
                 'altitude': instance.altitude,
                 'drone_id': instance.drone.drone_id,
-                'patrol_id': instance.patrol.id if instance.patrol else None,
+                'patrol_id': str(instance.patrol.id) if instance.patrol else None,
                 'timestamp': instance.timestamp.isoformat()
             }
 
