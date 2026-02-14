@@ -1,19 +1,15 @@
 from rest_framework import serializers
 from .models import Patrol
-from apps.drones.serializers import DroneSerializer
-from apps.users.serializers.users import UserSerializer
 from apps.detections.serializers import DetectionSerializer
 from apps.violations.serializers import ViolationSerializer
 
 class PatrolSerializer(serializers.ModelSerializer):
-    drone = DroneSerializer(read_only=True)
-    officer = UserSerializer(read_only=True)
     detections = DetectionSerializer(many=True, read_only=True)
     violations = ViolationSerializer(many=True, read_only=True)
     
-    # Keep helper IDs for easy access if needed (optional, but often helpful)
+    # helper identifiers
     drone_id_str = serializers.CharField(source='drone.drone_id', read_only=True)
-    officer_name = serializers.CharField(source='officer.email', read_only=True)
+    officer_email = serializers.CharField(source='officer.email', read_only=True)
     
     # Live stats
     battery_level = serializers.IntegerField(source='drone.status.battery_level', read_only=True)
@@ -26,7 +22,7 @@ class PatrolSerializer(serializers.ModelSerializer):
     class Meta:
         model = Patrol
         fields = [
-            'id', 'drone', 'drone_id_str', 'officer', 'officer_name', 
+            'id', 'drone', 'drone_id_str', 'officer', 'officer_email', 
             'start_time', 'end_time', 'patrol_config', 'status', 'created_at',
             'battery_level', 'status_display', 'latest_location', 
             'flight_duration_seconds', 'detection_count', 'violation_count',
