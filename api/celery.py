@@ -33,6 +33,10 @@ app.conf.beat_schedule = {
         'task': 'apps.stream_ingestion.tasks.monitor_stream_health',
         'schedule': 120.0,  # Every 2 minutes
     },
+    'cap-overlong-patrols-every-30min': {
+        'task': 'apps.patrols.tasks.cap_overlong_patrols',
+        'schedule': crontab(minute='*/30'),  # Every 30 minutes
+    },
 }
 
 @app.task(bind=True, ignore_result=True)
