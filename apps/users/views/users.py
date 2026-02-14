@@ -1,10 +1,11 @@
 from rest_framework import generics, permissions, viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from django.utils.crypto import get_random_string
+from django.utils import timezone
 from ..serializers.users import AdminCreateUserSerializer, UserSerializer
 from ..models import User
 from apps.core.tasks import send_email_task
+from apps.patrols.models import Patrol
 
 class UserViewSet(viewsets.ModelViewSet):
     """
@@ -68,9 +69,20 @@ class UserViewSet(viewsets.ModelViewSet):
         user.is_on_duty = not user.is_on_duty
         user.save()
         
+        # If toggled to off-duty, terminate any active patrols
+        terminated_count = 0
+        if not user.is_on_duty:
+            active_patrols = Patrol.objects.filter(officer=user, status='ACTIVE')
+            terminated_count = active_patrols.count()
+            active_patrols.update(
+                status='COMPLETED',
+                end_time=timezone.now()
+            )
+        
         return Response({
             "is_on_duty": user.is_on_duty,
-            "detail": f"Officer is now {'on duty' if user.is_on_duty else 'off duty'}."
+            "terminated_patrols": terminated_count,
+            "detail": f"Officer is now {'on duty' if user.is_on_duty else 'off duty'}. {f'{terminated_count} patrol(s) terminated.' if terminated_count > 0 else ''}"
         })
 
     @action(detail=False, methods=['post'], permission_classes=[permissions.IsAuthenticated])
