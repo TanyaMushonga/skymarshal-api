@@ -64,23 +64,34 @@ class UserViewSet(viewsets.ModelViewSet):
     def toggle_duty(self, request):
         """
         Toggle the currently logged-in officer's duty status.
+        Supports explicit status via 'on_duty' boolean in request data.
         """
         user = request.user
-        user.is_on_duty = not user.is_on_duty
-        user.save()
+        on_duty_param = request.data.get('on_duty')
         
-        # If toggled to off-duty, terminate any active patrols
+        old_status = user.is_on_duty
+        
+        if on_duty_param is not None:
+            user.is_on_duty = bool(on_duty_param)
+        else:
+            user.is_on_duty = not user.is_on_duty
+            
+        user.save(update_fields=['is_on_duty'])
+        
+        # If changed from on-duty to off-duty, terminate any active patrols
         terminated_count = 0
-        if not user.is_on_duty:
+        if old_status and not user.is_on_duty:
             active_patrols = Patrol.objects.filter(officer=user, status='ACTIVE')
             terminated_count = active_patrols.count()
-            active_patrols.update(
-                status='COMPLETED',
-                end_time=timezone.now()
-            )
+            if terminated_count > 0:
+                active_patrols.update(
+                    status='COMPLETED',
+                    end_time=timezone.now()
+                )
         
         return Response({
             "is_on_duty": user.is_on_duty,
+            "previous_status": old_status,
             "terminated_patrols": terminated_count,
             "detail": f"Officer is now {'on duty' if user.is_on_duty else 'off duty'}. {f'{terminated_count} patrol(s) terminated.' if terminated_count > 0 else ''}"
         })
