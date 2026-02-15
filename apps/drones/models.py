@@ -26,6 +26,11 @@ class Drone(TimestampedModel):
     
     def __str__(self):
         return f"{self.name} ({self.drone_id})"
+    
+    @property
+    def is_patrolling(self):
+        """Returns True if the drone has an active patrol"""
+        return self.patrols.filter(status='ACTIVE').exists()
 
 
 class DroneStatus(TimestampedModel):
