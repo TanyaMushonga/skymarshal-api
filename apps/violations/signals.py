@@ -52,15 +52,34 @@ def check_for_violations(sender, instance, created, **kwargs):
                 'timestamp': instance.timestamp.isoformat()
             }
 
+            # Resolve vehicle if possible
+            vehicle = None
+            if instance.license_plate:
+                from apps.vehicle_lookup.models import VehicleRegistration
+                try:
+                    vehicle = VehicleRegistration.objects.get(license_plate=instance.license_plate)
+                except VehicleRegistration.DoesNotExist:
+                    logger.warning(f"No registration found for plate {instance.license_plate}")
+
             violation = Violation.objects.create(
                 detection=instance,
+                vehicle=vehicle,
                 patrol=instance.patrol,
                 violation_type='SPEEDING',
                 fine_amount=fine, 
                 evidence_meta=evidence_data,
                 description=f"Vehicle detected at {instance.speed} km/h (Limit: {limit} km/h)"
             )
-            logger.info(f"Speeding violation created for Detection {instance.id} (Patrol Limit: {limit}, Fine: {fine})")
+
+            # --- Demerit System ---
+            if vehicle:
+                vehicle.license_points = max(0, vehicle.license_points - 10)
+                if vehicle.license_points <= 0:
+                    vehicle.license_status = 'REVOKED'
+                vehicle.save()
+                logger.info(f"Demerit applied to {vehicle.license_plate}. Points: {vehicle.license_points}, Status: {vehicle.license_status}")
+
+            logger.info(f"Speeding violation created for Detection {instance.id} (Vehicle: {vehicle}, Patrol Limit: {limit}, Fine: {fine})")
 
             # --- Notifications ---
             from apps.notifications.tasks import send_notification, send_sms_to_citizen
