@@ -13,7 +13,7 @@ from apps.drones.models import Drone, DroneStatus, GPSLocation, DroneAPIKey
 from apps.vehicle_lookup.models import VehicleRegistration
 from apps.patrols.models import Patrol
 from apps.detections.models import Detection
-from apps.violations.models import Violation
+from apps.violations.models import Violation, ViolationPayment
 from apps.compliance.models import ComplianceScore, LotteryEvent
 from apps.analytics.models import Recommendation, TrafficMetrics, HeatMap, TrafficPattern, AnalyticsReport
 from apps.notifications.models import Notification
@@ -64,6 +64,7 @@ class Command(BaseCommand):
         Recommendation.objects.all().delete()
         LotteryEvent.objects.all().delete()
         ComplianceScore.objects.all().delete()
+        ViolationPayment.objects.all().delete()
         Violation.objects.all().delete()
         Detection.objects.all().delete()
         Patrol.objects.all().delete()
@@ -154,11 +155,10 @@ class Command(BaseCommand):
         vehicles = []
         makes = ['Toyota', 'Nissan', 'Mazda', 'Honda', 'Subaru', 'Mercedes', 'BMW', 'Volkswagen']
         colors = ['White', 'Silver', 'Black', 'Blue', 'Red', 'Gray']
-        statuses = ['ACTIVE', 'ACTIVE', 'ACTIVE', 'STOLEN', 'EXPIRED']
+        plates = ["KBA 800D", "KBB 123X", "KBC 456Y", "KBD 789Z", "KBE 111A", "KBF 222B", "KBG 333C", "KBH 444D", "KBI 555E", "KBJ 666F"]
         
-        for i in range(40):
-            plate = f"K{random.choice('ABCDEF')}{random.choice('ABCDEF')} {random.randint(100, 999)}{random.choice('ABCDEF')}"
-            status = random.choice(statuses)
+        for i in range(10):
+            plate = plates[i]
             v = VehicleRegistration.objects.create(
                 license_plate=plate,
                 owner_name=f"Citizen {i}",
@@ -166,8 +166,7 @@ class Command(BaseCommand):
                 make=random.choice(makes),
                 model="Standard Module",
                 color=random.choice(colors),
-                status=status,
-                expiry_date=timezone.now().date() + timedelta(days=random.randint(-30, 365))
+                expiry_date=timezone.now().date() + timedelta(days=random.randint(30, 365))
             )
             vehicles.append(v)
         return vehicles
@@ -208,21 +207,27 @@ class Command(BaseCommand):
         self.stdout.write('Seeding detections...')
         detections = []
         vehicle_types = ['car', 'truck', 'motorcycle', 'bus']
+        vehicles = list(VehicleRegistration.objects.all())
         
         for p in patrols:
             # Seed 5-10 detections per patrol
             num_detections = random.randint(5, 10)
-            # Ensure at least 3 detections are speeding (above p.patrol_config.get('speed_limit', 60))
             limit = float(p.patrol_config.get('speed_limit', 60))
             
             for i in range(num_detections):
-                # 40% chance of speeding for interesting data
                 is_speeding = random.random() < 0.4
                 if is_speeding:
                     speed = random.uniform(limit + 5, limit + 60)
                 else:
                     speed = random.uniform(20, limit - 2)
                 
+                # Use a known vehicle 70% of the time for better linkage
+                if vehicles and random.random() < 0.7:
+                    vehicle = random.choice(vehicles)
+                    plate = vehicle.license_plate
+                else:
+                    plate = f"K{random.choice('ABC')}{random.choice('XYZ')} {random.randint(100, 999)}"
+
                 d = Detection.objects.create(
                     drone=p.drone,
                     patrol=p,
@@ -231,7 +236,7 @@ class Command(BaseCommand):
                     vehicle_type=random.choice(vehicle_types),
                     confidence=random.uniform(0.7, 0.99),
                     box_coordinates=[random.randint(0, 100) for _ in range(4)],
-                    license_plate=f"K{random.choice('ABC')}{random.choice('XYZ')} {random.randint(100, 999)}",
+                    license_plate=plate,
                     speed=speed,
                     location=Point(36.8219 + random.uniform(-0.02, 0.02), -1.2921 + random.uniform(-0.02, 0.02)),
                     altitude=random.uniform(20, 100)
@@ -242,35 +247,65 @@ class Command(BaseCommand):
     def seed_violations(self, patrols, detections):
         self.stdout.write('Seeding violations...')
         violations = []
-        # Scope limited to SPEEDING only
         violation_types = ['SPEEDING']
         
-        # Signals already create some violations for speeding detections.
-        # We supplement or ensure consistent data here.
-        potential_violations = [d for d in detections if d.speed > 60] # Basic filter
-        sample_size = min(len(potential_violations), 30)
+        potential_violations = [d for d in detections if d.speed > 60] 
+        # Create violations for most speeding detections
+        sample_size = min(len(potential_violations), int(len(potential_violations) * 0.9)) 
+
         if sample_size > 0:
             for det in random.sample(potential_violations, sample_size):
                 v_type = 'SPEEDING'
+                fine_amount = Decimal(random.randint(50, 200))
+                
+                # Determine status and payments
+                status_choice = random.choice(['NEW', 'CITATION_SENT', 'PARTIAL', 'PAID'])
+                paid_amount = Decimal(0)
+                
+                if status_choice == 'PAID':
+                    paid_amount = fine_amount
+                elif status_choice == 'PARTIAL':
+                    paid_amount = fine_amount * Decimal(random.uniform(0.1, 0.9))
+                    # Round to 2 decimals
+                    paid_amount = round(paid_amount, 2)
+                
                 v, created = Violation.objects.get_or_create(
                     detection=det,
                     defaults={
                         'patrol': det.patrol,
                         'violation_type': v_type,
-                        'status': random.choice(['NEW', 'PROCESSED', 'CITATION_SENT']),
-                        'fine_amount': Decimal(random.randint(50, 200)),
+                        'status': status_choice,
+                        'fine_amount': fine_amount,
+                        'paid_amount': paid_amount,
                         'description': f"Detected {v_type} at {det.speed:.1f} km/h"
                     }
                 )
+                
+                # Create Payment Records if paid > 0
+                if paid_amount > 0:
+                    # Maybe one or two payments
+                    if status_choice == 'PARTIAL' and random.choice([True, False]):
+                         # Splits into two payments? No, just one for simplicity in seed
+                         pass
+
+                    ViolationPayment.objects.create(
+                        violation=v,
+                        amount=paid_amount,
+                        currency=random.choice(['USD', 'ZIG']),
+                        method=random.choice(['CASH', 'WIRE_TRANSFER']),
+                        officer=det.patrol.officer, # Officer who did the patrol
+                        # or random officer
+                    )
+
                 violations.append(v)
         return violations
 
     def seed_compliance(self, vehicles):
         self.stdout.write('Seeding compliance data...')
         for v in vehicles:
-            ComplianceScore.objects.create(
+            ComplianceScore.objects.update_or_create(
                 vehicle=v,
-                safe_driving_points=random.randint(0, 100)
+                defaults={'safe_driving_points': random.randint(0, 100)}
             )
             
         for i in range(5):
