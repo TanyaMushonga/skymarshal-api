@@ -73,10 +73,10 @@ class DroneSerializer(serializers.ModelSerializer):
         model = Drone
         fields = [
             'id', 'drone_id', 'name', 'model', 'serial_number',
-            'is_active', 'assigned_officer', 'assigned_officer_name',
+            'is_active', 'is_patrolling', 'assigned_officer', 'assigned_officer_name',
             'status', 'latest_location', 'created_at', 'updated_at'
         ]
-        read_only_fields = ['id', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'is_patrolling', 'created_at', 'updated_at']
 
     def get_latest_location(self, obj):
         latest = obj.gps_locations.order_by('-timestamp').first()
