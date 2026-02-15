@@ -1,9 +1,9 @@
 from django.contrib import admin
-from .models import Violation
+from .models import Violation, ViolationPayment
 
 @admin.register(Violation)
 class ViolationAdmin(admin.ModelAdmin):
-    list_display = ('id', 'violation_type', 'status', 'fine_amount', 'get_drone', 'get_timestamp')
+    list_display = ('id', 'violation_type', 'status', 'fine_amount', 'paid_amount', 'get_drone', 'get_timestamp')
     list_filter = ('violation_type', 'status')
     search_fields = ('detection__drone__drone_id', 'detection__license_plate')
     
@@ -14,3 +14,9 @@ class ViolationAdmin(admin.ModelAdmin):
     def get_timestamp(self, obj):
         return obj.detection.timestamp
     get_timestamp.short_description = 'Timestamp'
+
+@admin.register(ViolationPayment)
+class ViolationPaymentAdmin(admin.ModelAdmin):
+    list_display = ('id', 'violation', 'amount', 'currency', 'method', 'officer', 'created_at')
+    list_filter = ('currency', 'method', 'officer')
+    search_fields = ('violation__id', 'violation__detection__license_plate')
