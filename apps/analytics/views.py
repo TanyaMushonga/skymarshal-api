@@ -1,4 +1,5 @@
 from rest_framework import viewsets, permissions, status
+from django.db import models
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from .models import Recommendation, TrafficMetrics, HeatMap, TrafficPattern, AnalyticsReport
@@ -10,6 +11,9 @@ from apps.violations.models import Violation
 from apps.detections.models import Detection
 from apps.patrols.serializers import PatrolSerializer
 from apps.violations.serializers import ViolationSerializer
+from apps.drones.serializers import DroneSerializer
+from apps.detections.serializers import DetectionSerializer
+from apps.drones.models import Drone
 from django.utils import timezone
 from datetime import timedelta
 
@@ -235,14 +239,27 @@ class OfficerDashboardViewSet(viewsets.ViewSet):
             'violations': Violation.objects.filter(patrol__officer=user, created_at__gte=today_start).count(),
         }
 
-        # 3. Recent Violations/Alerts
+        # 3. Active Drones (Drones assigned to this officer or in their active patrol)
+        patrol_drones = Patrol.objects.filter(officer=user, status='ACTIVE').values_list('drone_id', flat=True)
+        active_drones = Drone.objects.filter(
+            models.Q(assigned_officer=user) | models.Q(id__in=patrol_drones)
+        ).distinct()
+
+        # 4. Recent Detections
+        recent_detections = Detection.objects.filter(
+            patrol__officer=user
+        ).order_by('-timestamp')[:5]
+
+        # 5. Recent Violations/Alerts (already deeply nested in Serializer)
         recent_violations = Violation.objects.filter(
             patrol__officer=user
         ).order_by('-created_at')[:5]
         
         return Response({
             'active_patrol': active_patrol_data,
-            'today_stats': today_stats,
+            'active_drones': DroneSerializer(active_drones, many=True).data,
+            'recent_detections': DetectionSerializer(recent_detections, many=True).data,
             'recent_alerts': ViolationSerializer(recent_violations, many=True).data,
+            'today_stats': today_stats,
             'is_on_duty': user.is_on_duty
         })
