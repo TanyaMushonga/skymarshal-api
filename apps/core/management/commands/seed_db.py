@@ -269,7 +269,7 @@ class Command(BaseCommand):
                     # Round to 2 decimals
                     paid_amount = round(paid_amount, 2)
                 
-                v, created = Violation.objects.get_or_create(
+                v, created = Violation.objects.update_or_create(
                     detection=det,
                     defaults={
                         'patrol': det.patrol,
