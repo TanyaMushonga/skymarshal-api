@@ -78,9 +78,9 @@ class PatrolViewSet(viewsets.ModelViewSet):
             status='ACTIVE'
         )
 
-        # Toggle officer on-duty
-        patrol_officer.is_on_duty = True
-        patrol_officer.save(update_fields=['is_on_duty'])
+        # Duty status is managed explicitly by the client/app
+        # patrol_officer.is_on_duty = True
+        # patrol_officer.save(update_fields=['is_on_duty'])
     
         
         return Response(PatrolSerializer(patrol).data, status=status.HTTP_201_CREATED)
@@ -99,9 +99,9 @@ class PatrolViewSet(viewsets.ModelViewSet):
         patrol.end_time = timezone.now()
         patrol.save()
         
-        # Toggle officer off-duty
-        officer = patrol.officer
-        officer.is_on_duty = False
-        officer.save(update_fields=['is_on_duty'])
+        # Duty status is managed explicitly by the client/app
+        # officer = patrol.officer
+        # officer.is_on_duty = False
+        # officer.save(update_fields=['is_on_duty'])
         
         return Response(PatrolSerializer(patrol).data)
