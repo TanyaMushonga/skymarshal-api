@@ -81,13 +81,22 @@ class UserViewSet(viewsets.ModelViewSet):
         # If changed from on-duty to off-duty, terminate any active patrols
         terminated_count = 0
         if old_status and not user.is_on_duty:
-            active_patrols = Patrol.objects.filter(officer=user, status='ACTIVE')
+            # Grace period: Don't terminate patrols started in the last minute (fixes frontend race conditions)
+            grace_threshold = timezone.now() - timezone.timedelta(seconds=60)
+            
+            active_patrols = Patrol.objects.filter(
+                officer=user, 
+                status='ACTIVE',
+                start_time__lte=grace_threshold
+            )
             terminated_count = active_patrols.count()
             if terminated_count > 0:
                 active_patrols.update(
                     status='COMPLETED',
                     end_time=timezone.now()
                 )
+# Note: Patrols started < 60s ago remain ACTIVE, but officer is now OFF DUTY.
+# This mismatch is safer than killing a just-started patrol.
         
         return Response({
             "is_on_duty": user.is_on_duty,
