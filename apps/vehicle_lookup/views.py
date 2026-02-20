@@ -202,39 +202,66 @@ class VehicleRegistrationViewSet(viewsets.ModelViewSet):
         if not violations.exists():
             return Response({'error': 'No outstanding fines found'}, status=404)
 
-        remaining_payment = amount
-        payments_created = 0
+        # Currency Conversion Rate
+        ZIG_TO_USD_RATE = Decimal('25.0')
         
+        remaining_payment_original = amount
+        payments_created = 0
+        total_usd_applied = Decimal('0.00')
+
         for v in violations:
-            if remaining_payment <= 0:
+            if remaining_payment_original <= 0:
                 break
                 
-            outstanding = v.fine_amount - v.paid_amount
-            payment_to_apply = min(remaining_payment, outstanding)
+            outstanding_usd = v.fine_amount - v.paid_amount
             
-            # Record payment
+            # Calculate how much of the original currency is needed to cover outstanding USD
+            if currency == 'ZIG':
+                # outstanding_usd * 25 = amount in ZiG needed
+                amount_needed_original = outstanding_usd * ZIG_TO_USD_RATE
+            else:
+                amount_needed_original = outstanding_usd
+
+            payment_to_apply_original = min(remaining_payment_original, amount_needed_original)
+            
+            # Calculate USD equivalent of this payment chunk
+            if currency == 'ZIG':
+                payment_to_apply_usd = payment_to_apply_original / ZIG_TO_USD_RATE
+            else:
+                payment_to_apply_usd = payment_to_apply_original
+
+            # Round USD to 2 decimals to avoid long floats, but keep original precise?
+            # Standard financial rounding
+            payment_to_apply_usd = round(payment_to_apply_usd, 2)
+
+            # Record payment (Stores original currency amount)
             ViolationPayment.objects.create(
                 violation=v,
-                amount=payment_to_apply,
+                amount=payment_to_apply_original,
                 currency=currency,
                 method=method,
                 officer=request.user
             )
             
-            v.paid_amount += payment_to_apply
+            v.paid_amount += payment_to_apply_usd
+            # Cap at fine_amount to avoid slight rounding overpayment
             if v.paid_amount >= v.fine_amount:
+                v.paid_amount = v.fine_amount
                 v.status = 'PAID'
             else:
                 v.status = 'PARTIAL'
             v.save()
             
-            remaining_payment -= payment_to_apply
+            remaining_payment_original -= payment_to_apply_original
+            total_usd_applied += payment_to_apply_usd
             payments_created += 1
 
         return Response({
-            'message': f'Recorded {payments_created} payment(s). Remaining credit: {remaining_payment}',
-            'amount_applied': amount - remaining_payment,
-            'remaining_credit': remaining_payment
+            'message': f'Recorded {payments_created} payment(s). Remaining credit: {remaining_payment_original} {currency}',
+            'amount_applied_original': amount - remaining_payment_original,
+            'amount_applied_usd': total_usd_applied,
+            'remaining_credit': remaining_payment_original,
+            'currency': currency
         })
 
     @action(detail=False, methods=['post'], url_path='clear-fines')
