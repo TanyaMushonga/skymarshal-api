@@ -215,3 +215,101 @@ def monitor_stream_health():
     
     logger.info(f"Health check completed: {health_report}")
     return health_report
+@shared_task(bind=True)
+def simulate_stream_task(self, stream_id, patrol_id=None, video_file='computer_vision/traffic_sample.mp4'):
+    """
+    Simulate a live stream by reading from a video file and publishing to Kafka.
+    Can be associated with an active patrol.
+    """
+    import os
+    import time
+    from django.conf import settings
+    from apps.patrols.models import Patrol
+    
+    try:
+        stream = VideoStream.objects.get(id=stream_id)
+        patrol = Patrol.objects.get(id=patrol_id) if patrol_id else None
+        
+        # Resolve absolute path
+        base_dir = settings.BASE_DIR
+        abs_video_path = os.path.join(base_dir, video_file)
+        
+        if not os.path.exists(abs_video_path):
+            logger.error(f"Simulation file not found: {abs_video_path}")
+            return
+            
+        stream.is_active = True
+        stream.save(update_fields=['is_active'])
+        
+        session = StreamSession.objects.create(
+            stream=stream,
+            patrol=patrol,
+            kafka_topic=settings.KAFKA_TOPICS['RAW_FRAMES']
+        )
+        
+        producer = get_kafka_producer()
+        
+        logger.info(f"Starting simulation for stream {stream_id}, patrol {patrol_id}")
+        
+        frame_count = 0
+        while stream.is_active:
+            cap = cv2.VideoCapture(abs_video_path)
+            if not cap.isOpened():
+                logger.error(f"Failed to open simulation video: {abs_video_path}")
+                break
+                
+            fps = cap.get(cv2.CAP_PROP_FPS) or 30.0
+            delay = 1.0 / fps
+            
+            while cap.isOpened() and stream.is_active:
+                ret, frame = cap.read()
+                if not ret:
+                    break # Restart loop if finished
+                    
+                frame_count += 1
+                
+                # Encode and send (every 3rd frame to save bandwidth/CPU)
+                if frame_count % 3 == 0:
+                    _, buffer = cv2.imencode('.jpg', frame, [cv2.IMWRITE_JPEG_QUALITY, 80])
+                    frame_base64 = base64.b64encode(buffer).decode('utf-8')
+                    
+                    message = {
+                        'stream_id': str(stream.stream_id),
+                        'drone_id': stream.drone.drone_id,
+                        'frame_number': frame_count,
+                        'timestamp': timezone.now().isoformat(),
+                        'frame_data': frame_base64,
+                        'gps': {'latitude': -17.8252, 'longitude': 31.0335, 'altitude': 50.0},
+                        'resolution': '1920x1080',
+                        'frame_rate': fps
+                    }
+                    
+                    producer.send(settings.KAFKA_TOPICS['RAW_FRAMES'], value=message)
+                    session.frames_processed += 1
+                    
+                    if frame_count % 30 == 0:
+                        session.save(update_fields=['frames_processed'])
+                
+                # Throttle to match FPS
+                time.sleep(delay)
+                
+                # Refresh stream status
+                if frame_count % 100 == 0:
+                    stream.refresh_from_db()
+            
+            cap.release()
+            
+            # If not looping, we'd break here. For now, assume a continuous loop for simulation
+            # but check is_active to allow stopping.
+            if not stream.is_active:
+                break
+                
+        session.end_time = timezone.now()
+        session.save()
+        logger.info(f"Simulation completed for stream {stream_id}")
+        
+    except Exception as e:
+        logger.error(f"Error in simulate_stream_task: {e}", exc_info=True)
+        if 'stream' in locals():
+            stream.is_active = False
+            stream.save(update_fields=['is_active'])
