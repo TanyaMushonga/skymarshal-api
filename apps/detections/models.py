@@ -13,12 +13,12 @@ class Detection(TimestampedModel):
     vehicle_type = models.CharField(max_length=50) # car, truck, etc.
     confidence = models.FloatField()
     box_coordinates = models.JSONField() # [x1, y1, x2, y2]
-    track_id = models.IntegerField(null=True, blank=True)
 
     
     # Optional extended properties
     license_plate = models.CharField(max_length=20, null=True, blank=True)
     speed = models.FloatField(null=True, blank=True) # km/h
+    track_id = models.IntegerField(null=True, blank=True)
     
     # Location where detection happened
     location = gis_models.PointField(geography=True, null=True, blank=True)
@@ -30,14 +30,14 @@ class Detection(TimestampedModel):
         constraints = [
             # Primary uniqueness for tracked detections
             models.UniqueConstraint(
-                fields=['patrol', 'frame_number', 'drone'], 
-                name='unique_patrol_frame_drone',
+                fields=['patrol', 'frame_number', 'drone', 'track_id'], 
+                name='unique_patrol_frame_drone_track',
                 condition=models.Q(patrol__isnull=False)
             ),
             # Fallback uniqueness for untracked detections (no patrol)
             models.UniqueConstraint(
-                fields=['frame_number', 'drone'], 
-                name='unique_frame_drone_no_patrol',
+                fields=['frame_number', 'drone', 'track_id'], 
+                name='unique_frame_drone_no_patrol_track',
                 condition=models.Q(patrol__isnull=True)
             )
         ]
