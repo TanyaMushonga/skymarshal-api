@@ -12,6 +12,7 @@ celery==5.3.4
 redis==5.0.1
 kafka-python-ng>=2.2.2
 ultralytics>=8.2.0
+lapx>=0.5.5
 opencv-python==4.9.0.80
 easyocr==1.7.1
 numpy==1.26.3
