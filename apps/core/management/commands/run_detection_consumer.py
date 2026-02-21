@@ -48,7 +48,7 @@ class Command(BaseCommand):
         Create a Detection record from the message data
         """
         try:
-            # logger.debug(f"Received message keys: {list(data.keys())}")
+            logger.info(f"Incoming Event: {data}")
             drone_id = data.get('drone_id')
             timestamp_raw = data.get('timestamp')
             
