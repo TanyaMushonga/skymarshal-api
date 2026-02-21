@@ -24,11 +24,6 @@ class VideoProcessor:
     def process_frame_data(self, frame_data, frame_number, fps=30.0, annotate=True):
         """
         Process a single frame from Kafka stream.
-        :param frame_data: Base64 encoded frame string
-        :param frame_number: Integer frame index
-        :param fps: Frames per second (for speed calculation)
-        :param annotate: Whether to return the annotated frame data
-        :return: (detections, annotated_frame_base64)
         """
         # Decode base64
         jpg_original = base64.b64decode(frame_data)
@@ -41,62 +36,69 @@ class VideoProcessor:
         # Detect
         results = self.detector.detect_vehicles(frame)
 
-        if results[0].boxes.id is not None:
-            boxes = results[0].boxes.xyxy.cpu().numpy()
-            track_ids = results[0].boxes.id.int().cpu().tolist()
-            confs = results[0].boxes.conf.cpu().tolist()
-            cls_ids = results[0].boxes.cls.int().cpu().tolist()
+        if len(results) > 0 and results[0].boxes is not None:
+            boxes_obj = results[0].boxes
             
-            names = results[0].names
+            # Tracking check
+            if boxes_obj.id is not None:
+                boxes = boxes_obj.xyxy.cpu().numpy()
+                track_ids = boxes_obj.id.int().cpu().tolist()
+                confs = boxes_obj.conf.cpu().tolist()
+                cls_ids = boxes_obj.cls.int().cpu().tolist()
+                names = results[0].names
 
-            for box, track_id, conf, cls_id in zip(boxes, track_ids, confs, cls_ids):
-                x1, y1, x2, y2 = map(int, box)
-                bottom_center = (int((x1 + x2) / 2), y2)
-                
-                # Estimate speed
-                speed = self.speed_estimator.estimate_speed(
-                    track_id, bottom_center, frame_number, fps
-                )
-                
-                # ALPR
-                vehicle_crop = frame[y1:y2, x1:x2]
-                plate_text = None
-                if vehicle_crop.size > 0:
-                    read_plate = self.alpr_reader.detect_and_read(vehicle_crop, track_id)
-                    if read_plate and read_plate != "Scanning...":
-                        plate_text = read_plate
-
-                vehicle_type = names[cls_id]
-
-                detections.append({
-                    'vehicle_type': vehicle_type,
-                    'confidence': conf,
-                    'box_coordinates': [x1, y1, x2, y2],
-                    'license_plate': plate_text,
-                    'speed': speed
-                })
-
-                if annotate:
-                    # Draw bounding box
-                    cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 1)
+                for box, track_id, conf, cls_id in zip(boxes, track_ids, confs, cls_ids):
+                    x1, y1, x2, y2 = map(int, box)
+                    bottom_center = (int((x1 + x2) / 2), y2)
                     
-                    # Simplify label: Car | ABC-123 | 60 km/h
-                    label_parts = [vehicle_type.capitalize()]
-                    if plate_text and plate_text != "Scanning...":
-                        label_parts.append(plate_text)
-                    label_parts.append(f"{speed} km/h")
+                    # Estimate speed
+                    speed = self.speed_estimator.estimate_speed(
+                        track_id, bottom_center, frame_number, fps
+                    )
                     
-                    label = " | ".join(label_parts)
-                    font_scale = 0.45
-                    thickness = 1
-                    (w, h), _ = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, font_scale, thickness)
-                    
-                    # Draw label background
-                    cv2.rectangle(frame, (x1, y1 - h - 6), (x1 + w + 4, y1), (0, 255, 0), -1)
-                    cv2.putText(frame, label, (x1 + 2, y1 - 4), cv2.FONT_HERSHEY_SIMPLEX, font_scale, (0, 0, 0), thickness)
+                    # ALPR
+                    vehicle_crop = frame[y1:y2, x1:x2]
+                    plate_text = None
+                    if vehicle_crop.size > 0:
+                        read_plate = self.alpr_reader.detect_and_read(vehicle_crop, track_id)
+                        if read_plate and read_plate != "Scanning...":
+                            plate_text = read_plate
+
+                    vehicle_type = names[cls_id]
+
+                    detections.append({
+                        'track_id': track_id,
+                        'vehicle_type': vehicle_type,
+                        'confidence': conf,
+                        'box_coordinates': [x1, y1, x2, y2],
+                        'license_plate': plate_text,
+                        'speed': speed
+                    })
+
+                    if annotate:
+                        # Draw bounding box
+                        cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 1)
+                        
+                        # Label: ID: 1 | ABC-123 | 60 km/h
+                        label_parts = [f"ID: {track_id}"]
+                        if plate_text:
+                            label_parts.append(plate_text)
+                        label_parts.append(f"{speed} km/h")
+                        
+                        label = " | ".join(label_parts)
+                        font_scale = 0.4
+                        thickness = 1
+                        (w, h), _ = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, font_scale, thickness)
+                        
+                        # Draw label background
+                        cv2.rectangle(frame, (x1, y1 - h - 6), (x1 + w + 4, y1), (0, 255, 0), -1)
+                        cv2.putText(frame, label, (x1 + 2, y1 - 4), cv2.FONT_HERSHEY_SIMPLEX, font_scale, (0, 0, 0), thickness)
+            else:
+                # Optional: log if we find vehicles but no IDs (means tracking failed)
+                pass
 
         if annotate:
-            # Reduce quality slightly for better throughput
+            # Reduce quality for throughput
             _, buffer = cv2.imencode('.jpg', frame, [int(cv2.IMWRITE_JPEG_QUALITY), 65])
             annotated_frame_data = base64.b64encode(buffer).decode('utf-8')
 
