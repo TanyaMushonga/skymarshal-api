@@ -11,7 +11,14 @@ from ..serializers import (
     StreamRegistrationSerializer,
     StreamSessionSerializer
 )
-from ..tasks import process_rtsp_stream
+from ..tasks import process_rtsp_stream, simulate_stream_task
+from apps.patrols.models import Patrol
+import subprocess
+import os
+import signal
+
+# Track background processes for simulations (DEPRECATED: Now using Celery)
+# SIMULATION_PROCESSES = {}
 
 class VideoStreamViewSet(viewsets.ModelViewSet):
     """
@@ -20,6 +27,7 @@ class VideoStreamViewSet(viewsets.ModelViewSet):
     
     queryset = VideoStream.objects.select_related('drone').all()
     serializer_class = VideoStreamSerializer
+    lookup_field = 'stream_id'
     permission_classes = [IsAuthenticated | IsDroneAuthenticated]
     ordering = ['-created_at']
     pagination_class = StandardResultsSetPagination
@@ -65,7 +73,7 @@ class VideoStreamViewSet(viewsets.ModelViewSet):
         return Response(status=status.HTTP_204_NO_CONTENT)
     
     @action(detail=True, methods=['post'])
-    def start(self, request, pk=None):
+    def start(self, request, pk=None, stream_id=None):
         """
         Start video stream processing
         POST /api/v1/streams/{id}/start/
@@ -97,7 +105,7 @@ class VideoStreamViewSet(viewsets.ModelViewSet):
         }, status=status.HTTP_200_OK)
     
     @action(detail=True, methods=['post'])
-    def stop(self, request, pk=None):
+    def stop(self, request, pk=None, stream_id=None):
         """
         Stop video stream processing
         POST /api/v1/streams/{id}/stop/
@@ -143,7 +151,7 @@ class VideoStreamViewSet(viewsets.ModelViewSet):
         }, status=status.HTTP_200_OK)
     
     @action(detail=True, methods=['get'])
-    def stats(self, request, pk=None):
+    def stats(self, request, pk=None, stream_id=None):
         """
         Get stream statistics
         GET /api/v1/streams/{id}/stats/
@@ -180,4 +188,55 @@ class VideoStreamViewSet(viewsets.ModelViewSet):
             'is_currently_active': stream.is_active,
             'current_session': StreamSessionSerializer(current_session).data if current_session else None,
             'last_completed_session': StreamSessionSerializer(last_completed).data if last_completed else None
+        }, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=['post'])
+    def simulate(self, request, pk=None, stream_id=None):
+        """
+        Simulate a live stream using a video file via Celery.
+        POST /api/v1/streams/{id}/simulate/
+        """
+        stream = self.get_object()
+        video_file = request.data.get('video_file', 'computer_vision/traffic_sample.mp4')
+        patrol_id = request.data.get('patrol_id')
+        
+        if stream.is_active:
+             return Response(
+                {'error': 'Stream is already active'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Trigger simulation task
+        task = simulate_stream_task.delay(
+            stream_id=stream.id, 
+            patrol_id=patrol_id,
+            video_file=video_file
+        )
+        
+        return Response({
+            'status': 'simulation_started',
+            'stream_id': str(stream.stream_id),
+            'task_id': task.id,
+            'message': f'Simulation task queued using {video_file}'
+        }, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=['post'])
+    def stop_simulation(self, request, pk=None, stream_id=None):
+        """
+        Stop a running simulation by setting is_active to False.
+        POST /api/v1/streams/{id}/stop_simulation/
+        """
+        stream = self.get_object()
+        if not stream.is_active:
+             return Response(
+                {'error': 'Stream is not active'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+            
+        stream.is_active = False
+        stream.save(update_fields=['is_active'])
+        
+        return Response({
+            'status': 'simulation_stopped',
+            'message': 'Simulation stop signal sent'
         }, status=status.HTTP_200_OK)
