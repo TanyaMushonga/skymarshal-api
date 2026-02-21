@@ -48,6 +48,7 @@ class Command(BaseCommand):
         Create a Detection record from the message data
         """
         try:
+            # logger.debug(f"Received message keys: {list(data.keys())}")
             drone_id = data.get('drone_id')
             timestamp_raw = data.get('timestamp')
             
@@ -90,6 +91,7 @@ class Command(BaseCommand):
                         patrol=patrol,
                         frame_number=frame_number,
                         drone=drone,
+                        track_id=data.get('track_id'),
                         defaults={
                             'timestamp': timestamp,
                             'vehicle_type': data.get('vehicle_type', 'unknown'),
@@ -98,11 +100,11 @@ class Command(BaseCommand):
                             'license_plate': data.get('license_plate'),
                             'speed': data.get('speed'),
                             'location': location,
-                            'altitude': data.get('location', {}).get('altitude')
+                            'altitude': data.get('location', {}).get('altitude') if isinstance(data.get('location'), dict) else None
                         }
                     )
                     if created:
-                        logger.info(f"Saved detection for {drone_id} (Frame {frame_number})")
+                        logger.info(f"Saved detection for {drone_id} (Frame {frame_number}, ID {data.get('track_id')})")
                     else:
                         logger.debug(f"Updated existing detection for {drone_id} (Frame {frame_number})")
                 except IntegrityError:
@@ -120,8 +122,9 @@ class Command(BaseCommand):
                     box_coordinates=data.get('box_coordinates', []),
                     license_plate=data.get('license_plate'),
                     speed=data.get('speed'),
+                    track_id=data.get('track_id'),
                     location=location,
-                    altitude=data.get('location', {}).get('altitude')
+                    altitude=data.get('location', {}).get('altitude') if isinstance(data.get('location'), dict) else None
                 )
                 logger.info(f"Saved un-tracked detection for {drone_id}")
             
