@@ -210,6 +210,7 @@ services:
       - CV_MODE=stream
       - DB_HOST=db
       - DB_PORT=5432
+      - REDIS_URL=redis://redis:6379/0
       - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
       - YOLO_CONFIG_DIR=/tmp
     depends_on:
@@ -234,6 +235,7 @@ services:
     environment:
       - DB_HOST=db
       - DB_PORT=5432
+      - REDIS_URL=redis://redis:6379/0
       - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
     depends_on:
       kafka:
