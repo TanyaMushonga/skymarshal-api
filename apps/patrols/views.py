@@ -9,6 +9,8 @@ from apps.drones.models import Drone
 from rest_framework.filters import SearchFilter, OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from apps.core.pagination import StandardResultsSetPagination
+from apps.stream_ingestion.models import VideoStream
+from apps.stream_ingestion.tasks import simulate_stream_task
 
 class PatrolViewSet(viewsets.ModelViewSet):
     queryset = Patrol.objects.all().order_by('-start_time')
@@ -78,10 +80,7 @@ class PatrolViewSet(viewsets.ModelViewSet):
             status='ACTIVE'
         )
 
-        # Duty status is managed explicitly by the client/app
-        # patrol_officer.is_on_duty = True
-        # patrol_officer.save(update_fields=['is_on_duty'])
-    
+        # duty_status logic...
         
         return Response(PatrolSerializer(patrol).data, status=status.HTTP_201_CREATED)
 
@@ -99,9 +98,6 @@ class PatrolViewSet(viewsets.ModelViewSet):
         patrol.end_time = timezone.now()
         patrol.save()
         
-        # Duty status is managed explicitly by the client/app
-        # officer = patrol.officer
-        # officer.is_on_duty = False
-        # officer.save(update_fields=['is_on_duty'])
+        # duty_status logic...
         
         return Response(PatrolSerializer(patrol).data)
