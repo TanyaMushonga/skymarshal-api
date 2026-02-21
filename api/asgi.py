@@ -14,7 +14,10 @@ from channels.routing import ProtocolTypeRouter, URLRouter
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'api.settings')
 
 # Import routing after settings are configured
-from apps.notifications.routing import websocket_urlpatterns
+from apps.notifications.routing import websocket_urlpatterns as notifications_urls
+from apps.stream_ingestion.routing import websocket_urlpatterns as streams_urls
+
+websocket_urlpatterns = notifications_urls + streams_urls
 
 # No AuthMiddlewareStack - consumer handles authentication via first message
 application = ProtocolTypeRouter({
