@@ -1,5 +1,5 @@
-from src.speed_estimator import SpeedEstimator
-from src.alpr import LicensePlateReader
+from computer_vision.src.speed_estimator import SpeedEstimator
+from computer_vision.src.alpr import LicensePlateReader
 import cv2
 import os
 import numpy as np
@@ -21,13 +21,14 @@ class VideoProcessor:
         if not os.path.exists(self.output_dir):
             os.makedirs(self.output_dir)
 
-    def process_frame_data(self, frame_data, frame_number, fps=30.0):
+    def process_frame_data(self, frame_data, frame_number, fps=30.0, annotate=True):
         """
         Process a single frame from Kafka stream.
         :param frame_data: Base64 encoded frame string
         :param frame_number: Integer frame index
         :param fps: Frames per second (for speed calculation)
-        :return: List of detection dictionaries
+        :param annotate: Whether to return the annotated frame data
+        :return: (detections, annotated_frame_base64)
         """
         # Decode base64
         jpg_original = base64.b64decode(frame_data)
@@ -35,6 +36,7 @@ class VideoProcessor:
         frame = cv2.imdecode(jpg_as_np, flags=1)
 
         detections = []
+        annotated_frame_data = None
         
         # Detect
         results = self.detector.detect_vehicles(frame)
@@ -74,7 +76,31 @@ class VideoProcessor:
                     'speed': speed
                 })
 
-        return detections
+                if annotate:
+                    # Draw bounding box
+                    cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 1)
+                    
+                    # Simplify label: Car | ABC-123 | 60 km/h
+                    label_parts = [vehicle_type.capitalize()]
+                    if plate_text and plate_text != "Scanning...":
+                        label_parts.append(plate_text)
+                    label_parts.append(f"{speed} km/h")
+                    
+                    label = " | ".join(label_parts)
+                    font_scale = 0.45
+                    thickness = 1
+                    (w, h), _ = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, font_scale, thickness)
+                    
+                    # Draw label background
+                    cv2.rectangle(frame, (x1, y1 - h - 6), (x1 + w + 4, y1), (0, 255, 0), -1)
+                    cv2.putText(frame, label, (x1 + 2, y1 - 4), cv2.FONT_HERSHEY_SIMPLEX, font_scale, (0, 0, 0), thickness)
+
+        if annotate:
+            # Reduce quality slightly for better throughput
+            _, buffer = cv2.imencode('.jpg', frame, [int(cv2.IMWRITE_JPEG_QUALITY), 65])
+            annotated_frame_data = base64.b64encode(buffer).decode('utf-8')
+
+        return detections, annotated_frame_data
 
     def process_video(self, input_path):
         """
@@ -135,16 +161,23 @@ class VideoProcessor:
                         plate_text = self.alpr_reader.detect_and_read(vehicle_crop, track_id)
 
                     # Draw bounding box
-                    cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
+                    cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 1)
                     
                     # Draw ID, Speed, and Plate label
-                    label = f"ID: {track_id} | {plate_text} | {speed} km/h"
-                    (w, h), _ = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.6, 2)
+                    label_parts = [f"ID: {track_id}"]
+                    if plate_text and plate_text != "Scanning...":
+                        label_parts.append(plate_text)
+                    label_parts.append(f"{speed} km/h")
+                    
+                    label = " | ".join(label_parts)
+                    font_scale = 0.45
+                    thickness = 1
+                    (w, h), _ = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, font_scale, thickness)
                     
                     # Ensure label stays within frame
                     label_y = max(y1, h + 10)
-                    cv2.rectangle(frame, (x1, label_y - h - 10), (x1 + w, label_y), (0, 255, 0), -1)
-                    cv2.putText(frame, label, (x1, label_y - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 0), 2)
+                    cv2.rectangle(frame, (x1, label_y - h - 6), (x1 + w + 4, label_y), (0, 255, 0), -1)
+                    cv2.putText(frame, label, (x1 + 2, label_y - 4), cv2.FONT_HERSHEY_SIMPLEX, font_scale, (0, 0, 0), thickness)
             
             # Write the frame to the output video
             out.write(frame)
