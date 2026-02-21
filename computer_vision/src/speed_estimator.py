@@ -42,22 +42,51 @@ class SpeedEstimator:
 
     def estimate_speed(self, track_id, current_pos, current_frame, fps):
         ground_pos = self.get_real_world_pos(current_pos)
+        
         if track_id not in self.tracker_data:
             self.tracker_data[track_id] = {
-                'start_frame': current_frame,
-                'start_pos': ground_pos,
-                'current_speed': 0
+                'last_frame': current_frame,
+                'last_pos': ground_pos,
+                'speed_history': [],
+                'current_speed': 0,
+                'stable_frames': 0
             }
             return 0
+        
         data = self.tracker_data[track_id]
-        dist = np.linalg.norm(ground_pos - data['start_pos'])
-        frames_elapsed = current_frame - data['start_frame']
+        frames_elapsed = current_frame - data['last_frame']
+        
+        # Only calculate if at least one frame has passed
         if frames_elapsed <= 0:
             return data['current_speed']
+            
+        # Calculate instantaneous distance and time
+        dist = np.linalg.norm(ground_pos - data['last_pos'])
+        time_elapsed = frames_elapsed / fps
         
-        time_elapsed = frames_elapsed / fps  
+        # Calculate speed in km/h
         speed_ms = dist / time_elapsed
-        speed_kmh = speed_ms * 3.6
-        self.tracker_data[track_id]['current_speed'] = round(speed_kmh, 2)
+        inst_speed_kmh = speed_ms * 3.6
         
-        return self.tracker_data[track_id]['current_speed']
+        # Sanity check: ignore unrealistic jumps (e.g. > 200 km/h)
+        if inst_speed_kmh < 200:
+            data['speed_history'].append(inst_speed_kmh)
+            if len(data['speed_history']) > 10:
+                data['speed_history'].pop(0)
+            
+            # Use moving average for display
+            avg_speed = sum(data['speed_history']) / len(data['speed_history'])
+            
+            # Clamp to a realistic highway maximum for display
+            data['current_speed'] = min(round(avg_speed, 1), 140.0)
+            data['stable_frames'] += frames_elapsed
+        
+        # Update last position and frame
+        data['last_pos'] = ground_pos
+        data['last_frame'] = current_frame
+        
+        # Only show speed after a short grace period to allow for stabilization
+        if data['stable_frames'] < 10:
+            return 0
+            
+        return data['current_speed']
