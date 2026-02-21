@@ -2,6 +2,7 @@ from rest_framework import serializers
 from django.utils import timezone
 from .models import VideoStream, StreamSession
 from apps.drones.models import Drone
+from apps.patrols.models import Patrol
 
 
 class VideoStreamSerializer(serializers.ModelSerializer):
@@ -10,13 +11,14 @@ class VideoStreamSerializer(serializers.ModelSerializer):
     drone_name = serializers.CharField(source='drone.name', read_only=True)
     is_streaming = serializers.SerializerMethodField()
     active_session_id = serializers.SerializerMethodField()
+    active_patrol = serializers.SerializerMethodField()
 
     class Meta:
         model = VideoStream
         fields = [
             'id', 'stream_id', 'drone', 'drone_id', 'drone_name', 'rtsp_url',
             'is_active', 'frame_rate', 'resolution', 'is_streaming',
-            'active_session_id', 'created_at', 'updated_at'
+            'active_session_id', 'active_patrol', 'created_at', 'updated_at'
         ]
         read_only_fields = ['id', 'stream_id', 'created_at', 'updated_at']
 
@@ -28,6 +30,25 @@ class VideoStreamSerializer(serializers.ModelSerializer):
         """Get the ID of the current active session"""
         active_session = obj.sessions.filter(end_time__isnull=True).first()
         return active_session.id if active_session else None
+
+    def get_active_patrol(self, obj):
+        """Get info about the current active patrol for this drone"""
+        try:
+            patrol = Patrol.objects.filter(drone=obj.drone, status='ACTIVE').first()
+            if patrol:
+                officer_name = "Unknown Officer"
+                if patrol.officer:
+                    officer_name = patrol.officer.get_full_name() or patrol.officer.email
+                
+                return {
+                    'id': patrol.id,
+                    'status': patrol.status,
+                    'officer_name': officer_name
+                }
+        except Exception as e:
+            # Avoid crashing the entire list if one patrol has issues
+            return None
+        return None
 
 
 class StreamSessionSerializer(serializers.ModelSerializer):
