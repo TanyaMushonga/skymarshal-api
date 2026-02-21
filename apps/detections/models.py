@@ -27,6 +27,20 @@ class Detection(TimestampedModel):
     class Meta:
         db_table = 'detections'
         ordering = ['-timestamp']
+        constraints = [
+            # Primary uniqueness for tracked detections
+            models.UniqueConstraint(
+                fields=['patrol', 'frame_number', 'drone'], 
+                name='unique_patrol_frame_drone',
+                condition=models.Q(patrol__isnull=False)
+            ),
+            # Fallback uniqueness for untracked detections (no patrol)
+            models.UniqueConstraint(
+                fields=['frame_number', 'drone'], 
+                name='unique_frame_drone_no_patrol',
+                condition=models.Q(patrol__isnull=True)
+            )
+        ]
         indexes = [
             models.Index(fields=['drone', '-timestamp']),
         ]

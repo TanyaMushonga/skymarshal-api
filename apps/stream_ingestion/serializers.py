@@ -36,9 +36,13 @@ class VideoStreamSerializer(serializers.ModelSerializer):
         try:
             patrol = Patrol.objects.filter(drone=obj.drone, status='ACTIVE').first()
             if patrol:
-                officer_name = "Unknown Officer"
+                officer_name = "Unassigned"
                 if patrol.officer:
-                    officer_name = patrol.officer.get_full_name() or patrol.officer.email
+                    try:
+                        full_name = patrol.officer.get_full_name()
+                        officer_name = full_name if full_name else patrol.officer.email
+                    except AttributeError:
+                        officer_name = patrol.officer.email
                 
                 return {
                     'id': patrol.id,

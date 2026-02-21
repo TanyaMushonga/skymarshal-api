@@ -20,9 +20,10 @@ def handle_patrol_stream_automation(sender, instance, created, **kwargs):
         if stream:
             simulate_stream_task.delay(
                 stream_id=stream.id,
-                patrol_id=instance.id
+                patrol_id=instance.id,
+                video_file='computer_vision/car_detection.mp4'
             )
-            logger.info(f"Signal: Automatically started stream simulation for patrol {instance.id}")
+            logger.info(f"Signal: Automatically started stream simulation (car_detection.mp4) for patrol {instance.id}")
             
     elif not created:
         if instance.status in ['COMPLETED', 'CANCELLED']:
