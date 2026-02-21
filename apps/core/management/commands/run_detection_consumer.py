@@ -8,6 +8,8 @@ from apps.patrols.services import PatrolService
 import logging
 import signal
 import sys
+import datetime
+from django.utils.dateparse import parse_datetime
 
 logger = logging.getLogger(__name__)
 
@@ -47,7 +49,15 @@ class Command(BaseCommand):
         """
         try:
             drone_id = data.get('drone_id')
-            timestamp = data.get('timestamp')
+            timestamp_raw = data.get('timestamp')
+            
+            # Robust timestamp parsing
+            if isinstance(timestamp_raw, (int, float)):
+                timestamp = datetime.datetime.fromtimestamp(timestamp_raw, tz=datetime.timezone.utc)
+            elif isinstance(timestamp_raw, str):
+                timestamp = parse_datetime(timestamp_raw)
+            else:
+                timestamp = datetime.datetime.now(datetime.timezone.utc)
             
             # Find the drone
             try:
