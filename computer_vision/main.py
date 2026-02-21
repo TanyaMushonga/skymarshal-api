@@ -67,40 +67,47 @@ def main():
                         continue
                         
                     # Process frame
-                    detections, annotated_frame = processor.process_frame_data(
-                        frame_data, frame_number, frame_rate, annotate=True
-                    )
-                    
-                    # Publish detections
-                    for det in detections:
-                        event = {
-                            'drone_id': data.get('drone_id'),
-                            'stream_id': stream_id,
-                            'timestamp': data.get('timestamp'),
-                            'frame_number': frame_number,
-                            'vehicle_type': det['vehicle_type'],
-                            'confidence': float(det['confidence']),
-                            'box_coordinates': det['box_coordinates'],
-                            'license_plate': det['license_plate'],
-                            'speed': det['speed'],
-                            'location': gps 
-                        }
-                        # Use the core producer's send method
-                        producer.send(output_topic, event)
+                    try:
+                        detections, annotated_frame = processor.process_frame_data(
+                            frame_data, frame_number, frame_rate, annotate=True
+                        )
+                        
+                        if detections:
+                            logger.info(f"Frame {frame_number}: Found {len(detections)} vehicles. IDs: {[d.get('track_id') for d in detections]}")
+                        
+                        # Publish detections
+                        for det in detections:
+                            event = {
+                                'drone_id': data.get('drone_id'),
+                                'stream_id': stream_id,
+                                'timestamp': data.get('timestamp'),
+                                'frame_number': frame_number,
+                                'vehicle_type': det['vehicle_type'],
+                                'confidence': float(det['confidence']),
+                                'box_coordinates': det['box_coordinates'],
+                                'license_plate': det['license_plate'],
+                                'speed': det['speed'],
+                                'track_id': det.get('track_id'),
+                                'location': gps 
+                            }
+                            producer.send(output_topic, event)
 
-                    # Publish annotated frame for live viewing
-                    if annotated_frame:
-                        frame_event = {
-                            'drone_id': data.get('drone_id'),
-                            'stream_id': stream_id,
-                            'timestamp': data.get('timestamp'),
-                            'frame_number': frame_number,
-                            'frame_data': annotated_frame
-                        }
-                        producer.send(processed_topic, frame_event)
+                        # Publish annotated frame for live viewing
+                        if annotated_frame:
+                            frame_event = {
+                                'drone_id': data.get('drone_id'),
+                                'stream_id': stream_id,
+                                'timestamp': data.get('timestamp'),
+                                'frame_number': frame_number,
+                                'frame_data': annotated_frame
+                            }
+                            producer.send(processed_topic, frame_event)
+                            
+                    except Exception as e:
+                        logger.error(f"Error processing frame {frame_number}: {e}", exc_info=True)
                         
                 except Exception as e:
-                    logger.error(f"Error processing frame: {e}")
+                    logger.error(f"Error in consumer loop: {e}", exc_info=True)
                     
         except Exception as e:
             logger.error(f"Critical Kafka Error: {e}")
