@@ -41,12 +41,7 @@ class SpeedEstimator:
         return transformed[0][0]
 
     def estimate_speed(self, track_id, current_pos, current_frame, fps):
-        """
-        Calculate speed based on distance traveled in the warped perspective.
-        """
-        # Get ground coordinates
         ground_pos = self.get_real_world_pos(current_pos)
-
         if track_id not in self.tracker_data:
             self.tracker_data[track_id] = {
                 'start_frame': current_frame,
@@ -54,26 +49,15 @@ class SpeedEstimator:
                 'current_speed': 0
             }
             return 0
-
         data = self.tracker_data[track_id]
-        
-        # Calculate displacement in meters
         dist = np.linalg.norm(ground_pos - data['start_pos'])
-        
-        # Calculate time elapsed
         frames_elapsed = current_frame - data['start_frame']
         if frames_elapsed <= 0:
             return data['current_speed']
-
-        time_elapsed = frames_elapsed / fps # seconds
         
-        # Speed = Distance / Time (m/s)
+        time_elapsed = frames_elapsed / fps  
         speed_ms = dist / time_elapsed
-        
-        # Convert to km/h
         speed_kmh = speed_ms * 3.6
-        
-        # Update speed (could use moving average here, but keeping it simple)
         self.tracker_data[track_id]['current_speed'] = round(speed_kmh, 2)
         
         return self.tracker_data[track_id]['current_speed']

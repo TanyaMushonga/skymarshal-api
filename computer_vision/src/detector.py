@@ -30,9 +30,6 @@ class VehicleDetector:
         :param frame: The input frame (numpy array).
         :return: Results object containing detections and tracking IDs.
         """
-        # Run tracking on the frame, filtering for vehicle classes
-        # persist=True ensures IDs are maintained across frames
-        # tracker='botsort.yaml' is the default and good for occlusion
         results = self.model.track(
             frame, 
             classes=self.vehicle_classes, 
