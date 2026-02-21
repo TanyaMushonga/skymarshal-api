@@ -77,21 +77,53 @@ class Command(BaseCommand):
             # Retrieve active patrol
             patrol = PatrolService.get_active_patrol(drone_id)
 
-            Detection.objects.create(
-                drone=drone,
-                patrol=patrol,
-                timestamp=timestamp,
-                frame_number=data.get('frame_number'),
-                vehicle_type=data.get('vehicle_type', 'unknown'),
-                confidence=data.get('confidence', 0.0),
-                box_coordinates=data.get('box_coordinates', []),
-                license_plate=data.get('license_plate'),
-                speed=data.get('speed'),
-                location=location,
-                altitude=data.get('location', {}).get('altitude')
-            )
+            # Deduplication: Use update_or_create with patrol, frame_number, and drone as unique identifiers
+            # This prevents race conditions and duplicates in a loop.
+            frame_number = data.get('frame_number')
             
-            logger.info(f"Saved detection for {drone_id} (Frame {data.get('frame_number')})")
+            # If no frame number, we can't safely deduplicate, so we just create.
+            # But the simulation loop ALWAYS provides a frame number.
+            if patrol and frame_number is not None:
+                from django.db import IntegrityError
+                try:
+                    obj, created = Detection.objects.update_or_create(
+                        patrol=patrol,
+                        frame_number=frame_number,
+                        drone=drone,
+                        defaults={
+                            'timestamp': timestamp,
+                            'vehicle_type': data.get('vehicle_type', 'unknown'),
+                            'confidence': data.get('confidence', 0.0),
+                            'box_coordinates': data.get('box_coordinates', []),
+                            'license_plate': data.get('license_plate'),
+                            'speed': data.get('speed'),
+                            'location': location,
+                            'altitude': data.get('location', {}).get('altitude')
+                        }
+                    )
+                    if created:
+                        logger.info(f"Saved detection for {drone_id} (Frame {frame_number})")
+                    else:
+                        logger.debug(f"Updated existing detection for {drone_id} (Frame {frame_number})")
+                except IntegrityError:
+                    # This handles the rare race condition where two threads try to create the same frame simultaneously
+                    logger.debug(f"Ignoring concurrent duplicate for {drone_id} (Frame {frame_number})")
+            else:
+                # Fallback for events without frame numbers or patrols
+                Detection.objects.create(
+                    drone=drone,
+                    patrol=patrol,
+                    timestamp=timestamp,
+                    frame_number=frame_number or 0,
+                    vehicle_type=data.get('vehicle_type', 'unknown'),
+                    confidence=data.get('confidence', 0.0),
+                    box_coordinates=data.get('box_coordinates', []),
+                    license_plate=data.get('license_plate'),
+                    speed=data.get('speed'),
+                    location=location,
+                    altitude=data.get('location', {}).get('altitude')
+                )
+                logger.info(f"Saved un-tracked detection for {drone_id}")
             
         except Exception as e:
             logger.error(f"Failed to save detection: {e}", exc_info=True)
