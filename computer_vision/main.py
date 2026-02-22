@@ -73,7 +73,7 @@ def main():
                         )
                         
                         if detections:
-                            logger.info(f"Frame {frame_number}: Found {len(detections)} vehicles. IDs: {[d.get('track_id') for d in detections]}")
+                            logger.debug(f"Frame {frame_number}: Found {len(detections)} vehicles.")
                         
                         # Publish detections
                         for det in detections:
