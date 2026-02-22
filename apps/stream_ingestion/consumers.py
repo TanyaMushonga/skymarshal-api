@@ -31,6 +31,20 @@ class LiveStreamConsumer(AsyncWebsocketConsumer):
             )
             logger.info(f"WebSocket disconnected for stream: {self.stream_id}")
 
+    # Receive message from WebSocket
+    async def receive(self, text_data):
+        data = json.loads(text_data)
+        message_type = data.get('type')
+
+        if message_type == 'authenticate':
+            # For now, we'll just acknowledge, but here is where we'd verify the JWT
+            # token = data.get('token')
+            await self.send(text_data=json.dumps({
+                'type': 'auth_success',
+                'stream_id': self.stream_id
+            }))
+            logger.info(f"Authenticated session for stream: {self.stream_id}")
+
     # Receive message from room group
     async def stream_frame(self, event):
         # Send frame data to WebSocket
