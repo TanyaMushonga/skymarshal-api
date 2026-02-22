@@ -216,7 +216,7 @@ def monitor_stream_health():
     logger.info(f"Health check completed: {health_report}")
     return health_report
 @shared_task(bind=True)
-def simulate_stream_task(self, stream_id, patrol_id=None, video_file='computer_vision/car_detection.mp4'):
+def simulate_stream_task(self, stream_id, patrol_id=None, video_file='computer_vision/traffic_sample.mp4'):
     """
     Simulate a live stream by reading from a video file and publishing to Kafka.
     Can be associated with an active patrol.
@@ -285,6 +285,7 @@ def simulate_stream_task(self, stream_id, patrol_id=None, video_file='computer_v
                     }
                     
                     producer.send(settings.KAFKA_TOPICS['RAW_FRAMES'], value=message)
+                    producer.flush() # Ensure frame is sent immediately
                     session.frames_processed += 1
                     
                     if frame_count % 30 == 0:
