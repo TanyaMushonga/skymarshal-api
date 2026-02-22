@@ -61,12 +61,13 @@ class LicensePlateReader:
                 return data['text']
 
         if not self.model_loaded:
-            return None
+            # Fallback to direct OCR on vehicle crop if no specialized model
+            return self._fallback_ocr(vehicle_frame, track_id, now)
 
         # Detect license plates in the vehicle crop
         results = self.plate_model(vehicle_frame, verbose=False)
         
-        best_plate_text = "Scanning..."
+        best_plate_text = None
         
         for result in results:
             boxes = result.boxes.xyxy.cpu().numpy()
@@ -77,21 +78,65 @@ class LicensePlateReader:
                 if plate_crop.size == 0:
                     continue
                 
-                # Perform OCR
+                # Perform OCR on the plate crop
                 ocr_results = self.reader.readtext(plate_crop)
                 
                 if ocr_results:
                     text = ocr_results[0][1]
                     confidence = ocr_results[0][2]
                     
-                    if confidence > 0.4:
-                        best_plate_text = text.upper().replace(" ", "")
+                    if confidence > 0.3:
+                        best_plate_text = self._clean_plate_text(text)
                         break
         
+        # If specialized model found nothing, try fallback OCR on lower half of vehicle
+        if not best_plate_text or best_plate_text == "Scanning...":
+            best_plate_text = self._fallback_ocr(vehicle_frame, track_id, now)
+        
         # Update cache with timestamp
-        self.plate_cache[track_id] = {
-            'text': best_plate_text,
-            'last_attempt': now
-        }
+        if best_plate_text:
+            self.plate_cache[track_id] = {
+                'text': best_plate_text,
+                'last_attempt': now
+            }
             
-        return best_plate_text
+        return best_plate_text if best_plate_text else "Scanning..."
+
+    def _fallback_ocr(self, vehicle_frame, track_id, now):
+        """
+        Fallback to OCR-ing the entire vehicle frame (or just the bottom half)
+        if the specialized plate detector fails.
+        """
+        if not self.reader:
+            return None
+            
+        # Focus on bottom 60% of the vehicle where plates usually are
+        h, w = vehicle_frame.shape[:2]
+        bottom_half = vehicle_frame[int(h*0.4):, :]
+        
+        if bottom_half.size == 0:
+            return None
+            
+        ocr_results = self.reader.readtext(bottom_half)
+        best_text = None
+        best_conf = 0
+        
+        for (_, text, conf) in ocr_results:
+            cleaned = self._clean_plate_text(text)
+            # Zimbabwe/Standard plates are usually 6-8 chars
+            if len(cleaned) >= 5 and conf > best_conf:
+                best_text = cleaned
+                best_conf = conf
+        
+        if best_text:
+            logger.info(f"Fallback OCR detected plate for ID {track_id}: {best_text} (conf: {best_conf:.2f})")
+            return best_text
+            
+        return None
+
+    def _clean_plate_text(self, text):
+        """Clean and normalize plate text."""
+        # Remove non-alphanumeric characters and spaces
+        import re
+        cleaned = re.sub(r'[^A-Z0-9]', '', text.upper())
+        return cleaned
