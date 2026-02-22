@@ -48,7 +48,6 @@ class Command(BaseCommand):
         Create a Detection record from the message data
         """
         try:
-            logger.info(f"Incoming Event: {data}")
             drone_id = data.get('drone_id')
             timestamp_raw = data.get('timestamp')
             
@@ -78,12 +77,36 @@ class Command(BaseCommand):
             # Retrieve active patrol
             patrol = PatrolService.get_active_patrol(drone_id)
 
-            # Deduplication: Use update_or_create with patrol, frame_number, and drone as unique identifiers
-            # This prevents race conditions and duplicates in a loop.
+            # --- Deduplication Logic ---
+            # 1. First, check if we have a license plate. If so, deduplicate by Plate + Patrol.
+            # This ensures that even if a video loops or tracking IDs change, the same vehicle 
+            # is updated rather than duplicated.
+            license_plate = data.get('license_plate')
             frame_number = data.get('frame_number')
-            
-            # If no frame number, we can't safely deduplicate, so we just create.
-            # But the simulation loop ALWAYS provides a frame number.
+            track_id = data.get('track_id')
+
+            if patrol and license_plate:
+                # Try to find an existing detection for this vehicle in this patrol
+                existing_detection = Detection.objects.filter(
+                    patrol=patrol,
+                    license_plate=license_plate
+                ).first()
+
+                if existing_detection:
+                    # Update existing record with latest data
+                    existing_detection.timestamp = timestamp
+                    existing_detection.confidence = max(existing_detection.confidence, data.get('confidence', 0.0))
+                    existing_detection.box_coordinates = data.get('box_coordinates', [])
+                    existing_detection.speed = data.get('speed')
+                    existing_detection.location = location
+                    existing_detection.track_id = track_id
+                    existing_detection.frame_number = frame_number or existing_detection.frame_number
+                    existing_detection.save()
+                    logger.debug(f"Updated record for plate {license_plate} (Patrol {patrol.id})")
+                    return
+
+            # 2. Fallback to Patrol + Frame + Track deduplication (existing logic)
+            # This is for detections without plates or for fresh frames.
             if patrol and frame_number is not None:
                 from django.db import IntegrityError
                 try:
@@ -91,24 +114,23 @@ class Command(BaseCommand):
                         patrol=patrol,
                         frame_number=frame_number,
                         drone=drone,
-                        track_id=data.get('track_id'),
+                        track_id=track_id,
                         defaults={
                             'timestamp': timestamp,
                             'vehicle_type': data.get('vehicle_type', 'unknown'),
                             'confidence': data.get('confidence', 0.0),
                             'box_coordinates': data.get('box_coordinates', []),
-                            'license_plate': data.get('license_plate'),
+                            'license_plate': license_plate,
                             'speed': data.get('speed'),
                             'location': location,
                             'altitude': data.get('location', {}).get('altitude') if isinstance(data.get('location'), dict) else None
                         }
                     )
                     if created:
-                        logger.info(f"Saved detection for {drone_id} (Frame {frame_number}, ID {data.get('track_id')})")
+                        logger.info(f"Saved new detection for {drone_id} (Frame {frame_number})")
                     else:
                         logger.debug(f"Updated existing detection for {drone_id} (Frame {frame_number})")
                 except IntegrityError:
-                    # This handles the rare race condition where two threads try to create the same frame simultaneously
                     logger.debug(f"Ignoring concurrent duplicate for {drone_id} (Frame {frame_number})")
             else:
                 # Fallback for events without frame numbers or patrols
