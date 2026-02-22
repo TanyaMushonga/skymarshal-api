@@ -2,6 +2,7 @@ from rest_framework import generics, permissions, viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.utils import timezone
+from django.utils.crypto import get_random_string
 from ..serializers.users import AdminCreateUserSerializer, UserSerializer
 from ..models import User
 from apps.core.tasks import send_email_task
