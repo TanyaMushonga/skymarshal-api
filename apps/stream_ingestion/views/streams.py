@@ -220,6 +220,51 @@ class VideoStreamViewSet(viewsets.ModelViewSet):
             'message': f'Simulation task queued using {video_file}'
         }, status=status.HTTP_200_OK)
 
+    @action(detail=False, methods=['post'])
+    def simulate_for_drone(self, request):
+        """
+        Simulate a stream for a specific drone ID.
+        POST /api/v1/streams/simulate_for_drone/
+        """
+        drone_id = request.data.get('drone_id')
+        patrol_id = request.data.get('patrol_id')
+        video_file = request.data.get('video_file', 'computer_vision/traffic_sample.mp4')
+        
+        if not drone_id:
+            return Response({'error': 'drone_id is required'}, status=status.HTTP_400_BAD_REQUEST)
+            
+        from apps.drones.models import Drone
+        try:
+            drone = Drone.objects.get(drone_id=drone_id)
+        except Drone.DoesNotExist:
+            return Response({'error': f'Drone {drone_id} not found'}, status=status.HTTP_404_NOT_FOUND)
+            
+        # Get or create VideoStream
+        stream, created = VideoStream.objects.get_or_create(
+            drone=drone,
+            defaults={'rtsp_url': f'rtsp://simulation/{drone_id}'}
+        )
+        
+        if stream.is_active:
+             return Response(
+                {'error': 'Stream is already active'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Trigger simulation task
+        task = simulate_stream_task.delay(
+            stream_id=stream.id, 
+            patrol_id=patrol_id,
+            video_file=video_file
+        )
+        
+        return Response({
+            'status': 'simulation_started',
+            'stream_id': str(stream.stream_id),
+            'task_id': task.id,
+            'message': f'Simulation task queued for {drone_id} using {video_file}'
+        }, status=status.HTTP_200_OK)
+
     @action(detail=True, methods=['post'])
     def stop_simulation(self, request, pk=None, stream_id=None):
         """
