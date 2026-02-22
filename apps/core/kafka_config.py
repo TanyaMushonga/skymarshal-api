@@ -27,7 +27,9 @@ class KafkaProducerManager:
                     value_serializer=lambda v: json.dumps(v).encode('utf-8'),
                     max_request_size=10485760,  # 10MB for large frames
                     compression_type='gzip',
-                    retries=3
+                    retries=3,
+                    api_version=(2, 5, 0),
+                    linger_ms=0  # Send immediately for live streaming
                 )
                 logger.info("Kafka producer initialized successfully")
                 return
@@ -50,6 +52,10 @@ class KafkaProducerManager:
                 return self._producer.send(topic, value=value)
             raise Exception("Kafka producer not initialized")
     
+    def flush(self):
+        if self._producer:
+            self._producer.flush()
+
     def close(self):
         if self._producer:
             self._producer.close()
@@ -69,7 +75,9 @@ def get_kafka_consumer(topic, group_id=None, auto_offset_reset='latest'):
                 auto_offset_reset=auto_offset_reset,
                 value_deserializer=lambda m: json.loads(m.decode('utf-8')),
                 # Add api_version to avoid NoBrokersAvailable in some environments
-                api_version=(2, 5, 0) 
+                api_version=(2, 5, 0),
+                max_partition_fetch_bytes=10485760,
+                fetch_max_bytes=10485760
             )
         except NoBrokersAvailable:
             logger.warning(f"Kafka broker not available for topic {topic} (attempt {i+1}/{retries}). Retrying in {delay}s...")
