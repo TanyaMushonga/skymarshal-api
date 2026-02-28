@@ -38,7 +38,6 @@ class VehicleDetector:
             frame, 
             classes=self.vehicle_classes, 
             persist=True, 
-            verbose=False,
-            tracker="bytetrack.yaml"
+            verbose=False
         )
         return results
