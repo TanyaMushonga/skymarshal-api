@@ -77,78 +77,50 @@ class Command(BaseCommand):
             # Retrieve active patrol
             patrol = PatrolService.get_active_patrol(drone_id)
 
-            # --- Deduplication Logic ---
-            # 1. First, check if we have a license plate. If so, deduplicate by Plate + Patrol.
-            # This ensures that even if a video loops or tracking IDs change, the same vehicle 
-            # is updated rather than duplicated.
-            license_plate = data.get('license_plate')
+            # --- Strict Filtering Logic ---
+            confidence = data.get('confidence', 0.0)
+            speed = data.get('speed')
+            license_plate = data.get('license_plate') or 'UNKNOWN-PLATE' # Use placeholder
             frame_number = data.get('frame_number')
             track_id = data.get('track_id')
 
-            if patrol and license_plate:
-                # Try to find an existing detection for this vehicle in this patrol
-                existing_detection = Detection.objects.filter(
-                    patrol=patrol,
-                    license_plate=license_plate
-                ).first()
+            # 1. Ignore low confidence (below 90%)
+            if confidence < 0.9:
+                logger.debug(f"Ignoring low confidence detection ({confidence:.2f}) for track {track_id}")
+                return
 
-                if existing_detection:
-                    # Update existing record with latest data
-                    existing_detection.timestamp = timestamp
-                    existing_detection.confidence = max(existing_detection.confidence, data.get('confidence', 0.0))
-                    existing_detection.box_coordinates = data.get('box_coordinates', [])
-                    existing_detection.speed = data.get('speed')
-                    existing_detection.location = location
-                    existing_detection.track_id = track_id
-                    existing_detection.frame_number = frame_number or existing_detection.frame_number
-                    existing_detection.save()
-                    logger.debug(f"Updated record for plate {license_plate} (Patrol {patrol.id})")
-                    return
+            # 2. Ignore detections without valid speed (None or 0)
+            if speed is None or speed == 0:
+                logger.debug(f"Ignoring detection without valid speed for track {track_id}")
+                return
 
-            # 2. Fallback to Patrol + Frame + Track deduplication (existing logic)
-            # This is for detections without plates or for fresh frames.
-            if patrol and frame_number is not None:
-                from django.db import IntegrityError
-                try:
-                    obj, created = Detection.objects.update_or_create(
-                        patrol=patrol,
-                        frame_number=frame_number,
-                        drone=drone,
-                        track_id=track_id,
-                        defaults={
-                            'timestamp': timestamp,
-                            'vehicle_type': data.get('vehicle_type', 'unknown'),
-                            'confidence': data.get('confidence', 0.0),
-                            'box_coordinates': data.get('box_coordinates', []),
-                            'license_plate': license_plate,
-                            'speed': data.get('speed'),
-                            'location': location,
-                            'altitude': data.get('location', {}).get('altitude') if isinstance(data.get('location'), dict) else None
-                        }
-                    )
-                    if created:
-                        logger.info(f"Saved new detection for {drone_id} (Frame {frame_number})")
-                    else:
-                        logger.debug(f"Updated existing detection for {drone_id} (Frame {frame_number})")
-                except IntegrityError:
-                    logger.debug(f"Ignoring concurrent duplicate for {drone_id} (Frame {frame_number})")
-            else:
-                # Fallback for events without frame numbers or patrols
-                Detection.objects.create(
+            # Standardized update_or_create based on track-level uniqueness
+            from django.db import IntegrityError
+            try:
+                obj, created = Detection.objects.update_or_create(
                     drone=drone,
+                    track_id=track_id,
                     patrol=patrol,
-                    timestamp=timestamp,
-                    frame_number=frame_number or 0,
-                    vehicle_type=data.get('vehicle_type', 'unknown'),
-                    confidence=data.get('confidence', 0.0),
-                    box_coordinates=data.get('box_coordinates', []),
-                    license_plate=data.get('license_plate'),
-                    speed=data.get('speed'),
-                    track_id=data.get('track_id'),
-                    location=location,
-                    altitude=data.get('location', {}).get('altitude') if isinstance(data.get('location'), dict) else None
+                    defaults={
+                        'timestamp': timestamp,
+                        'frame_number': frame_number or 0,
+                        'vehicle_type': data.get('vehicle_type', 'unknown'),
+                        'confidence': confidence,
+                        'box_coordinates': data.get('box_coordinates', []),
+                        'license_plate': license_plate,
+                        'speed': speed,
+                        'location': location,
+                        'altitude': data.get('location', {}).get('altitude') if isinstance(data.get('location'), dict) else None
+                    }
                 )
-                logger.info(f"Saved un-tracked detection for {drone_id}")
+                
+                if created:
+                    logger.info(f"New track {track_id} detected for {drone_id}")
+                else:
+                    logger.debug(f"Updated track {track_id} info for {drone_id}")
+                    
+            except IntegrityError:
+                logger.warning(f"Integrity error for track {track_id} on {drone_id}. Skipping.")
             
         except Exception as e:
             logger.error(f"Failed to save detection: {e}", exc_info=True)
