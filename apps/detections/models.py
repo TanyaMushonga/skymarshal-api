@@ -28,16 +28,16 @@ class Detection(TimestampedModel):
         db_table = 'detections'
         ordering = ['-timestamp']
         constraints = [
-            # Primary uniqueness for tracked detections
+            # Track-level uniqueness: one record per vehicle per patrol/drone
             models.UniqueConstraint(
-                fields=['patrol', 'frame_number', 'drone', 'track_id'], 
-                name='unique_patrol_frame_drone_track',
+                fields=['patrol', 'drone', 'track_id'], 
+                name='unique_patrol_drone_track',
                 condition=models.Q(patrol__isnull=False)
             ),
-            # Fallback uniqueness for untracked detections (no patrol)
+            # Fallback for untracked detections
             models.UniqueConstraint(
-                fields=['frame_number', 'drone', 'track_id'], 
-                name='unique_frame_drone_no_patrol_track',
+                fields=['drone', 'track_id'], 
+                name='unique_drone_track_no_patrol',
                 condition=models.Q(patrol__isnull=True)
             )
         ]
