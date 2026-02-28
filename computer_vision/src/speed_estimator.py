@@ -11,18 +11,18 @@ class SpeedEstimator:
         # Default source points for a generic traffic perspective
         # These are [top-left, top-right, bottom-right, bottom-left]
         if source_points is None:
-            # Tuned for more stability in the downward-facing highway angle
+            # Scaled down for 640x360 resolution
             self.source_points = np.float32([
-                [450, 450], [850, 450], 
-                [1280, 720], [0, 720]
+                [225, 225], [425, 225], 
+                [640, 360], [0, 360]
             ])
         else:
             self.source_points = np.float32(source_points)
 
-        # ROI length (meters) - increased for better perspective stretch
+        # ROI length (meters) - mapped to a smaller stretch for the 640x360 resolution
         self.target_points = np.float32([
             [0, 0], [12, 0], 
-            [12, real_length + 20], [0, real_length + 20]
+            [12, 6.0], [0, 6.0]
         ])
 
         # Calculate Transformation Matrix
@@ -61,17 +61,18 @@ class SpeedEstimator:
             return data['current_speed']
             
         # Calculate instantaneous distance and time
-        dist = np.linalg.norm(ground_pos - data['last_pos'])
+        # Calculate instantaneous distance and time
+        dist = np.linalg.norm(np.array(ground_pos) - np.array(data['last_pos']))
         time_elapsed = frames_elapsed / fps
         
         # Calculate speed in km/h
         speed_ms = dist / time_elapsed
         inst_speed_kmh = speed_ms * 3.6
         
-        # Sanity check: ignore unrealistic jumps (e.g. > 200 km/h)
-        if 5 < inst_speed_kmh < 220:
+        # Sanity check: ignore unrealistic jumps (e.g. > 200 km/h) but allow low speeds to accumulate
+        if 2 < inst_speed_kmh < 220:
             data['speed_history'].append(inst_speed_kmh)
-            if len(data['speed_history']) > 25: # Increased window from 10 to 25 for better smoothing
+            if len(data['speed_history']) > 15: # Smoothing window
                 data['speed_history'].pop(0)
             
             # Use median filtering to remove outliers then average
@@ -80,7 +81,7 @@ class SpeedEstimator:
             avg_speed = sum(sorted_history[mid-5:mid+5]) / 10 if len(sorted_history) > 15 else sum(sorted_history) / len(sorted_history)
             
             # Clamp to a realistic highway maximum for display
-            data['current_speed'] = min(round(avg_speed, 1), 160.0)
+            data['current_speed'] = min(round(avg_speed, 1), 120.0)
             data['stable_frames'] += frames_elapsed
             data['hits'] += 1
         
@@ -90,7 +91,7 @@ class SpeedEstimator:
         
         # Only show speed after a short grace period to allow for stabilization
         # Only show speed after a short grace period and enough hits for stabilization
-        if data['stable_frames'] < 15 or data['hits'] < 8:
+        if data['stable_frames'] < 5 or data['hits'] < 3:
             return 0
             
         return data['current_speed']
