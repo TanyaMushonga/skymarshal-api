@@ -29,6 +29,9 @@ class VideoProcessor:
         jpg_original = base64.b64decode(frame_data)
         jpg_as_np = np.frombuffer(jpg_original, dtype=np.uint8)
         frame = cv2.imdecode(jpg_as_np, flags=1)
+        
+        # Enhance frame for better detection/ALPR/speed
+        frame = self._enhance_frame(frame)
 
         detections = []
         annotated_frame_data = None
@@ -66,18 +69,20 @@ class VideoProcessor:
 
                     vehicle_type = names[cls_id]
 
-                    detections.append({
-                        'track_id': track_id,
-                        'vehicle_type': vehicle_type,
-                        'confidence': conf,
-                        'box_coordinates': [x1, y1, x2, y2],
-                        'license_plate': plate_text,
-                        'speed': speed
-                    })
+                    # Only include high-confidence detections ( >= 90%)
+                    if conf >= 0.9:
+                        detections.append({
+                            'track_id': track_id,
+                            'vehicle_type': vehicle_type,
+                            'confidence': conf,
+                            'box_coordinates': [x1, y1, x2, y2],
+                            'license_plate': plate_text,
+                            'speed': speed
+                        })
 
                     if annotate:
                         # Draw bounding box
-                        cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 1)
+                        cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 3)
                         
                         # Label: ID: 1 | ABC-123 | 60 km/h
                         label_parts = [f"ID: {track_id}"]
@@ -86,13 +91,13 @@ class VideoProcessor:
                         label_parts.append(f"{speed} km/h")
                         
                         label = " | ".join(label_parts)
-                        font_scale = 0.4
-                        thickness = 1
+                        font_scale = 1.0
+                        thickness = 3
                         (w, h), _ = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, font_scale, thickness)
                         
                         # Draw label background
-                        cv2.rectangle(frame, (x1, y1 - h - 6), (x1 + w + 4, y1), (0, 255, 0), -1)
-                        cv2.putText(frame, label, (x1 + 2, y1 - 4), cv2.FONT_HERSHEY_SIMPLEX, font_scale, (0, 0, 0), thickness)
+                        cv2.rectangle(frame, (x1, y1 - h - 10), (x1 + w + 4, y1), (0, 255, 0), -1)
+                        cv2.putText(frame, label, (x1 + 2, y1 - 6), cv2.FONT_HERSHEY_SIMPLEX, font_scale, (0, 0, 0), thickness)
             else:
                 # Optional: log if we find vehicles but no IDs (means tracking failed)
                 pass
@@ -103,6 +108,31 @@ class VideoProcessor:
             annotated_frame_data = base64.b64encode(buffer).decode('utf-8')
 
         return detections, annotated_frame_data
+
+    def _enhance_frame(self, frame):
+        """
+        Apply image enhancement (CLAHE + Sharpness) to improve detection visibility.
+        """
+        try:
+            # Convert to LAB color space
+            lab = cv2.cvtColor(frame, cv2.COLOR_BGR2LAB)
+            l, a, b = cv2.split(lab)
+
+            # Apply CLAHE to L-channel
+            clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
+            cl = clahe.apply(l)
+
+            # Merge back
+            limg = cv2.merge((cl, a, b))
+            enhanced = cv2.cvtColor(limg, cv2.COLOR_LAB2BGR)
+            
+            # Subtle sharpening
+            kernel = np.array([[-1,-1,-1], [-1,9,-1], [-1,-1,-1]])
+            enhanced = cv2.filter2D(enhanced, -1, kernel)
+            
+            return enhanced
+        except Exception as e:
+            return frame # Fallback to original on error
 
     def process_video(self, input_path):
         """
@@ -163,7 +193,7 @@ class VideoProcessor:
                         plate_text = self.alpr_reader.detect_and_read(vehicle_crop, track_id)
 
                     # Draw bounding box
-                    cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 1)
+                    cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 3)
                     
                     # Draw ID, Speed, and Plate label
                     label_parts = [f"ID: {track_id}"]
@@ -172,14 +202,14 @@ class VideoProcessor:
                     label_parts.append(f"{speed} km/h")
                     
                     label = " | ".join(label_parts)
-                    font_scale = 0.45
-                    thickness = 1
+                    font_scale = 0.8
+                    thickness = 3
                     (w, h), _ = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, font_scale, thickness)
                     
                     # Ensure label stays within frame
-                    label_y = max(y1, h + 10)
-                    cv2.rectangle(frame, (x1, label_y - h - 6), (x1 + w + 4, label_y), (0, 255, 0), -1)
-                    cv2.putText(frame, label, (x1 + 2, label_y - 4), cv2.FONT_HERSHEY_SIMPLEX, font_scale, (0, 0, 0), thickness)
+                    label_y = max(y1, h + 15)
+                    cv2.rectangle(frame, (x1, label_y - h - 10), (x1 + w + 4, label_y), (0, 255, 0), -1)
+                    cv2.putText(frame, label, (x1 + 2, label_y - 6), cv2.FONT_HERSHEY_SIMPLEX, font_scale, (0, 0, 0), thickness)
             
             # Write the frame to the output video
             out.write(frame)
