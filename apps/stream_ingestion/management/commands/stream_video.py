@@ -44,7 +44,8 @@ class Command(BaseCommand):
 
             fps = cap.get(cv2.CAP_PROP_FPS)
             if fps <= 0: fps = 30.0
-            delay = 1.0 / fps
+            # Compensate for overhead by using a 0.85 multiplier on the theoretical delay
+            delay = (1.0 / fps) * 0.85
 
             frame_number = 0
             while cap.isOpened():
