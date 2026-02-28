@@ -144,6 +144,13 @@ CELERY_TASK_ROUTES = {
     'analytics.tasks.*': {'queue': 'analytics'},
 }
 
+CELERY_BEAT_SCHEDULE = {
+    'cleanup-old-detections': {
+        'task': 'apps.detections.tasks.cleanup_old_detections',
+        'schedule': timedelta(minutes=10),
+    },
+}
+
 # JWT Authentication
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
