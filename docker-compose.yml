@@ -216,6 +216,8 @@ services:
       - REDIS_URL=redis://redis:6379/0
       - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
       - YOLO_CONFIG_DIR=/tmp
+      - OMP_NUM_THREADS=1
+      - MKL_NUM_THREADS=1
     depends_on:
       kafka:
         condition: service_healthy
