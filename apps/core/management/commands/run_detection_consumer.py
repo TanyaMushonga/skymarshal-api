@@ -99,13 +99,13 @@ class Command(BaseCommand):
                     logger.error(f"Failed to prepare detection image: {img_err}")
 
             # --- Strict Filtering Logic ---
-            # 1. Ignore low confidence (below 90%)
-            if confidence < 0.9:
+            # 1. Ignore low confidence (below 60%)
+            if confidence < 0.6:
                 logger.debug(f"Ignoring low confidence detection ({confidence:.2f}) for track {track_id}")
                 return
 
-            # 2. Ignore detections without valid speed (None or 0)
-            if speed is None or speed <= 0:
+            # 2. Ignore missing speeds (but allow 0km/h for stopped/stabilizing vehicles)
+            if speed is None:
                 logger.debug(f"Ignoring detection without valid speed ({speed}) for track {track_id}")
                 return
 
