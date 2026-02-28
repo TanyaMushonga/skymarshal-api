@@ -268,9 +268,9 @@ def simulate_stream_task(self, stream_id, patrol_id=None, video_file='computer_v
                     
                 frame_count += 1
                 
-                # Encode and send (every 3rd frame to save bandwidth/CPU)
-                if frame_count % 3 == 0:
-                    _, buffer = cv2.imencode('.jpg', frame, [cv2.IMWRITE_JPEG_QUALITY, 80])
+                # Encode and send (every 2nd frame to balance smoothness/CPU)
+                if frame_count % 2 == 0:
+                    _, buffer = cv2.imencode('.jpg', frame, [cv2.IMWRITE_JPEG_QUALITY, 70])
                     frame_base64 = base64.b64encode(buffer).decode('utf-8')
                     
                     message = {
@@ -281,7 +281,7 @@ def simulate_stream_task(self, stream_id, patrol_id=None, video_file='computer_v
                         'frame_data': frame_base64,
                         'gps': {'latitude': -17.8252, 'longitude': 31.0335, 'altitude': 50.0},
                         'resolution': '1920x1080',
-                        'frame_rate': fps
+                        'frame_rate': fps / 2.0  # Reported rate is half the source
                     }
                     
                     producer.send(settings.KAFKA_TOPICS['RAW_FRAMES'], value=message)
@@ -291,8 +291,9 @@ def simulate_stream_task(self, stream_id, patrol_id=None, video_file='computer_v
                     if frame_count % 30 == 0:
                         session.save(update_fields=['frames_processed'])
                 
-                # Throttle to match FPS
-                time.sleep(delay)
+                    # Throttle to match target FPS (30fps source -> 15fps sent)
+                    # We only sleep if we actually sent a frame to keep it consistent
+                    time.sleep(delay * 2)
                 
                 # Refresh stream status
                 if frame_count % 100 == 0:
