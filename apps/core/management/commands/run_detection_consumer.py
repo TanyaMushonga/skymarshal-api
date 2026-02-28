@@ -10,6 +10,8 @@ import signal
 import sys
 import datetime
 from django.utils.dateparse import parse_datetime
+import base64
+from django.core.files.base import ContentFile
 
 logger = logging.getLogger(__name__)
 
@@ -77,22 +79,38 @@ class Command(BaseCommand):
             # Retrieve active patrol
             patrol = PatrolService.get_active_patrol(drone_id)
 
-            # --- Strict Filtering Logic ---
+            # --- Extract track info early for image naming ---
+            track_id = data.get('track_id')
             confidence = data.get('confidence', 0.0)
             speed = data.get('speed')
-            license_plate = data.get('license_plate') or 'UNKNOWN-PLATE' # Use placeholder
+            license_plate = data.get('license_plate') or 'UNKNOWN-PLATE'
             frame_number = data.get('frame_number')
-            track_id = data.get('track_id')
 
+            # --- Prepare image if provided ---
+            image_file = None
+            frame_data = data.get('frame_data')
+            if frame_data:
+                try:
+                    format, imgstr = frame_data.split(';base64,') if ';base64,' in frame_data else (None, frame_data)
+                    ext = format.split('/')[-1] if format else 'jpg'
+                    filename = f"det_{drone_id}_{track_id}_{int(timestamp.timestamp())}.{ext}"
+                    image_file = ContentFile(base64.b64decode(imgstr), name=filename)
+                except Exception as img_err:
+                    logger.error(f"Failed to prepare detection image: {img_err}")
+
+            # --- Strict Filtering Logic ---
             # 1. Ignore low confidence (below 90%)
             if confidence < 0.9:
                 logger.debug(f"Ignoring low confidence detection ({confidence:.2f}) for track {track_id}")
                 return
 
             # 2. Ignore detections without valid speed (None or 0)
-            if speed is None or speed == 0:
-                logger.debug(f"Ignoring detection without valid speed for track {track_id}")
+            if speed is None or speed <= 0:
+                logger.debug(f"Ignoring detection without valid speed ({speed}) for track {track_id}")
                 return
+
+            if license_plate is None or license_plate == "" or license_plate == "Scanning..." or license_plate == "None":
+                license_plate = "UNKNOWN-PLATE"
 
             # Standardized update_or_create based on track-level uniqueness
             from django.db import IntegrityError
@@ -110,7 +128,8 @@ class Command(BaseCommand):
                         'license_plate': license_plate,
                         'speed': speed,
                         'location': location,
-                        'altitude': data.get('location', {}).get('altitude') if isinstance(data.get('location'), dict) else None
+                        'altitude': data.get('location', {}).get('altitude') if isinstance(data.get('location'), dict) else None,
+                        'image_snapshot': image_file
                     }
                 )
                 
