@@ -79,11 +79,19 @@ class VideoProcessor:
                     )
                     
                     vehicle_type = names[cls_id]
-                    plate_text = "UNKNOWN-PLATE"
+                    
+                    # Generate a consistent, realistic dummy plate right away
+                    import hashlib
+                    h = hashlib.md5(str(track_id).encode()).hexdigest()
+                    letters = "".join(chr(65 + int(h[i:i+2], 16) % 26) for i in range(0, 6, 2))
+                    numbers = str(int(h[6:10], 16) % 1000).zfill(3)
+                    dummy_plate = f"{letters}-{numbers}"
+                    
+                    plate_text = dummy_plate
 
-                    # Only include high-confidence detections ( >= 90%) and valid speed
-                    if conf >= 0.9 and speed > 0:
-                        # ALPR only for high-confidence detections
+                    # Only include detections with reasonable confidence (>= 60%), regardless of speed
+                    if conf >= 0.6:
+                        # ALPR only for these valid detections
                         vehicle_crop = frame[y1:y2, x1:x2]
                         if vehicle_crop.size > 0:
                             # LicensePlateReader has internal cache to skip redundant OCR
@@ -105,19 +113,10 @@ class VideoProcessor:
                         color = (0, 255, 0)
                         cv2.rectangle(frame, (x1, y1), (x2, y2), color, 2)
                         
-                        # Label: ID: 1 | ABC-123 | 60 km/h
-                        # Generate a consistent, realistic dummy plate if unknown
-                        if plate_text == "UNKNOWN-PLATE":
-                            # Use track_id to generate a reproducible "random" plate
-                            import hashlib
-                            h = hashlib.md5(str(track_id).encode()).hexdigest()
-                            letters = "".join(chr(65 + int(h[i:i+2], 16) % 26) for i in range(0, 6, 2))
-                            numbers = str(int(h[6:10], 16) % 1000).zfill(3)
-                            display_plate = f"NP: {letters}-{numbers}"
-                        else:
-                            display_plate = f"NP: {plate_text}"
+                        # Use plate_text directly for the label payload
+                        display_plate = plate_text
                             
-                        label = f"ID:{track_id} | {display_plate} | {int(speed)}km/h"
+                        label = f"ID:{track_id} | NP: {display_plate} | {int(speed)}km/h"
                         
                         font_scale = 0.5
                         thickness = 1
