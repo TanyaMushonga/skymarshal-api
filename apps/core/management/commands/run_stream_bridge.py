@@ -34,11 +34,14 @@ class Command(BaseCommand):
             try:
                 data = message.value
                 stream_id = data.get('stream_id')
+                frame_number = data.get('frame_number')
                 
                 if not stream_id:
+                    logger.warning(f"Received frame {frame_number} without stream_id")
                     continue
 
                 group_name = f'live_stream_{stream_id}'
+                logger.info(f"Bridging frame {frame_number} for stream {stream_id} to group {group_name}")
                 
                 # Send frame to the WebSocket group
                 async_to_sync(channel_layer.group_send)(
@@ -46,10 +49,11 @@ class Command(BaseCommand):
                     {
                         'type': 'stream_frame',
                         'frame_data': data.get('frame_data'),
-                        'frame_number': data.get('frame_number'),
+                        'frame_number': frame_number,
                         'timestamp': data.get('timestamp')
                     }
                 )
+                logger.info(f"Successfully sent frame {frame_number} to group {group_name}")
                 
             except Exception as e:
                 logger.error(f"Error bridging frame: {e}", exc_info=True)
