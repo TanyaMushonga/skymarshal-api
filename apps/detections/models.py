@@ -23,6 +23,7 @@ class Detection(TimestampedModel):
     # Location where detection happened
     location = gis_models.PointField(geography=True, null=True, blank=True)
     altitude = models.FloatField(null=True, blank=True)
+    image_snapshot = models.ImageField(upload_to='detections/', null=True, blank=True)
 
     class Meta:
         db_table = 'detections'
