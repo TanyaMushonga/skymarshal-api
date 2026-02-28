@@ -39,6 +39,6 @@ class VehicleDetector:
             classes=self.vehicle_classes, 
             persist=True, 
             verbose=False,
-            tracker="botsort.yaml"
+            tracker="bytetrack.yaml"
         )
         return results
