@@ -50,7 +50,7 @@ def main():
             # Use Core Consumer Factory
             consumer = get_kafka_consumer(
                 topic=input_topic,
-                group_id='cv_processor_group'
+                group_id='cv_processor_group_v7'
             )
             logger.info(f"Listening for frames on {input_topic}...")
             
@@ -68,12 +68,13 @@ def main():
                         
                     # Process frame
                     try:
+                        start_time = time.time()
                         detections, annotated_frame = processor.process_frame_data(
                             frame_data, frame_number, frame_rate, annotate=True
                         )
+                        process_time = time.time() - start_time
                         
-                        if detections:
-                            logger.debug(f"Frame {frame_number}: Found {len(detections)} vehicles.")
+                        logger.info(f"Processed frame {frame_number} in {process_time:.3f}s. Found {len(detections)} detections.")
                         
                         # Publish detections
                         for det in detections:
@@ -88,9 +89,11 @@ def main():
                                 'license_plate': det['license_plate'],
                                 'speed': det['speed'],
                                 'track_id': det.get('track_id'),
-                                'location': gps 
+                                'location': gps,
+                                'frame_data': annotated_frame # Send for evidence capture
                             }
                             producer.send(output_topic, event)
+                            logger.info(f"Sent detection for frame {frame_number} to {output_topic}")
 
                         # Publish annotated frame for live viewing
                         if annotated_frame:
@@ -102,6 +105,7 @@ def main():
                                 'frame_data': annotated_frame
                             }
                             producer.send(processed_topic, frame_event)
+                            logger.info(f"Sent annotated frame {frame_number} (stream: {stream_id}) to {processed_topic}")
                             
                     except Exception as e:
                         logger.error(f"Error processing frame {frame_number}: {e}", exc_info=True)
