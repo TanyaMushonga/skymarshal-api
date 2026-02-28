@@ -100,6 +100,7 @@ def check_for_violations(sender, instance, created, **kwargs):
                     logger.info(f"Skipping duplicate violation for vehicle {vehicle.license_plate} in patrol {instance.patrol.id}")
                     return
 
+            logger.info(f"Creating violation for detection {instance.id}. Image snapshot: {instance.image_snapshot}")
             violation = Violation.objects.create(
                 detection=instance,
                 vehicle=vehicle,
@@ -109,6 +110,18 @@ def check_for_violations(sender, instance, created, **kwargs):
                 evidence_meta=evidence_data,
                 description=f"Vehicle detected at {instance.speed} km/h (Limit: {limit} km/h)"
             )
+            
+            # Explicitly copy image evidence if available
+            if instance.image_snapshot:
+                try:
+                    violation.image_snapshot.save(
+                        instance.image_snapshot.name.split('/')[-1],
+                        instance.image_snapshot.file,
+                        save=True
+                    )
+                    logger.info(f"Successfully copied image to violation {violation.id}")
+                except Exception as e:
+                    logger.error(f"Failed to copy image to violation: {e}")
 
             # --- Demerit System ---
             if vehicle:
