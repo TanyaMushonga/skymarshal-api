@@ -235,6 +235,7 @@ services:
              python manage.py run_detection_consumer"
     volumes:
       - .:/app
+      - media_volume:/app/media
     env_file:
       - .env
     environment:
@@ -242,6 +243,7 @@ services:
       - DB_PORT=5432
       - REDIS_URL=redis://redis:6379/0
       - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - CELERY_BROKER_URL=amqp://guest:guest@rabbitmq:5672//
     depends_on:
       kafka:
         condition: service_healthy
@@ -259,6 +261,7 @@ services:
              python manage.py run_stream_bridge"
     volumes:
       - .:/app
+      - media_volume:/app/media
     env_file:
       - .env
     environment:
