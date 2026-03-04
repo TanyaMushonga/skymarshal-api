@@ -186,6 +186,20 @@ SIMPLE_JWT = {
 
 # CORS
 CORS_ALLOWED_ORIGINS = config('CORS_ALLOWED_ORIGINS', default='http://localhost:3000').split(',')
+# Add common development origins and wildcards for debugging if needed
+if DEBUG:
+    CORS_ALLOWED_ORIGINS += [
+        'http://localhost:8081', 
+        'http://127.0.0.1:8081',
+        'http://192.168.205.203:8081',
+        'http://192.168.205.203:8000',
+    ]
+    # Allow all origins in DEBUG mode if there are still issues
+    CORS_ALLOW_ALL_ORIGINS = True 
+
+CSRF_TRUSTED_ORIGINS = [origin for origin in CORS_ALLOWED_ORIGINS if origin != '*']
+if 'http://localhost:3000' not in CSRF_TRUSTED_ORIGINS:
+     CSRF_TRUSTED_ORIGINS.append('http://localhost:3000')
 CORS_ALLOW_CREDENTIALS = True
 
 # Static files
