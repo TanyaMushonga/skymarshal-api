@@ -25,6 +25,10 @@ class NotificationViewSet(viewsets.ReadOnlyModelViewSet):
         """
         Return notifications for current user only
         """
+        # check for schema generation which doesn't have an authenticated user
+        if getattr(self, "swagger_fake_view", False) or not self.request.user.is_authenticated:
+            return Notification.objects.none()
+            
         return Notification.objects.filter(recipient=self.request.user)
     
     @action(detail=True, methods=['post'])
