@@ -17,11 +17,14 @@ class DroneAPIKeyAuthentication(authentication.BaseAuthentication):
         try:
             api_key_obj = DroneAPIKey.objects.select_related('drone').get(
                 drone__drone_id=drone_id,
-                key=api_key,
                 is_active=True
             )
         except DroneAPIKey.DoesNotExist:
-            logger.warning(f"Invalid API key attempt for drone_id: {drone_id}")
+            logger.warning(f"No active API key found for drone_id: {drone_id}")
+            raise exceptions.AuthenticationFailed('Invalid drone credentials')
+
+        if not api_key_obj.check_key(api_key):
+            logger.warning(f"Invalid API key provided for drone_id: {drone_id}")
             raise exceptions.AuthenticationFailed('Invalid drone credentials')
             
         if not api_key_obj.drone.is_active:
@@ -29,7 +32,8 @@ class DroneAPIKeyAuthentication(authentication.BaseAuthentication):
             
         record_api_key_usage.delay(api_key_obj.id)
         
-        return (None, api_key_obj.drone)
+        # Return (drone, auth) - drone now has is_authenticated=True
+        return (api_key_obj.drone, api_key_obj)
     
     def authenticate_header(self, request):
         return 'X-Drone-ID, X-API-Key'
