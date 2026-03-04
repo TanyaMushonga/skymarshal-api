@@ -21,6 +21,10 @@ class UserViewSet(viewsets.ModelViewSet):
         Exclude the currently logged-in user from the list.
         """
         user = self.request.user
+        
+        if getattr(self, "swagger_fake_view", False) or not user.is_authenticated:
+            return User.objects.none()
+            
         return User.objects.exclude(id=user.id).order_by('-created_at')
     # permission_classes = [permissions.IsAdminUser] # Removed in favor of get_permissions
 
