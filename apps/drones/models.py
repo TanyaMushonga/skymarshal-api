@@ -32,6 +32,14 @@ class Drone(TimestampedModel):
         """Returns True if the drone has an active patrol"""
         return self.patrols.filter(status='ACTIVE').exists()
 
+    @property
+    def is_authenticated(self):
+        """
+        Always return True for authenticated drone instances.
+        This allows DRF IsAuthenticated permission to work with Drone objects.
+        """
+        return True
+
 
 class DroneStatus(TimestampedModel):
     drone = models.OneToOneField(Drone, on_delete=models.CASCADE, related_name='status')
@@ -82,13 +90,16 @@ class GPSLocation(TimestampedModel):
         return self.location.x if self.location else None    
 
 
+from django.contrib.auth.hashers import make_password, check_password
+
 class DroneAPIKey(TimestampedModel):
     """
-    API key authentication for ESP32-CAM drones
-    Each drone gets a unique API key for authentication
+    API key authentication for ESP32-CAM drones.
+    Keys are stored as salted hashes for security.
     """
     drone = models.OneToOneField(Drone, on_delete=models.CASCADE, related_name='api_key')
-    key = models.CharField(max_length=128, unique=True, db_index=True, editable=False)
+    hashed_key = models.CharField(max_length=128, editable=False)
+    prefix = models.CharField(max_length=16, editable=False)
     is_active = models.BooleanField(default=True)
     last_used = models.DateTimeField(null=True, blank=True)
     usage_count = models.IntegerField(default=0)
@@ -97,7 +108,7 @@ class DroneAPIKey(TimestampedModel):
         db_table = 'drone_api_keys'
         
     def __str__(self):
-        return f"API Key for {self.drone.drone_id}"
+        return f"API Key for {self.drone.drone_id} (Prefix: {self.prefix})"
         
     @classmethod
     def generate_key(cls):
@@ -105,13 +116,25 @@ class DroneAPIKey(TimestampedModel):
         Generate a secure API key in format: sk_drone_{random_32_chars}
         """
         return f"sk_drone_{secrets.token_urlsafe(32)}"
+
+    def set_key(self, raw_key):
+        self.hashed_key = make_password(raw_key)
+        self.prefix = raw_key[:12] + "..."
+
+    def check_key(self, raw_key):
+        return check_password(raw_key, self.hashed_key)
         
     def save(self, *args, **kwargs):
         """
-        Override save to auto-generate key if not exists
+        Override save to handle key generation and hashing
         """
-        if not self.key:
-            self.key = self.generate_key()
+        # Note: raw key is only available during the first save if generated here
+        if not self.hashed_key:
+            raw_key = self.generate_key()
+            self.set_key(raw_key)
+            # Store raw_key temporarily so it can be retrieved once after creation
+            self._raw_key = raw_key
+            
         super().save(*args, **kwargs)
         
     def record_usage(self):
@@ -121,3 +144,4 @@ class DroneAPIKey(TimestampedModel):
         self.last_used = timezone.now()
         self.usage_count += 1
         self.save(update_fields=['last_used', 'usage_count'])
+
