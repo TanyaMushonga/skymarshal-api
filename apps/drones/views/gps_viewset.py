@@ -20,6 +20,10 @@ class GPSLocationViewSet(viewsets.ReadOnlyModelViewSet):
 
         # If not admin, only show locations for drones user has access to
         user = self.request.user
+        
+        if getattr(self, "swagger_fake_view", False) or not user.is_authenticated:
+            return queryset.none()
+            
         if getattr(user, 'role', None) != 'admin' and not user.is_staff:
             queryset = queryset.filter(
                 drone__is_active=True,
