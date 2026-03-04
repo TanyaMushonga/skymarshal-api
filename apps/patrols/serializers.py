@@ -18,6 +18,7 @@ class PatrolSerializer(serializers.ModelSerializer):
     flight_duration_seconds = serializers.SerializerMethodField()
     detection_count = serializers.SerializerMethodField()
     violation_count = serializers.SerializerMethodField()
+    stream_id = serializers.SerializerMethodField()
 
     class Meta:
         model = Patrol
@@ -26,7 +27,7 @@ class PatrolSerializer(serializers.ModelSerializer):
             'start_time', 'end_time', 'patrol_config', 'status', 'created_at',
             'battery_level', 'status_display', 'latest_location', 
             'flight_duration_seconds', 'detection_count', 'violation_count',
-            'detections', 'violations'
+            'detections', 'violations', 'stream_id'
         ]
         read_only_fields = ['start_time', 'end_time', 'status', 'created_at']
 
@@ -52,3 +53,8 @@ class PatrolSerializer(serializers.ModelSerializer):
 
     def get_violation_count(self, obj):
         return obj.violations.count()
+
+    def get_stream_id(self, obj):
+        from apps.stream_ingestion.models import VideoStream
+        stream = VideoStream.objects.filter(drone=obj.drone).first()
+        return str(stream.stream_id) if stream else None
