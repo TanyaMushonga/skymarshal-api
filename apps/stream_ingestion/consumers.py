@@ -48,9 +48,14 @@ class LiveStreamConsumer(AsyncWebsocketConsumer):
     # Receive message from room group
     async def stream_frame(self, event):
         # Send frame data to WebSocket
-        await self.send(text_data=json.dumps({
-            'type': 'live_frame',
-            'frame_data': event['frame_data'],
-            'frame_number': event['frame_number'],
-            'timestamp': event['timestamp']
-        }))
+        try:
+            await self.send(text_data=json.dumps({
+                'type': 'live_frame',
+                'frame_data': event['frame_data'],
+                'frame_number': event['frame_number'],
+                'timestamp': event['timestamp']
+            }))
+        except Exception as e:
+            logger.debug(f"Failed to send frame to {self.stream_id}: {e}")
+            # If we fail to send, we might want to discard the group member, 
+            # but Channels usually handles this when the connection's state is updated.
