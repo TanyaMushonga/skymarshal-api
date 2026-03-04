@@ -33,11 +33,16 @@ class Command(BaseCommand):
         
         if created:
              self.stdout.write(self.style.SUCCESS(f'Created new key for {drone_id}'))
+             raw_key = getattr(api_key, '_raw_key', None)
+             if raw_key:
+                 self.stdout.write(f'\nAPI Key for {drone_id}:')
+                 self.stdout.write(self.style.SUCCESS(raw_key))
+                 self.stdout.write(self.style.WARNING('\n⚠ SECURITY WARNING: Store this key securely! It will NOT be shown again.'))
+             else:
+                 self.stdout.write(self.style.ERROR('Error: Could not retrieve raw key.'))
         else:
-             self.stdout.write(f'Retrieved existing key for {drone_id}')
+             self.stdout.write(f'Existing key for {drone_id} is already stored securely.')
+             self.stdout.write(f'Prefix: {api_key.prefix}')
+             self.stdout.write(self.style.WARNING('\nTo get a new key, run with --regenerate'))
              
-        self.stdout.write(f'\nAPI Key for {drone_id}:')
-        self.stdout.write(self.style.SUCCESS(api_key.key))
-        
-        self.stdout.write(self.style.WARNING('\n⚠ SECURITY WARNING: Store this key securely!'))
-        self.stdout.write(self.style.WARNING('This key provides full access for this drone.'))
+        self.stdout.write(self.style.WARNING('\nThis key provides full access for this drone.'))
