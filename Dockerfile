@@ -20,7 +20,10 @@ WORKDIR /app
 # Copy requirements first to leverage standard layer caching
 COPY requirements.txt .
 
-# Install Python dependencies
+# Pre-install lightweight CPU-only PyTorch to prevent massive CUDA binary downloads (saves ~3.5GB per build)
+RUN pip install --no-cache-dir torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+
+# Install remaining Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy project files

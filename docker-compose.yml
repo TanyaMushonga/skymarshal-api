@@ -1,6 +1,7 @@
 services:
   web:
     build: .
+    image: skymarshal_app
     container_name: skymarshal_web
     user: root
     command: >
@@ -98,6 +99,8 @@ services:
     image: confluentinc/cp-kafka:7.5.0
     container_name: skymarshal_kafka
     environment:
+      KAFKA_LOG_RETENTION_HOURS: 24
+      KAFKA_LOG_RETENTION_BYTES: 1073741824
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
@@ -137,7 +140,7 @@ services:
       - sky_marshal_network
 
   celery:
-    build: .
+    image: skymarshal_app
     container_name: skymarshal_celery
     command: >
       sh -c "python manage.py wait_for_db &&
@@ -169,7 +172,7 @@ services:
     restart: unless-stopped
 
   celery-beat:
-    build: .
+    image: skymarshal_app
     container_name: skymarshal_celery_beat
     command: >
       sh -c "python manage.py wait_for_db &&
@@ -198,7 +201,7 @@ services:
     restart: unless-stopped
 
   computer_vision:
-    build: .
+    image: skymarshal_app
     container_name: skymarshal_cv
     command: >
       sh -c "python manage.py wait_for_db &&
@@ -228,7 +231,7 @@ services:
     restart: unless-stopped
 
   detection_consumer:
-    build: .
+    image: skymarshal_app
     container_name: skymarshal_detection_consumer
     command: >
       sh -c "python manage.py wait_for_db &&
@@ -254,7 +257,7 @@ services:
     restart: unless-stopped
 
   stream_bridge:
-    build: .
+    image: skymarshal_app
     container_name: skymarshal_stream_bridge
     command: >
       sh -c "python manage.py wait_for_db &&
