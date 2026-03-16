@@ -97,7 +97,8 @@ class DroneAPIKey(TimestampedModel):
     API key authentication for ESP32-CAM drones.
     Keys are stored as salted hashes for security.
     """
-    drone = models.OneToOneField(Drone, on_delete=models.CASCADE, related_name='api_key')
+    drone = models.ForeignKey(Drone, on_delete=models.CASCADE, related_name='api_keys')
+    name = models.CharField(max_length=100, default='Default Key')
     hashed_key = models.CharField(max_length=128, editable=False)
     prefix = models.CharField(max_length=16, editable=False)
     is_active = models.BooleanField(default=True)
@@ -106,9 +107,10 @@ class DroneAPIKey(TimestampedModel):
     
     class Meta:
         db_table = 'drone_api_keys'
+        ordering = ['-created_at']
         
     def __str__(self):
-        return f"API Key for {self.drone.drone_id} (Prefix: {self.prefix})"
+        return f"{self.name} for {self.drone.drone_id} (Prefix: {self.prefix})"
         
     @classmethod
     def generate_key(cls):
@@ -119,7 +121,7 @@ class DroneAPIKey(TimestampedModel):
 
     def set_key(self, raw_key):
         self.hashed_key = make_password(raw_key)
-        self.prefix = raw_key[:12] + "..."
+        self.prefix = raw_key[:12] + "..." # Keep 12 for the stored prefix, UI will trim to 5
 
     def check_key(self, raw_key):
         return check_password(raw_key, self.hashed_key)
