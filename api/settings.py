@@ -9,7 +9,7 @@ SECRET_KEY = config('SECRET_KEY')
 
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost').split(',')
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1,192.168.9.203').replace(' ', '').split(',')
 
 # Application definition
 AUTH_USER_MODEL = 'users.User'
@@ -193,6 +193,7 @@ if DEBUG:
         'http://127.0.0.1:8081',
         'http://192.168.205.203:8081',
         'http://192.168.205.203:8000',
+        'http://192.168.9.203:8000',
     ]
     # Allow all origins in DEBUG mode if there are still issues
     CORS_ALLOW_ALL_ORIGINS = True 
