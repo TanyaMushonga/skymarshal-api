@@ -40,7 +40,6 @@ class Command(BaseCommand):
             stream, created = VideoStream.objects.get_or_create(
                 drone=drone,
                 defaults={
-                    'rtsp_url': f"rtsp://192.168.1.{random.randint(100, 200)}:554/stream1",
                     'is_active': True,
                     'frame_rate': 30,
                     'resolution': '1920x1080'
