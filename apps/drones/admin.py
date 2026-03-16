@@ -18,7 +18,17 @@ class DroneAPIKeyInline(admin.StackedInline):
         }),
     )
 
-# ... (DroneAdmin remains same)
+@admin.register(Drone)
+class DroneAdmin(admin.ModelAdmin):
+    list_display = ('drone_id', 'name', 'model', 'is_active', 'assigned_officer', 'is_patrolling_display')
+    list_filter = ('model', 'is_active')
+    search_fields = ('drone_id', 'name', 'serial_number')
+    inlines = [DroneAPIKeyInline]
+    
+    def is_patrolling_display(self, obj):
+        return obj.is_patrolling
+    is_patrolling_display.boolean = True
+    is_patrolling_display.short_description = 'Patrolling'
 
 # Create admin for DroneAPIKey (separate view)
 @admin.register(DroneAPIKey)
