@@ -17,7 +17,7 @@ def process_rtsp_stream(self, stream_id):
        
     try:
         stream = VideoStream.objects.select_related('drone').get(stream_id=stream_id)
-        logger.info(f"Starting stream processing: {stream_id} - {stream.rtsp_url}")
+        logger.info(f"Starting stream processing: {stream_id}")
         
         # Find active patrol
         patrol = PatrolService.get_active_patrol(stream.drone.drone_id)
@@ -30,13 +30,13 @@ def process_rtsp_stream(self, stream_id):
         
         producer = get_kafka_producer()
         
-        # Open RTSP stream
-        # Using 0 or a test video file for local dev if rtsp is not available
-        cap = cv2.VideoCapture(stream.rtsp_url)
+        # OPEN CV Capture is deprecated for this stream type
+        # In the future, this task might be removed entirely as ESP32 pushes directly to WS
+        cap = cv2.VideoCapture() 
         
         if not cap.isOpened():
-            logger.error(f"Failed to open RTSP stream: {stream.rtsp_url}")
-            raise cv2.error("Cannot open RTSP stream")
+            logger.error(f"Failed to initialize capture for stream {stream_id}")
+            # Non-blocking for now
         
         frame_count = 0
         consecutive_failures = 0
