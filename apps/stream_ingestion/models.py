@@ -6,7 +6,6 @@ import uuid
 class VideoStream(TimestampedModel):
     stream_id = models.UUIDField(default=uuid.uuid4, unique=True, db_index=True)
     drone = models.ForeignKey('drones.Drone', on_delete=models.CASCADE, related_name='streams')
-    rtsp_url = models.URLField(max_length=500)
     is_active = models.BooleanField(default=False)
     frame_rate = models.IntegerField(default=30)
     resolution = models.CharField(max_length=20, default='1920x1080')
