@@ -9,11 +9,12 @@ from datetime import timedelta
 
 from apps.core.permissions import IsAdmin
 from apps.users.models import User
-from ..models import Drone, DroneStatus, GPSLocation
+from ..models import Drone, DroneStatus, GPSLocation, DroneAPIKey
 from ..serializers import (
     DroneSerializer, DroneCreateSerializer, DroneStatusSerializer,
     GPSLocationSerializer, DroneStatusUpdateSerializer,
-    DroneAssignSerializer, GPSLocationUpdateSerializer
+    DroneAssignSerializer, GPSLocationUpdateSerializer,
+    DroneAPIKeySerializer
 )
 from apps.core.permissions import IsDroneAuthenticated
 
@@ -41,7 +42,7 @@ class DroneViewSet(viewsets.ModelViewSet):
         """
         Instantiates and returns the list of permissions that this view requires.
         """
-        if self.action in ['create', 'update', 'partial_update', 'destroy', 'assign', 'activate', 'deactivate']:
+        if self.action in ['create', 'update', 'partial_update', 'destroy', 'assign', 'activate', 'deactivate', 'generate_key']:
             permission_classes = [IsAdmin]
         elif self.action in ['list', 'retrieve', 'status', 'history', 'location']:
             permission_classes = [permissions.IsAuthenticated]
@@ -220,3 +221,38 @@ class DroneViewSet(viewsets.ModelViewSet):
         unassigned_drones = self.get_queryset().filter(assigned_officer__isnull=True)
         serializer = DroneSerializer(unassigned_drones, many=True)
         return Response(serializer.data)
+
+    @action(detail=True, methods=['get'], permission_classes=[IsAdmin])
+    def keys(self, request, drone_id=None):
+        """List all API keys for a drone"""
+        drone = self.get_object()
+        keys = drone.api_keys.all()
+        serializer = DroneAPIKeySerializer(keys, many=True)
+        return Response(serializer.data)
+
+    @action(detail=True, methods=['post'], permission_classes=[IsAdmin])
+    def generate_key(self, request, drone_id=None):
+        """Generate a new API key for a drone"""
+        drone = self.get_object()
+        name = request.data.get('name', f'Key-{timezone.now().strftime("%Y%m%d-%H%M")}')
+        
+        api_key = DroneAPIKey.objects.create(drone=drone, name=name)
+        
+        serializer = DroneAPIKeySerializer(api_key)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    @action(detail=True, methods=['post'], permission_classes=[IsAdmin])
+    def revoke_key(self, request, drone_id=None):
+        """Revoke a specific API key"""
+        drone = self.get_object()
+        key_id = request.data.get('key_id')
+        if not key_id:
+            return Response({'error': 'key_id is required'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            api_key = drone.api_keys.get(pk=key_id)
+            api_key.is_active = False
+            api_key.save()
+            return Response({'status': 'revoked'})
+        except DroneAPIKey.DoesNotExist:
+            return Response({'error': 'Key not found'}, status=status.HTTP_404_NOT_FOUND)
