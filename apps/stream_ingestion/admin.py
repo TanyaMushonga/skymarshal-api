@@ -16,12 +16,12 @@ class VideoStreamAdmin(admin.ModelAdmin):
         'created_at'
     ]
     list_filter = ['is_active', 'resolution', 'frame_rate', 'created_at']
-    search_fields = ['stream_id', 'drone__drone_id', 'drone__name', 'rtsp_url']
+    search_fields = ['stream_id', 'drone__drone_id', 'drone__name']
     readonly_fields = ['stream_id', 'created_at', 'updated_at', 'session_count']
     
     fieldsets = (
         ('Stream Information', {
-            'fields': ('stream_id', 'drone', 'rtsp_url')
+            'fields': ('stream_id', 'drone')
         }),
         ('Configuration', {
             'fields': ('resolution', 'frame_rate', 'is_active')
