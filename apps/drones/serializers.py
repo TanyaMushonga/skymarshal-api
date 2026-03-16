@@ -1,7 +1,18 @@
 from rest_framework import serializers
 from django.contrib.gis.geos import Point
 import re
-from .models import Drone, DroneStatus, GPSLocation
+from .models import Drone, DroneStatus, GPSLocation, DroneAPIKey
+
+
+class DroneAPIKeySerializer(serializers.ModelSerializer):
+    """Serializer for drone API keys"""
+    drone_id = serializers.CharField(source='drone.drone_id', read_only=True)
+    raw_key = serializers.CharField(source='_raw_key', read_only=True)
+
+    class Meta:
+        model = DroneAPIKey
+        fields = ['id', 'drone_id', 'name', 'prefix', 'raw_key', 'is_active', 'last_used', 'created_at']
+        read_only_fields = ['id', 'prefix', 'last_used', 'created_at']
 
 
 class GPSLocationSerializer(serializers.ModelSerializer):
@@ -68,13 +79,14 @@ class DroneSerializer(serializers.ModelSerializer):
         source='assigned_officer.get_full_name',
         read_only=True
     )
+    api_keys = serializers.SerializerMethodField()
 
     class Meta:
         model = Drone
         fields = [
             'id', 'drone_id', 'name', 'model', 'serial_number',
             'is_active', 'is_patrolling', 'assigned_officer', 'assigned_officer_name',
-            'status', 'latest_location', 'created_at', 'updated_at'
+            'status', 'latest_location', 'api_keys', 'created_at', 'updated_at'
         ]
         read_only_fields = ['id', 'is_patrolling', 'created_at', 'updated_at']
 
@@ -83,6 +95,10 @@ class DroneSerializer(serializers.ModelSerializer):
         if latest:
             return GPSLocationSerializer(latest).data
         return None
+
+    def get_api_keys(self, obj):
+        active_keys = obj.api_keys.filter(is_active=True)
+        return [{"id": k.id, "name": k.name, "prefix": k.prefix[:5]} for k in active_keys]
 
 
 class DroneCreateSerializer(serializers.ModelSerializer):
