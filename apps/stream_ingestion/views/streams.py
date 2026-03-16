@@ -33,7 +33,7 @@ class VideoStreamViewSet(viewsets.ModelViewSet):
     pagination_class = StandardResultsSetPagination
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = ['is_active', 'drone__drone_id', 'drone']
-    search_fields = ['rtsp_url', 'drone__name', 'drone__drone_id']
+    search_fields = ['stream_id', 'drone__name', 'drone__drone_id']
     ordering_fields = ['created_at', 'updated_at']
     
     def get_serializer_class(self):
@@ -190,6 +190,32 @@ class VideoStreamViewSet(viewsets.ModelViewSet):
             'last_completed_session': StreamSessionSerializer(last_completed).data if last_completed else None
         }, status=status.HTTP_200_OK)
 
+    @action(detail=False, methods=['get'], permission_classes=[IsDroneAuthenticated])
+    def config(self, request):
+        """
+        Get stream configuration for the authenticated drone.
+        GET /api/v1/streams/config/
+        """
+        drone = request.user
+        stream = VideoStream.objects.filter(drone=drone).first()
+        
+        if not stream:
+            return Response(
+                {'error': 'No video stream configured for this drone'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+            
+        # Use request.get_host() to get the current server address
+        host = request.get_host()
+        websocket_url = f"ws://{host}/ws/stream/{stream.stream_id}/"
+        
+        return Response({
+            'stream_id': str(stream.stream_id),
+            'drone_id': drone.drone_id,
+            'drone_name': drone.name,
+            'websocket_url': websocket_url
+        }, status=status.HTTP_200_OK)
+
     @action(detail=True, methods=['post'])
     def simulate(self, request, pk=None, stream_id=None):
         """
@@ -241,8 +267,7 @@ class VideoStreamViewSet(viewsets.ModelViewSet):
             
         # Get or create VideoStream
         stream, created = VideoStream.objects.get_or_create(
-            drone=drone,
-            defaults={'rtsp_url': f'rtsp://simulation/{drone_id}'}
+            drone=drone
         )
         
         if stream.is_active:
