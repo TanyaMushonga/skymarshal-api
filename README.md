@@ -20,7 +20,7 @@ A comprehensive Django REST API for intelligent aerial traffic monitoring, featu
 
 ### 🎥 Video Stream Ingestion
 
-- **RTSP Stream Support** - Ingest live video feeds from surveillance drones
+- **WebSocket Stream Support** - Ingest live video feeds directly from ESP32-CAM modules
 - **Kafka Integration** - Real-time frame processing via message queues
 - **Session Management** - Track active streaming sessions per patrol
 
@@ -86,7 +86,7 @@ skymarshal-api/
 │   ├── users/               # User management & authentication
 │   ├── drones/              # Drone fleet management
 │   ├── patrols/             # Patrol mission management
-│   ├── stream_ingestion/    # RTSP video stream handling
+│   ├── stream_ingestion/    # Live video stream handling
 │   ├── detections/          # CV detection records
 │   ├── violations/          # Traffic violation processing
 │   ├── vehicle_lookup/      # Vehicle registration database
