@@ -16,7 +16,7 @@ class VideoStreamSerializer(serializers.ModelSerializer):
     class Meta:
         model = VideoStream
         fields = [
-            'id', 'stream_id', 'drone', 'drone_id', 'drone_name', 'rtsp_url',
+            'id', 'stream_id', 'drone', 'drone_id', 'drone_name',
             'is_active', 'frame_rate', 'resolution', 'is_streaming',
             'active_session_id', 'active_patrol', 'created_at', 'updated_at'
         ]
@@ -88,7 +88,6 @@ class StreamSessionSerializer(serializers.ModelSerializer):
 class StreamRegistrationSerializer(serializers.Serializer):
     """Serializer for registering new video streams"""
     drone_id = serializers.CharField(max_length=50, required=True)
-    rtsp_url = serializers.URLField(max_length=500, required=True)
     resolution = serializers.CharField(max_length=20, default='1920x1080')
     frame_rate = serializers.IntegerField(min_value=1, max_value=60, default=30)
 
@@ -100,11 +99,6 @@ class StreamRegistrationSerializer(serializers.Serializer):
         except drone.DoesNotExist:
             raise serializers.ValidationError("Drone with this ID does not exist.")
 
-    def validate_rtsp_url(self, value):
-        """Validate RTSP URL format"""
-        if not value.startswith('rtsp://'):
-            raise serializers.ValidationError("URL must be a valid RTSP URL starting with rtsp://")
-        return value
 
     def validate_resolution(self, value):
         """Validate resolution format (e.g., 1920x1080)"""
