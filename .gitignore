@@ -15,7 +15,12 @@ local_settings.py
 
 # Computer Vision
 *.pt
+dataset/
 datasets/
 runs/
 output/
-traffic_sample.mp4
+*.mp4
+*.jpg
+cv_env/
+celerybeat-schedule
+error_resp.html
