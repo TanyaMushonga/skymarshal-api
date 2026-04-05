@@ -9,7 +9,9 @@ SECRET_KEY = config('SECRET_KEY')
 
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1,192.168.9.203').replace(' ', '').split(',')
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1').replace(' ', '').split(',')
+if DEBUG:
+    ALLOWED_HOSTS = ['*']
 
 # Application definition
 AUTH_USER_MODEL = 'users.User'
@@ -186,17 +188,7 @@ SIMPLE_JWT = {
 
 # CORS
 CORS_ALLOWED_ORIGINS = config('CORS_ALLOWED_ORIGINS', default='http://localhost:3000').split(',')
-# Add common development origins and wildcards for debugging if needed
-if DEBUG:
-    CORS_ALLOWED_ORIGINS += [
-        'http://localhost:8081', 
-        'http://127.0.0.1:8081',
-        'http://192.168.205.203:8081',
-        'http://192.168.205.203:8000',
-        'http://192.168.9.203:8000',
-    ]
-    # Allow all origins in DEBUG mode if there are still issues
-    CORS_ALLOW_ALL_ORIGINS = True 
+CORS_ALLOW_ALL_ORIGINS = DEBUG
 
 CSRF_TRUSTED_ORIGINS = [origin for origin in CORS_ALLOWED_ORIGINS if origin != '*']
 if 'http://localhost:3000' not in CSRF_TRUSTED_ORIGINS:
