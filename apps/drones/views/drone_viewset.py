@@ -139,17 +139,20 @@ class DroneViewSet(viewsets.ModelViewSet):
         serializer = GPSLocationSerializer(locations, many=True)
         return Response(serializer.data)
 
-    @action(detail=False, methods=['post'], permission_classes=[IsDroneAuthenticated])
+    @action(detail=False, methods=['post'], permission_classes=[permissions.AllowAny])
     def location(self, request):
         """Update GPS location (from ESP32)"""
-        # Drone retrieved from authentication
+        # Drone retrieved from authentication or drone_id in body
         drone = request.auth
-        
-        # Double check authentication (though permission class handles it)
+        if not drone:
+            drone_id = request.data.get('drone_id') or request.query_params.get('drone_id')
+            if drone_id:
+                drone = get_object_or_404(Drone, drone_id=drone_id)
+
         if not drone:
             return Response(
-                {'error': 'Authentication required'}, 
-                status=status.HTTP_401_UNAUTHORIZED
+                {'error': 'drone_id is required'}, 
+                status=status.HTTP_400_BAD_REQUEST
             )
 
         serializer = GPSLocationUpdateSerializer(data=request.data)
@@ -167,6 +170,11 @@ class DroneViewSet(viewsets.ModelViewSet):
                 location=location_point,
                 altitude=alt
             )
+            
+            # Update drone cache for high-speed lookup
+            drone.last_location = location_point
+            drone.last_altitude = alt
+            drone.save(update_fields=['last_location', 'last_altitude'])
             
             return Response(GPSLocationSerializer(gps_location).data, status=status.HTTP_201_CREATED)
             
