@@ -190,27 +190,51 @@ class VideoStreamViewSet(viewsets.ModelViewSet):
             'last_completed_session': StreamSessionSerializer(last_completed).data if last_completed else None
         }, status=status.HTTP_200_OK)
 
-    @action(detail=False, methods=['get'], permission_classes=[IsDroneAuthenticated])
+    @action(detail=False, methods=['get'], permission_classes=[permissions.AllowAny])
     def config(self, request):
         """
-        Get stream configuration for the authenticated drone.
-        GET /api/v1/streams/config/
+        Get stream configuration using drone_id (unauthenticated).
+        Returns active=false if no patrol is currently running.
+        GET /api/v1/streams/config/?drone_id=DRN-123
         """
-        drone = request.user
-        stream = VideoStream.objects.filter(drone=drone).first()
+        drone_id = request.query_params.get('drone_id') or request.headers.get('X-Drone-ID')
         
-        if not stream:
+        if not drone_id:
             return Response(
-                {'error': 'No video stream configured for this drone'},
+                {'error': 'drone_id is required as a query parameter or header'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+            
+        from apps.drones.models import Drone
+        from apps.patrols.services import PatrolService
+        
+        try:
+            drone = Drone.objects.get(drone_id=drone_id)
+        except Drone.DoesNotExist:
+            return Response(
+                {'error': f'Drone {drone_id} not found'},
                 status=status.HTTP_404_NOT_FOUND
             )
             
-        # Use request.get_host() to get the current server address
+        # Check for active patrol
+        active_patrol = PatrolService.get_active_patrol(drone_id)
+        if not active_patrol:
+            return Response({
+                'is_active': False,
+                'message': 'No active patrol found for this drone. Streaming disabled.'
+            }, status=status.HTTP_200_OK)
+
+        stream = VideoStream.objects.filter(drone=drone).first()
+        if not stream:
+            stream = VideoStream.objects.create(drone=drone)
+            
         host = request.get_host()
         websocket_url = f"ws://{host}/ws/stream/{stream.stream_id}/"
         
         return Response({
+            'is_active': True,
             'stream_id': str(stream.stream_id),
+            'patrol_id': str(active_patrol.id),
             'drone_id': drone.drone_id,
             'drone_name': drone.name,
             'websocket_url': websocket_url
