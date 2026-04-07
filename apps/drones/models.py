@@ -20,6 +20,10 @@ class Drone(TimestampedModel):
     )
     max_speed = models.FloatField(default=60.0, help_text="Maximum speed in km/h for this drone")
     
+    # Real-time location cache
+    last_location = gis_models.PointField(geography=True, null=True, blank=True)
+    last_altitude = models.FloatField(null=True, blank=True)
+    
     class Meta:
         db_table = 'drones'
         ordering = ['name']
