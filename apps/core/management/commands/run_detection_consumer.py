@@ -76,8 +76,17 @@ class Command(BaseCommand):
                 if lat is not None and lon is not None:
                     location = Point(lon, lat)
 
-            # Retrieve active patrol
-            patrol = PatrolService.get_active_patrol(drone_id)
+            # Retrieve patrol: Prefer the ID from the message, fallback to active lookup
+            patrol_id_from_msg = data.get('patrol_id')
+            if patrol_id_from_msg:
+                from apps.patrols.models import Patrol
+                try:
+                    patrol = Patrol.objects.get(id=patrol_id_from_msg)
+                except (Patrol.DoesNotExist, ValueError):
+                    logger.warning(f"Patrol ID {patrol_id_from_msg} from message not found. Falling back to active lookup.")
+                    patrol = PatrolService.get_active_patrol(drone_id)
+            else:
+                patrol = PatrolService.get_active_patrol(drone_id)
 
             # --- Extract track info early for image naming ---
             track_id = data.get('track_id')
