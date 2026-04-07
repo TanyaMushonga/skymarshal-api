@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from django.utils import timezone
 from .models import Patrol
 from .serializers import PatrolSerializer
+from .services import PatrolService
 from apps.drones.models import Drone
 
 from rest_framework.filters import SearchFilter, OrderingFilter
@@ -80,6 +81,9 @@ class PatrolViewSet(viewsets.ModelViewSet):
             status='ACTIVE'
         )
 
+        # Clear active patrol cache to ensure immediate consumer sync
+        PatrolService.clear_cache(drone_id)
+
         # duty_status logic...
         
         return Response(PatrolSerializer(patrol).data, status=status.HTTP_201_CREATED)
@@ -89,7 +93,10 @@ class PatrolViewSet(viewsets.ModelViewSet):
         """
         End an active patrol.
         """
+        from apps.stream_ingestion.models import VideoStream, StreamSession
+        
         patrol = self.get_object()
+        drone_id = patrol.drone.drone_id
         
         if patrol.status != 'ACTIVE':
             return Response({"error": "Patrol is not active"}, status=status.HTTP_400_BAD_REQUEST)
@@ -97,6 +104,15 @@ class PatrolViewSet(viewsets.ModelViewSet):
         patrol.status = 'COMPLETED'
         patrol.end_time = timezone.now()
         patrol.save()
+        
+        # End any open stream sessions associated with this patrol
+        StreamSession.objects.filter(
+            patrol=patrol,
+            end_time__isnull=True
+        ).update(end_time=patrol.end_time)
+        
+        # Clear active patrol cache
+        PatrolService.clear_cache(drone_id)
         
         # duty_status logic...
         
