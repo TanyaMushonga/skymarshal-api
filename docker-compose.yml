@@ -283,6 +283,24 @@ services:
       - sky_marshal_network
     restart: unless-stopped
 
+  ingestion_gateway:
+    build: 
+      context: /home/tanyamushonga/Desktop/development/express/iatos-camera
+      dockerfile: Dockerfile
+    container_name: skymarshal_ingestion_gateway
+    ports:
+      - "3003:3000"
+    environment:
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - NODE_ENV=production
+      - PORT=3000
+    depends_on:
+      kafka:
+        condition: service_healthy
+    networks:
+      - sky_marshal_network
+    restart: unless-stopped
+
   flower:
     image: mher/flower:2.0.1
     container_name: skymarshal_flower
