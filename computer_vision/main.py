@@ -58,6 +58,7 @@ def main():
                 try:
                     data = message.value
                     stream_id = data.get('stream_id')
+                    patrol_id = data.get('patrol_id')
                     frame_number = data.get('frame_number')
                     frame_data = data.get('frame_data')
                     frame_rate = data.get('frame_rate', 30.0)
@@ -81,6 +82,7 @@ def main():
                             event = {
                                 'drone_id': data.get('drone_id'),
                                 'stream_id': stream_id,
+                                'patrol_id': patrol_id,
                                 'timestamp': data.get('timestamp'),
                                 'frame_number': frame_number,
                                 'vehicle_type': det['vehicle_type'],
@@ -93,19 +95,20 @@ def main():
                                 'frame_data': annotated_frame # Send for evidence capture
                             }
                             producer.send(output_topic, event)
-                            logger.info(f"Sent detection for frame {frame_number} to {output_topic}")
+                            logger.info(f"Sent detection for frame {frame_number} to {output_topic} (patrol: {patrol_id})")
 
                         # Publish annotated frame for live viewing
                         if annotated_frame:
                             frame_event = {
                                 'drone_id': data.get('drone_id'),
                                 'stream_id': stream_id,
+                                'patrol_id': patrol_id,
                                 'timestamp': data.get('timestamp'),
                                 'frame_number': frame_number,
                                 'frame_data': annotated_frame
                             }
                             producer.send(processed_topic, frame_event)
-                            logger.info(f"Sent annotated frame {frame_number} (stream: {stream_id}) to {processed_topic}")
+                            logger.info(f"Sent annotated frame {frame_number} to {processed_topic} (patrol: {patrol_id})")
                             
                     except Exception as e:
                         logger.error(f"Error processing frame {frame_number}: {e}", exc_info=True)
