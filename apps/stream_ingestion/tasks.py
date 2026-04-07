@@ -84,6 +84,7 @@ def process_rtsp_stream(self, stream_id):
                     message = {
                         'stream_id': str(stream.stream_id),
                         'drone_id': stream.drone.drone_id,
+                        'patrol_id': str(patrol.id) if patrol else None,
                         'frame_number': frame_count,
                         'timestamp': timezone.now().isoformat(),
                         'frame_data': frame_base64,
@@ -278,6 +279,7 @@ def simulate_stream_task(self, stream_id, patrol_id=None, video_file='computer_v
                     message = {
                         'stream_id': str(stream.stream_id),
                         'drone_id': stream.drone.drone_id,
+                        'patrol_id': str(patrol.id) if patrol else None,
                         'frame_number': frame_count,
                         'timestamp': timezone.now().isoformat(),
                         'frame_data': frame_base64,
