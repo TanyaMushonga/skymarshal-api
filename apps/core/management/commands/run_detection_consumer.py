@@ -70,11 +70,17 @@ class Command(BaseCommand):
             
             # Create Point for location
             location = None
-            if 'location' in data and data['location']:
-                lat = data['location'].get('latitude')
-                lon = data['location'].get('longitude')
+            gps_data = data.get('location')
+            if isinstance(gps_data, dict):
+                lat = gps_data.get('latitude')
+                lon = gps_data.get('longitude')
                 if lat is not None and lon is not None:
                     location = Point(lon, lat)
+            
+            # FALLBACK: Use drone's cached last_location if message GPS is missing
+            if not location and drone.last_location:
+                location = drone.last_location
+                logger.debug(f"Using cached last_location fallback for drone {drone_id}")
 
             # Retrieve patrol: Prefer the ID from the message, fallback to active lookup
             patrol_id_from_msg = data.get('patrol_id')
