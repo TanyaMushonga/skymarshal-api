@@ -113,6 +113,7 @@ class LiveStreamConsumer(AsyncWebsocketConsumer):
                 self.authenticated = True
                 self.drone_id = drone.drone_id
                 self.session_id = session.id
+                self.patrol_id = str(session.patrol_id) if session.patrol_id else None
 
                 # Join drone command group to receive patrol commands from server
                 drone_group = f"drone_{self.drone_id}"
@@ -174,6 +175,7 @@ class LiveStreamConsumer(AsyncWebsocketConsumer):
             producer = get_kafka_producer()
             message = {
                 'stream_id': self.stream_id,
+                'patrol_id': getattr(self, 'patrol_id', None),
                 'frame_number': frame_number,
                 'timestamp': timestamp,
                 'frame_data': frame_data,
