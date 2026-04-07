@@ -35,7 +35,18 @@ class LiveStreamConsumer(AsyncWebsocketConsumer):
 
         logger.info(f"WebSocket disconnected for stream: {self.stream_id}, code: {close_code}")
 
-    async def receive(self, text_data):
+    async def receive(self, text_data=None, bytes_data=None):
+        if bytes_data:
+            # Handle binary video segments (tunnelling support)
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {
+                    'type': 'video_segment',
+                    'data': bytes_data,
+                }
+            )
+            return
+
         try:
             data = json.loads(text_data)
         except json.JSONDecodeError:
@@ -248,3 +259,10 @@ class LiveStreamConsumer(AsyncWebsocketConsumer):
             }))
         except Exception as e:
             logger.debug(f"Failed to send patrol_ended to drone: {e}")
+
+    async def video_segment(self, event):
+        """Forward a binary video segment to the client."""
+        try:
+            await self.send(bytes_data=event['data'])
+        except Exception as e:
+            logger.debug(f"Failed to forward binary segment to viewer: {e}")
