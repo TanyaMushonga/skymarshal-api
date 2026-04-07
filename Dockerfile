@@ -21,10 +21,10 @@ WORKDIR /app
 COPY requirements.txt .
 
 # Pre-install lightweight CPU-only PyTorch to prevent massive CUDA binary downloads (saves ~3.5GB per build)
-RUN pip install --no-cache-dir torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+RUN pip install --no-cache-dir --default-timeout=1000 torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
 
 # Install remaining Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir --default-timeout=1000 -r requirements.txt
 
 # Copy project files
 COPY . .
