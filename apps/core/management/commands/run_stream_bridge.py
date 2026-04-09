@@ -33,6 +33,10 @@ class Command(BaseCommand):
         signal.signal(signal.SIGINT, signal_handler)
         signal.signal(signal.SIGTERM, signal_handler)
 
+        # In-memory session cache to avoid redundant lookups and batch saves
+        session_cache = {}
+        SAVE_EVERY_N_FRAMES = 30
+
         for message in consumer:
             try:
                 data = message.value
@@ -40,37 +44,47 @@ class Command(BaseCommand):
                 patrol_id = data.get('patrol_id')
                 frame_number = data.get('frame_number')
                 
-                logger.debug(f"Bridge received message: stream={stream_id}, frame={frame_number}")
-
                 if not stream_id:
-                    logger.warning(f"Received frame {frame_number} without stream_id")
                     continue
 
-                # --- Automatic StreamSession Management ---
+                # --- Automatic StreamSession Management (Batched) ---
                 if patrol_id:
-                    try:
-                        # Ensure VideoStream exists
-                        stream = VideoStream.objects.filter(stream_id=stream_id).first()
-                        if stream:
-                            # Use update_or_create logic for the session
-                            session, created = StreamSession.objects.get_or_create(
-                                stream=stream,
-                                patrol_id=patrol_id,
-                                end_time__isnull=True,
-                                defaults={'kafka_topic': topic}
-                            )
-                            
-                            # Increment frame count
-                            session.frames_processed += 1
-                            session.save(update_fields=['frames_processed'])
-                            
-                            if created:
-                                logger.info(f"Created new StreamSession for patrol {patrol_id}")
-                    except Exception as db_err:
-                        logger.error(f"Failed to manage StreamSession: {db_err}")
+                    cache_key = f"{stream_id}_{patrol_id}"
+                    
+                    if cache_key not in session_cache:
+                        try:
+                            stream = VideoStream.objects.filter(stream_id=stream_id).first()
+                            if stream:
+                                session, created = StreamSession.objects.get_or_create(
+                                    stream=stream,
+                                    patrol_id=patrol_id,
+                                    end_time__isnull=True,
+                                    defaults={'kafka_topic': topic}
+                                )
+                                session_cache[cache_key] = session
+                                if created:
+                                    logger.info(f"Created new StreamSession for patrol {patrol_id}")
+                        except Exception as db_err:
+                            logger.error(f"Failed to initialize StreamSession: {db_err}")
+
+                    if cache_key in session_cache:
+                        session = session_cache[cache_key]
+                        session.frames_processed += 1
+                        
+                        # Only save to DB every N frames to maximize performance
+                        if session.frames_processed % SAVE_EVERY_N_FRAMES == 0:
+                            try:
+                                session.save(update_fields=['frames_processed'])
+                                # Periodically refresh the session from DB to ensure it hasn't been closed
+                                # if it was closed elsewhere, end_time would be set.
+                                if session.end_time:
+                                    del session_cache[cache_key]
+                            except Exception as save_err:
+                                logger.error(f"Failed to save batched frames count: {save_err}")
+                                # Remove from cache to force re-fetch next time
+                                del session_cache[cache_key]
 
                 group_name = f'live_stream_{stream_id}'
-                logger.info(f"Bridging frame {frame_number} for stream {stream_id} to group {group_name}")
                 
                 # Send frame to the WebSocket group
                 async_to_sync(channel_layer.group_send)(
@@ -84,7 +98,6 @@ class Command(BaseCommand):
                         'source': data.get('source', 'LIVE')
                     }
                 )
-                logger.info(f"Bridged frame {frame_number} for stream {stream_id} to group {group_name}")
                 
             except Exception as e:
                 logger.error(f"Error bridging frame: {e}", exc_info=True)
