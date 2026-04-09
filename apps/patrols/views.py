@@ -48,6 +48,7 @@ class PatrolViewSet(viewsets.ModelViewSet):
         user = request.user
         drone_id = request.data.get('drone_id')
         officer_id = request.data.get('officer')
+        stream_mode = request.data.get('stream_mode', 'LIVE').upper()
         config = request.data.get('config', {})
         
         if not drone_id:
@@ -80,6 +81,25 @@ class PatrolViewSet(viewsets.ModelViewSet):
             patrol_config=config,
             status='ACTIVE'
         )
+
+        # Handle stream mode initialization
+        stream, created = VideoStream.objects.get_or_create(drone=drone)
+        stream.stream_mode = stream_mode
+        stream.is_active = True
+        stream.save(update_fields=['stream_mode', 'is_active'])
+
+        if stream_mode == 'SIMULATED':
+            # Trigger simulation task immediately
+            video_file = config.get('simulation_video', 'computer_vision/traffic_sample.mp4')
+            simulate_stream_task.delay(
+                stream_id=stream.id,
+                patrol_id=patrol.id,
+                video_file=video_file
+            )
+        else:
+            # For live feed, ensure bridge processing is ready
+            # task = process_rtsp_stream.delay(str(stream.stream_id))
+            pass
 
         # Clear active patrol cache to ensure immediate consumer sync
         PatrolService.clear_cache(drone_id)
