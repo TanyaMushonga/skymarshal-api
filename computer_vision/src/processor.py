@@ -24,7 +24,7 @@ class VideoProcessor:
         if not os.path.exists(self.output_dir):
             os.makedirs(self.output_dir)
 
-    def process_frame_data(self, frame_data, frame_number, fps=30.0, annotate=True):
+    def process_frame_data(self, frame_data, frame_number, fps=30.0, annotate=True, mode=None):
         """
         Process a single frame from Kafka stream.
         """
@@ -39,15 +39,34 @@ class VideoProcessor:
         
         # Downscale for performance (especially if 4K)
         t1 = time.time()
-        target_width = 640
+        target_width = 800 # Increased from 640 for better visibility of overlays
         h, w = frame_raw.shape[:2]
         scale = target_width / w
         target_height = int(h * scale)
         frame = cv2.resize(frame_raw, (target_width, target_height))
         t_resize = time.time() - t1
         
-        # Enhance frame for better detection/ALPR/speed
-        # frame = self._enhance_frame(frame)
+        # Draw Source Mode Overlay if provided
+        if annotate and mode:
+            label = f"[{mode}]"
+            color = (0, 255, 0) if mode == 'LIVE' else (0, 165, 255) # Emerald vs Amber (BGR)
+            font = cv2.FONT_HERSHEY_DUPLEX
+            font_scale = 0.7
+            thickness = 2
+            
+            (w_l, h_l), baseline = cv2.getTextSize(label, font, font_scale, thickness)
+            
+            # Position at top right
+            x_pos = target_width - w_l - 20
+            y_pos = h_l + 20
+            
+            # Draw semi-transparent background
+            overlay = frame.copy()
+            cv2.rectangle(overlay, (x_pos - 10, y_pos - h_l - 10), (x_pos + w_l + 10, y_pos + 10), (0, 0, 0), -1)
+            cv2.addWeighted(overlay, 0.4, frame, 0.6, 0, frame)
+            
+            # Draw text
+            cv2.putText(frame, label, (x_pos, y_pos), font, font_scale, color, thickness)
 
         detections = []
         annotated_frame_data = None
