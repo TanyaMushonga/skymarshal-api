@@ -4,9 +4,15 @@ import uuid
 
 
 class VideoStream(TimestampedModel):
+    STREAM_MODE_CHOICES = [
+        ('LIVE', 'Live Feed'),
+        ('SIMULATED', 'Simulated Video'),
+    ]
+    
     stream_id = models.UUIDField(default=uuid.uuid4, unique=True, db_index=True)
     drone = models.ForeignKey('drones.Drone', on_delete=models.CASCADE, related_name='streams')
     is_active = models.BooleanField(default=False)
+    stream_mode = models.CharField(max_length=20, choices=STREAM_MODE_CHOICES, default='LIVE')
     frame_rate = models.IntegerField(default=30)
     resolution = models.CharField(max_length=20, default='1920x1080')
     
