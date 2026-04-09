@@ -10,6 +10,26 @@ from rest_framework import serializers
 from apps.violations.models import Violation
 import random
 
+class ComplianceScoreSerializer(serializers.ModelSerializer):
+    license_plate = serializers.ReadOnlyField(source='vehicle.license_plate')
+    owner_name = serializers.ReadOnlyField(source='vehicle.owner_name')
+    make = serializers.ReadOnlyField(source='vehicle.make')
+    model = serializers.ReadOnlyField(source='vehicle.model')
+
+    class Meta:
+        model = ComplianceScore
+        fields = ['id', 'license_plate', 'owner_name', 'make', 'model', 'safe_driving_points', 'last_observation']
+
+class ComplianceScoreViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = ComplianceScore.objects.all()
+    serializer_class = ComplianceScoreSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    
+    pagination_class = StandardResultsSetPagination
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    search_fields = ['vehicle__license_plate', 'vehicle__owner_name']
+    ordering_fields = ['safe_driving_points', 'last_observation']
+
 class LotteryEventSerializer(serializers.ModelSerializer):
     class Meta:
         model = LotteryEvent
