@@ -66,11 +66,56 @@ class LiveStreamConsumer(AsyncWebsocketConsumer):
     async def _handle_authenticate(self, data):
         drone_id = data.get('drone_id')
         api_key = data.get('api_key')
+        token = data.get('token')
 
+        # 1. Handle User Authentication (Dashboard Viewer)
+        if token:
+            try:
+                from channels.db import database_sync_to_async
+                from rest_framework_simplejwt.tokens import AccessToken
+                from django.contrib.auth import get_user_model
+                
+                @database_sync_to_async
+                def get_user_from_token(token_str):
+                    try:
+                        access_token = AccessToken(token_str)
+                        user_id = access_token['user_id']
+                        User = get_user_model()
+                        return User.objects.get(id=user_id)
+                    except Exception as e:
+                        logger.error(f"JWT Validation error: {e}")
+                        return None
+
+                user = await get_user_from_token(token)
+                if user and user.is_authenticated:
+                    self.authenticated = True
+                    self.user_id = user.id
+                    await self.send(text_data=json.dumps({
+                        'type': 'auth_success',
+                        'message': f'Welcome, {user.email}',
+                        'stream_id': self.stream_id
+                    }))
+                    logger.info(f"User {user.email} authenticated as viewer for stream {self.stream_id}")
+                    return
+                else:
+                    await self.send(text_data=json.dumps({
+                        'type': 'auth_failed',
+                        'message': 'Invalid token'
+                    }))
+                    return
+            except Exception as e:
+                logger.error(f"Error during JWT authentication: {e}")
+                await self.send(text_data=json.dumps({
+                    'type': 'auth_failed',
+                    'message': 'Internal error'
+                }))
+                return
+
+        # 2. Handle Drone Authentication (ESP32-CAM Ingestion)
         if not drone_id or not api_key:
             await self.send(text_data=json.dumps({
                 'type': 'auth_failed',
-                'message': 'Missing drone_id or api_key'
+                'message': 'Missing drone_id/api_key or token'
             }))
             return
 
@@ -166,34 +211,38 @@ class LiveStreamConsumer(AsyncWebsocketConsumer):
         frame_number = data.get('frame_number', 0)
         timestamp = data.get('timestamp')
 
-        # 1. Broadcast to viewers connected to the stream room group
-        await self.channel_layer.group_send(
-            self.room_group_name,
-            {
-                'type': 'stream_frame',
-                'frame_data': frame_data,
-                'frame_number': frame_number,
-                'timestamp': timestamp,
-                'drone_id': self.drone_id,
-            }
-        )
+        # 1. (Removed) Direct broadcast to viewers is disabled to prevent flickering between raw and annotated frames.
+        # All frames now go through the Computer Vision pipeline for consistent filtering and annotation.
 
-        # 2. Publish to Kafka for CV processing
+        # 2. Publish to Kafka for CV processing (only if stream mode is LIVE)
         try:
             from apps.core.kafka_config import get_kafka_producer
             from django.conf import settings
+            from apps.stream_ingestion.models import VideoStream
+            from channels.db import database_sync_to_async
 
-            producer = get_kafka_producer()
-            message = {
-                'stream_id': self.stream_id,
-                'patrol_id': getattr(self, 'patrol_id', None),
-                'frame_number': frame_number,
-                'timestamp': timestamp,
-                'frame_data': frame_data,
-                'drone_id': self.drone_id,
-                'is_esp32': True
-            }
-            producer.send(settings.KAFKA_TOPICS['RAW_FRAMES'], value=message)
+            @database_sync_to_async
+            def get_stream_mode(s_id):
+                return VideoStream.objects.filter(stream_id=s_id).values_list('stream_mode', flat=True).first()
+
+            cached_mode = await get_stream_mode(self.stream_id)
+            
+            if cached_mode == 'LIVE':
+                producer = get_kafka_producer()
+                message = {
+                    'stream_id': self.stream_id,
+                    'patrol_id': getattr(self, 'patrol_id', None),
+                    'frame_number': frame_number,
+                    'timestamp': timestamp,
+                    'frame_data': frame_data,
+                    'drone_id': self.drone_id,
+                    'is_esp32': True,
+                    'source': 'LIVE'
+                }
+                producer.send(settings.KAFKA_TOPICS['RAW_FRAMES'], value=message)
+            else:
+                # Log but don't process if mode is SIMULATED
+                pass
         except Exception as e:
             logger.error(f"Error publishing ESP32 frame to Kafka: {e}")
 
