@@ -186,6 +186,7 @@ class VideoStreamViewSet(viewsets.ModelViewSet):
             'total_uptime_seconds': round(total_uptime, 2),
             'average_fps': round(avg_fps, 2),
             'is_currently_active': stream.is_active,
+            'stream_mode': stream.stream_mode,
             'current_session': StreamSessionSerializer(current_session).data if current_session else None,
             'last_completed_session': StreamSessionSerializer(last_completed).data if last_completed else None
         }, status=status.HTTP_200_OK)
@@ -228,11 +229,13 @@ class VideoStreamViewSet(viewsets.ModelViewSet):
         if not stream:
             stream = VideoStream.objects.create(drone=drone)
             
-        host = request.get_host()
-        websocket_url = f"ws://{host}/ws/stream/{stream.stream_id}/"
+        host = os.environ.get('PUBLIC_WS_HOST') or request.get_host()
+        protocol = os.environ.get('PUBLIC_WS_PROTOCOL') or ('wss' if request.is_secure() else 'ws')
+        websocket_url = f"{protocol}://{host}/ws/stream/{stream.stream_id}/"
         
         return Response({
             'is_active': True,
+            'stream_mode': stream.stream_mode,
             'stream_id': str(stream.stream_id),
             'patrol_id': str(active_patrol.id),
             'drone_id': drone.drone_id,
@@ -250,11 +253,17 @@ class VideoStreamViewSet(viewsets.ModelViewSet):
         video_file = request.data.get('video_file', 'computer_vision/traffic_sample.mp4')
         patrol_id = request.data.get('patrol_id')
         
-        if stream.is_active:
+        # If already simulated, don't restart task redundantly
+        if stream.is_active and stream.stream_mode == 'SIMULATED':
              return Response(
-                {'error': 'Stream is already active'},
+                {'error': 'Stream is already in simulation mode'},
                 status=status.HTTP_400_BAD_REQUEST
             )
+
+        # Set to SIMULATED stream_mode
+        stream.stream_mode = 'SIMULATED'
+        stream.is_active = True
+        stream.save(update_fields=['stream_mode', 'is_active'])
 
         # Trigger simulation task
         task = simulate_stream_task.delay(
@@ -293,12 +302,17 @@ class VideoStreamViewSet(viewsets.ModelViewSet):
         stream, created = VideoStream.objects.get_or_create(
             drone=drone
         )
-        
-        if stream.is_active:
+
+        if stream.is_active and stream.stream_mode == 'SIMULATED':
              return Response(
-                {'error': 'Stream is already active'},
+                {'error': 'Stream is already in simulation mode'},
                 status=status.HTTP_400_BAD_REQUEST
             )
+
+        # Set to SIMULATED stream_mode
+        stream.stream_mode = 'SIMULATED'
+        stream.is_active = True
+        stream.save(update_fields=['stream_mode', 'is_active'])
 
         # Trigger simulation task
         task = simulate_stream_task.delay(
@@ -312,6 +326,30 @@ class VideoStreamViewSet(viewsets.ModelViewSet):
             'stream_id': str(stream.stream_id),
             'task_id': task.id,
             'message': f'Simulation task queued for {drone_id} using {video_file}'
+        }, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=['post'])
+    def live_feed(self, request, pk=None, stream_id=None):
+        """
+        Switch to live feed mode.
+        POST /api/v1/streams/{id}/live_feed/
+        """
+        stream = self.get_object()
+        
+        # Set to LIVE stream_mode
+        stream.stream_mode = 'LIVE'
+        stream.is_active = True
+        stream.save(update_fields=['stream_mode', 'is_active'])
+        
+        # Ensure RTSP processing is started if applicable
+        # (Usually ESP32 pushes directly, but this task handles RTSP fallback)
+        task = process_rtsp_stream.delay(str(stream.stream_id))
+        
+        return Response({
+            'status': 'switched_to_live',
+            'stream_mode': 'LIVE',
+            'stream_id': str(stream.stream_id),
+            'message': 'Stream mode set to LIVE'
         }, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=['post'])
