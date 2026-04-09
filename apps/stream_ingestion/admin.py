@@ -10,12 +10,13 @@ class VideoStreamAdmin(admin.ModelAdmin):
         'stream_id_short', 
         'drone_link', 
         'is_active', 
+        'stream_mode',
         'is_streaming',
         'resolution',
         'frame_rate',
         'created_at'
     ]
-    list_filter = ['is_active', 'resolution', 'frame_rate', 'created_at']
+    list_filter = ['is_active', 'stream_mode', 'resolution', 'frame_rate', 'created_at']
     search_fields = ['stream_id', 'drone__drone_id', 'drone__name']
     readonly_fields = ['stream_id', 'created_at', 'updated_at', 'session_count']
     
@@ -24,7 +25,7 @@ class VideoStreamAdmin(admin.ModelAdmin):
             'fields': ('stream_id', 'drone')
         }),
         ('Configuration', {
-            'fields': ('resolution', 'frame_rate', 'is_active')
+            'fields': ('resolution', 'frame_rate', 'stream_mode', 'is_active')
         }),
         ('Statistics', {
             'fields': ('session_count',)
