@@ -21,8 +21,9 @@ class Command(BaseCommand):
         channel_layer = get_channel_layer()
         consumer = get_kafka_consumer(
             topic=topic,
-            group_id='skymarshal_stream_bridge_group'
+            group_id='skymarshal_stream_bridge_group_v2' # Reset group to see new messages
         )
+        logger.info(f"Connected to Kafka topic: {topic}")
 
         def signal_handler(sig, frame):
             logger.info('Stopping Stream Bridge...')
@@ -39,6 +40,8 @@ class Command(BaseCommand):
                 patrol_id = data.get('patrol_id')
                 frame_number = data.get('frame_number')
                 
+                logger.debug(f"Bridge received message: stream={stream_id}, frame={frame_number}")
+
                 if not stream_id:
                     logger.warning(f"Received frame {frame_number} without stream_id")
                     continue
@@ -77,10 +80,11 @@ class Command(BaseCommand):
                         'frame_data': data.get('frame_data'),
                         'frame_number': frame_number,
                         'timestamp': data.get('timestamp'),
-                        'patrol_id': patrol_id
+                        'patrol_id': patrol_id,
+                        'source': data.get('source', 'LIVE')
                     }
                 )
-                logger.info(f"Successfully sent frame {frame_number} to group {group_name}")
+                logger.info(f"Bridged frame {frame_number} for stream {stream_id} to group {group_name}")
                 
             except Exception as e:
                 logger.error(f"Error bridging frame: {e}", exc_info=True)
