@@ -17,7 +17,7 @@ class VideoStreamSerializer(serializers.ModelSerializer):
         model = VideoStream
         fields = [
             'id', 'stream_id', 'drone', 'drone_id', 'drone_name',
-            'is_active', 'frame_rate', 'resolution', 'is_streaming',
+            'is_active', 'stream_mode', 'frame_rate', 'resolution', 'is_streaming',
             'active_session_id', 'active_patrol', 'created_at', 'updated_at'
         ]
         read_only_fields = ['id', 'stream_id', 'created_at', 'updated_at']
