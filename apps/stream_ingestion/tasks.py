@@ -5,6 +5,7 @@ from datetime import timedelta
 import cv2
 import base64
 import logging
+import os
 from .models import VideoStream, StreamSession
 from apps.core.kafka_config import get_kafka_producer
 from apps.drones.models import GPSLocation
@@ -30,18 +31,28 @@ def process_rtsp_stream(self, stream_id):
         
         producer = get_kafka_producer()
         
-        # OPEN CV Capture is deprecated for this stream type
-        # In the future, this task might be removed entirely as ESP32 pushes directly to WS
-        cap = cv2.VideoCapture() 
+        # Check if we have an RTSP source (deprecated, usually ESP32 pushes directly)
+        rtsp_url = getattr(stream, 'rtsp_url', None) or os.environ.get('DEFAULT_RTSP_URL')
+        
+        if not rtsp_url:
+            logger.info(f"No RTSP source found for stream {stream_id}. Waiting for direct push from device.")
+            # We still keep the session active to record metrics from bridge
+            while stream.is_active and stream.stream_mode == 'LIVE':
+                import time
+                time.sleep(5)
+                stream.refresh_from_db()
+            return
+
+        cap = cv2.VideoCapture(rtsp_url) 
         
         if not cap.isOpened():
-            logger.error(f"Failed to initialize capture for stream {stream_id}")
-            # Non-blocking for now
+            logger.error(f"Failed to initialize capture for RTSP source: {rtsp_url}")
+            return
         
         frame_count = 0
         consecutive_failures = 0
         
-        while stream.is_active:
+        while stream.is_active and stream.stream_mode == 'LIVE':
             ret, frame = cap.read()
             
             if not ret:
@@ -90,7 +101,8 @@ def process_rtsp_stream(self, stream_id):
                         'frame_data': frame_base64,
                         'gps': gps_data,
                         'resolution': stream.resolution,
-                        'frame_rate': stream.frame_rate
+                        'frame_rate': stream.frame_rate,
+                        'source': 'LIVE'
                     }
                     
                     producer.send(settings.KAFKA_TOPICS['RAW_FRAMES'], value=message)
@@ -264,7 +276,7 @@ def simulate_stream_task(self, stream_id, patrol_id=None, video_file='computer_v
             fps = cap.get(cv2.CAP_PROP_FPS) or 30.0
             delay = 1.0 / fps
             
-            while cap.isOpened() and stream.is_active:
+            while cap.isOpened() and stream.is_active and stream.stream_mode == 'SIMULATED':
                 ret, frame = cap.read()
                 if not ret:
                     break # Restart loop if finished
@@ -286,13 +298,15 @@ def simulate_stream_task(self, stream_id, patrol_id=None, video_file='computer_v
                         'gps': {'latitude': -17.8252, 'longitude': 31.0335, 'altitude': 50.0},
                         'resolution': '1920x1080',
                         'frame_rate': fps,
+                        'source': 'SIMULATED'
                     }
                     
                     producer.send(settings.KAFKA_TOPICS['RAW_FRAMES'], value=message)
-                    # producer.flush() # Flushing every frame can be slow, let Kafka buffer
+                    
                     session.frames_processed += 1
                     
                     if frame_count % 30 == 0:
+                        logger.info(f"Simulator: Published {frame_count} frames for stream {stream_id}")
                         session.save(update_fields=['frames_processed'])
                 
                     # Throttle to match target FPS
@@ -306,7 +320,7 @@ def simulate_stream_task(self, stream_id, patrol_id=None, video_file='computer_v
             
             # If not looping, we'd break here. For now, assume a continuous loop for simulation
             # but check is_active to allow stopping.
-            if not stream.is_active:
+            if not stream.is_active or stream.stream_mode != 'SIMULATED':
                 break
                 
         session.end_time = timezone.now()
