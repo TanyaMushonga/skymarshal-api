@@ -148,16 +148,40 @@ def check_for_violations(sender, instance, created, **kwargs):
                 )
 
             # 2. Notify Citizen (SMS)
-            if instance.license_plate:
-                try:
-                    reg = VehicleRegistration.objects.get(license_plate=instance.license_plate)
-                    if reg.owner_phone_number:
-                        sms_msg = (f"TRAFFIC ALERT: Violation recorded for {instance.license_plate}. "
-                                   f"Speed: {instance.speed}km/h in {limit}km/h zone. "
-                                   f"Ticket ID: {violation.id}. Fine: ${fine:.2f}")
-                        send_sms_to_citizen.delay(reg.owner_phone_number, sms_msg)
-                except VehicleRegistration.DoesNotExist:
-                    logger.warning(f"No registration found for plate {instance.license_plate}")
+            if vehicle and vehicle.owner_phone_number:
+                sms_msg = (
+                    f"Your car [{instance.license_plate}] was detected traveling at {instance.speed}km/h "
+                    f"along Gweru Bulawayo highway, and a ticket of ${fine:.2f} has been created for you. "
+                    f"You can use this payment link to clear your ticket: https://pay.skymarshal.com/violation/{violation.id} "
+                    f"or go to any police station to pay physically. Please clear your ticket within a period of 2 weeks from now."
+                )
+                send_sms_to_citizen.delay(vehicle.owner_phone_number, sms_msg)
+                logger.info(f"Violation SMS queued for {vehicle.license_plate}")
 
     except Exception as e:
         logger.error(f"Error checking violations for Detection {instance.id}: {e}", exc_info=True)
+
+
+@receiver(post_save, sender='violations.ViolationPayment')
+def notify_payment_success(sender, instance, created, **kwargs):
+    """
+    Signal to notify citizen when a payment is successfully recorded.
+    """
+    if not created:
+        return
+
+    try:
+        violation = instance.violation
+        if violation.vehicle and violation.vehicle.owner_phone_number:
+            from apps.notifications.tasks import send_sms_to_citizen
+            
+            msg = (
+                f"PAYMENT RECEIVED: Your payment of ${instance.amount} for ticket "
+                f"[{violation.vehicle.license_plate}] has been successfully processed. "
+                f"Current status: {violation.status}. Thank you for your compliance."
+            )
+            send_sms_to_citizen.delay(violation.vehicle.owner_phone_number, msg)
+            logger.info(f"Payment confirmation SMS sent for violation {violation.id}")
+            
+    except Exception as e:
+        logger.error(f"Error sending payment notification: {e}")
