@@ -40,7 +40,19 @@ def record_compliant_behavior(sender, instance, created, **kwargs):
                 score.safe_driving_points += 1
                 score.save()
                 
-                # logger.debug(f"Awarded compliance point to {vehicle.license_plate}")
+                # Gamification: Trigger SMS with a random 10% chance to maintain engagement
+                import random
+                if random.random() < 0.1:
+                    if vehicle.owner_phone_number:
+                        from apps.notifications.tasks import send_sms_to_citizen
+                        msg = (
+                            f"Great job! You have been traveling at a good speed along "
+                            f"the Bulawayo-Gweru road and have earned more points! "
+                            f"Keep up the good morale. When your points reach 100, you will "
+                            f"stand a chance to win cash prizes!"
+                        )
+                        send_sms_to_citizen.delay(vehicle.owner_phone_number, msg)
+                        logger.info(f"Random gamification SMS sent to {vehicle.license_plate}.")
                 
             except VehicleRegistration.DoesNotExist:
                 # Unregistered vehicle, ignore
