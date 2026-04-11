@@ -1,12 +1,40 @@
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.decorators import action, api_view, permission_classes, authentication_classes
 from django.utils import timezone
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter
 from .models import Notification
 from .serializers import NotificationSerializer
+from .tasks import send_sms_to_citizen
+
+@api_view(['POST'])
+@authentication_classes([])
+@permission_classes([AllowAny])
+def test_sms(request):
+    """
+    Unauthenticated endpoint to test SMS sending.
+    Expects: {"phone_number": "+263...", "message": "Test message"}
+    """
+    phone_number = request.data.get('phone_number')
+    message = request.data.get('message', "This is a test SMS from SkyMarshal.")
+    
+    if not phone_number:
+        return Response(
+            {'error': 'phone_number is required'}, 
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    
+    # Trigger the task
+    send_sms_to_citizen.delay(phone_number, message)
+    
+    return Response({
+        'status': 'success',
+        'message': f'SMS task queued for {phone_number}',
+        'note': 'The task uses current SMSService (AWS SNS)'
+    })
 
 class NotificationViewSet(viewsets.ReadOnlyModelViewSet):
     """
