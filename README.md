@@ -1,297 +1,155 @@
 # SkyMarshal API
 
-A comprehensive Django REST API for intelligent aerial traffic monitoring, featuring real-time drone fleet management, computer vision-powered vehicle detection, speed monitoring, automated violation processing, and compliance tracking.
+A high-performance, distributed Django REST backend for intelligent aerial surveillance. SkyMarshal leverages real-time computer vision, message queuing, and geographic data analysis to provide autonomous drone fleet management, vehicle detection, and automated traffic violation enforcement.
 
-## Features
+## 🏗️ System Architecture
 
-### 🚁 Drone Fleet Management
+SkyMarshal uses a decoupled, event-driven architecture designed for low-latency video processing and high scalability.
 
-- **Drone Registration & Tracking** - Register drones with unique IDs, models, and serial numbers
-- **Real-time GPS Tracking** - Track drone locations with PostGIS geographic data support
-- **Battery & Signal Monitoring** - Live status updates including battery level and signal strength
-- **API Key Authentication** - Secure ESP32-CAM drone authentication with auto-generated keys
+```mermaid
+graph TD
+    subgraph "Edge Layer"
+        A[ESP32-CAM Drone]
+    end
 
-### 👮 User Management & Authentication
+    subgraph "Ingestion & Streaming"
+        B[Ingestion Gateway: Express]
+        C{Kafka: raw_frames}
+        D[CV Service: YOLOv8]
+        E{Kafka: processed_frames}
+        F{Kafka: detection_events}
+        G[Stream Bridge: Django]
+    end
 
-- **Role-Based Access Control** - Admin, Officer, and Dispatcher roles
-- **Two-Factor Authentication** - SMS-based 2FA for enhanced security
-- **JWT Authentication** - Secure API access with token-based auth
-- **Officer Certification Tracking** - Pilot license and certification management
+    subgraph "Core Backend"
+        H[Detection Consumer]
+        I[Django REST API]
+        J[(PostgreSQL / PostGIS)]
+        K[(Redis: Cache / Channels)]
+    end
 
-### 🎥 Video Stream Ingestion
+    subgraph "Client Layer"
+        L[Mobile App]
+        M[Web Dashboard]
+        N[WebSockets]
+    end
 
-- **WebSocket Stream Support** - Ingest live video feeds directly from ESP32-CAM modules
-- **Kafka Integration** - Real-time frame processing via message queues
-- **Session Management** - Track active streaming sessions per patrol
-
-### 🔍 Computer Vision Processing
-
-- **YOLOv8 Vehicle Detection** - Real-time detection of cars, trucks, motorcycles, and buses
-- **License Plate Recognition (ALPR)** - Automatic plate detection with EasyOCR
-- **Speed Estimation** - Perspective-transformed speed calculations
-- **Detection Storage** - Persist all detections with location and confidence data
-
-### ⚠️ Violation Management
-
-- **Automatic Violation Creation** - Generated from speed/detection events
-- **Evidence Pack Storage** - Video clips and image snapshots for each violation
-- **Citation Workflow** - NEW → PROCESSED → CITATION_SENT → DISMISSED status flow
-- **Fine Calculation** - Configurable fine amounts per violation type
-
-### 🏅 Compliance & Incentive System
-
-- **Safe Driving Points** - Reward compliant drivers with points
-- **Lottery Events** - Periodic drawings for drivers meeting minimum point thresholds
-- **Vehicle Registration Database** - Track vehicle status (Active, Expired, Stolen, Suspended)
-
-### 📧 Multi-Channel Notifications
-
-- **Real-time WebSocket** - Django Channels for instant push notifications
-- **Email via AWS SES** - Automated email alerts
-- **SMS via AWS SNS** - Text message notifications
-- **Notification Types** - Stream health, mission updates, system alerts
-
-### 📊 Analytics & Reporting
-
-- **Admin Analytics** - System-wide statistics and insights
-- **Officer Analytics** - Individual performance metrics
-- **Period Filtering** - Daily, weekly, monthly, and custom date ranges
-
-## Tech Stack
-
-| Component            | Technology                                     |
-| -------------------- | ---------------------------------------------- |
-| **Framework**        | Django 5.0, Django REST Framework 3.14         |
-| **Database**         | PostgreSQL 15 with PostGIS                     |
-| **Caching**          | Redis 7                                        |
-| **Message Queue**    | RabbitMQ 3.12 (Celery), Kafka 7.5 (CV streams) |
-| **WebSockets**       | Django Channels with Redis backend             |
-| **Computer Vision**  | YOLOv8 (Ultralytics), OpenCV, EasyOCR          |
-| **Cloud Services**   | AWS S3, SES, SNS via boto3                     |
-| **Monitoring**       | Sentry, Flower (Celery monitoring)             |
-| **Web Server**       | Nginx, Gunicorn, Daphne (ASGI)                 |
-| **Containerization** | Docker, Docker Compose                         |
-
-## Project Structure
-
-```
-skymarshal-api/
-├── api/                     # Django project settings & WSGI/ASGI config
-│   ├── settings.py
-│   ├── urls.py              # Main URL router
-│   ├── celery.py            # Celery configuration
-│   └── asgi.py              # ASGI config for WebSockets
-├── apps/
-│   ├── core/                # Shared utilities, pagination, Kafka config
-│   ├── users/               # User management & authentication
-│   ├── drones/              # Drone fleet management
-│   ├── patrols/             # Patrol mission management
-│   ├── stream_ingestion/    # Live video stream handling
-│   ├── detections/          # CV detection records
-│   ├── violations/          # Traffic violation processing
-│   ├── vehicle_lookup/      # Vehicle registration database
-│   ├── compliance/          # Compliance scores & lottery
-│   ├── notifications/       # Multi-channel notifications
-│   └── analytics/           # Dashboard analytics
-├── computer_vision/         # YOLOv8 detection pipeline
-├── docker-compose.yml       # Multi-service orchestration
-├── Dockerfile
-├── requirements.txt
-└── nginx.conf
+    A -->|B64 Frames| B
+    B -->|Produce| C
+    C -->|Consume| D
+    D -->|Annotate| E
+    D -->|Detect| F
+    E -->|Consume| G
+    F -->|Consume| H
+    G -->|Broadcast| N
+    H -->|Persist| J
+    I -->|Query| J
+    I -->|Cache| K
+    N <-->|Real-time| L
+    N <-->|Real-time| M
+    L <-->|REST| I
+    M <-->|REST| I
 ```
 
-## API Endpoints
+## 🚀 Features
 
-### Authentication
+### 📡 Advanced Streaming Modes
+- **Live Stream**: Direct ingestion from ESP32-CAM modules via high-speed ingestion gateways.
+- **Simulated Mode**: Deterministic testing environment using pre-loaded video feeds for CV pipeline calibration.
+- **Real-Time Handshake**: Dynamic drone-to-server discovery and configuration sync.
 
-| Method | Endpoint                               | Description            |
-| ------ | -------------------------------------- | ---------------------- |
-| POST   | `/api/v1/auth/login/admin/`            | Admin login            |
-| POST   | `/api/v1/auth/login/officer/`          | Officer login          |
-| POST   | `/api/v1/auth/verify-2fa/`             | Verify 2FA code        |
-| POST   | `/api/v1/auth/password-reset/confirm/` | Confirm password reset |
+### 🧠 Intelligent Computer Vision
+- **Centralized YOLOv8 Pipeline**: Single source of truth for vehicle detection (Cars, Trucks, Motorcycles, Buses).
+- **ALPR Integration**: Automated license plate recognition using EasyOCR.
+- **Telemetry-Synced Annotations**: PostGIS-powered geospatial data mapped directly to video frames.
+- **Speed Estimation**: Perspective-transformed calculations for accurate traffic monitoring.
 
-### Drones
+### 🛡️ Traffic Enforcement & Compliance
+- **Automated Citations**: Rule-based violation creation (Speeding, Illegal Maneuvers).
+- **Evidence Management**: Snapshot and video clip generation for each detection event.
+- **Incentive System**: "Safe Driving" points and lottery system to promote road safety compliance.
+- **Unified Vehicle Registry**: Real-time status lookup (Active, Stolen, Suspended).
 
-| Method | Endpoint                             | Description         |
-| ------ | ------------------------------------ | ------------------- |
-| GET    | `/api/v1/drones/`                    | List all drones     |
-| POST   | `/api/v1/drones/`                    | Register new drone  |
-| GET    | `/api/v1/drones/{id}/`               | Get drone details   |
-| PUT    | `/api/v1/drones/{id}/`               | Update drone        |
-| POST   | `/api/v1/drones/{id}/update-status/` | Update drone status |
-| POST   | `/api/v1/drones/{id}/update-gps/`    | Update GPS location |
+### 🛠️ Distributed Infrastructure
+- **Message Queuing**: Kafka for heavy frame processing; RabbitMQ for background tasks and notifications.
+- **Real-Time Updates**: Django Channels for instant dashboard alerts and live stream delivery.
+- **Multi-Channel Alerts**: Automated notifications via AWS SES (Email) and AWS SNS (SMS).
 
-### Patrols
+## 🛠️ Tech Stack
 
-| Method | Endpoint                | Description       |
-| ------ | ----------------------- | ----------------- |
-| GET    | `/api/v1/patrols/`      | List patrols      |
-| POST   | `/api/v1/patrols/`      | Start new patrol  |
-| PUT    | `/api/v1/patrols/{id}/` | End/update patrol |
+| Component | Technology | Role |
+| :--- | :--- | :--- |
+| **Framework** | Django 5.0 / DRF 3.14 | Core Logic & API |
+| **Database** | PostgreSQL 15 + PostGIS | Geospatial Storage |
+| **Cache / WS** | Redis 7 | State Management & WebSockets |
+| **Stream Bus** | Confluent Kafka 7.5 | Frame & Event Bus |
+| **Inference Engine** | YOLOv8 (Ultralytics) | Real-time Object Detection |
+| **OCR** | EasyOCR | License Plate Recognition |
+| **Task Queue** | RabbitMQ / Celery | Async Jobs & Scheduled Tasks |
+| **Gateway** | Express.js | High-concurrency Ingestion |
+| **ASGI Server** | Daphne | WebSocket Handling |
+| **Monitoring** | Flower / Sentry | Celery Monitoring & Error Reporting |
 
-### Detections & Violations
+## 🔄 Ingestion Workflow
 
-| Method | Endpoint                   | Description             |
-| ------ | -------------------------- | ----------------------- |
-| GET    | `/api/v1/detections/`      | List all detections     |
-| GET    | `/api/v1/violations/`      | List all violations     |
-| PUT    | `/api/v1/violations/{id}/` | Update violation status |
+SkyMarshal follows a strict 6-phase lifecycle for every patrol session:
 
-### Streams
+1.  **Initiation**: Officer starts patrol via API; system initializes drone pairing.
+2.  **Handshake**: ESP32 fetches configuration and endpoint settings via polling.
+3.  **Ingestion**: Device pushes B64-encoded frames to the Express Gateway.
+4.  **Inference**: CV Service consumes raw frames, runs YOLO/ALPR, and produces annotated frames.
+5.  **Delivery**: Stream Bridge broadcasts processed frames to clients via WebSockets.
+6.  **Persistence**: Detection Consumer saves metrics and violation data to PostGIS.
 
-| Method | Endpoint                      | Description             |
-| ------ | ----------------------------- | ----------------------- |
-| GET    | `/api/v1/streams/`            | List video streams      |
-| POST   | `/api/v1/streams/`            | Register new stream     |
-| POST   | `/api/v1/streams/{id}/start/` | Start streaming session |
-| POST   | `/api/v1/streams/{id}/stop/`  | Stop streaming session  |
-
-### Compliance & Lottery
-
-| Method | Endpoint                                | Description            |
-| ------ | --------------------------------------- | ---------------------- |
-| GET    | `/api/v1/compliance/scores/`            | List compliance scores |
-| GET    | `/api/v1/compliance/lottery/`           | List lottery events    |
-| POST   | `/api/v1/compliance/lottery/{id}/draw/` | Execute lottery draw   |
-
-### Vehicles
-
-| Method | Endpoint                           | Description              |
-| ------ | ---------------------------------- | ------------------------ |
-| GET    | `/api/v1/vehicles/`                | List registered vehicles |
-| GET    | `/api/v1/vehicles/{plate}/lookup/` | Lookup vehicle by plate  |
-
-### Notifications
-
-| Method    | Endpoint                           | Description             |
-| --------- | ---------------------------------- | ----------------------- |
-| GET       | `/api/v1/notifications/`           | List user notifications |
-| POST      | `/api/v1/notifications/{id}/read/` | Mark as read            |
-| WebSocket | `/ws/notifications/`               | Real-time notifications |
-
-### Analytics
-
-| Method | Endpoint                     | Description           |
-| ------ | ---------------------------- | --------------------- |
-| GET    | `/api/v1/analytics/admin/`   | Admin dashboard stats |
-| GET    | `/api/v1/analytics/officer/` | Officer metrics       |
-
-### Documentation
-
-| Endpoint    | Description         |
-| ----------- | ------------------- |
-| `/swagger/` | Swagger UI          |
-| `/redoc/`   | ReDoc documentation |
-
-## Getting Started
+## 🏁 Getting Started
 
 ### Prerequisites
-
 - Python 3.10+
 - Docker & Docker Compose
-- PostgreSQL 15 with PostGIS extension
-- Redis 7
-- RabbitMQ 3.12
-- Kafka (optional, for CV streams)
+- AWS Credentials (optional, for notifications)
 
-### Local Development
-
-1. **Clone the repository**
-
-   ```bash
-   git clone https://github.com/TanyaMushonga/skymarshal-api.git
-   cd skymarshal-api
-   ```
-
-2. **Create environment file**
-
-   ```bash
-   cp .env.example .env
-   # Edit .env with your configuration
-   ```
-
-3. **Create and activate virtual environment**
-
-   ```bash
-   python3 -m venv venv
-   source venv/bin/activate
-   ```
-
-4. **Install dependencies**
-
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-5. **Run database migrations**
-
-   ```bash
-   python manage.py migrate
-   ```
-
-6. **Create superuser**
-
-   ```bash
-   python manage.py createsuperuser
-   ```
-
-7. **Start development server**
-   ```bash
-   python manage.py runserver
-   ```
-
-### Docker Deployment
-
-Start the full stack with Docker Compose:
+### Quick Setup (Docker)
+The easiest way to run the full stack (12+ services) is using Docker Compose:
 
 ```bash
 docker-compose up -d
 ```
 
-This starts the following services:
+### Manual Setup
+1.  **Clone & Env**: 
+    ```bash
+    cp .env.example .env
+    ```
+2.  **Initialize**:
+    ```bash
+    ./setup.sh
+    ```
+3.  **Run Services**:
+    ```bash
+    # Terminal 1: Django API
+    python manage.py runserver
+    
+    # Terminal 2: Celery Worker
+    celery -A api worker --loglevel=info
+    
+    # Terminal 3: CV Pipeline
+    python computer_vision/main.py
+    ```
 
-- **web** - Django application (port 8000)
-- **db** - PostgreSQL database (port 5432)
-- **redis** - Redis cache (port 6379)
-- **rabbitmq** - Message broker (ports 5672, 15672)
-- **kafka** - Stream processing (port 9092)
-- **zookeeper** - Kafka coordinator (port 2181)
-- **celery** - Background task workers
-- **celery-beat** - Scheduled tasks
-- **computer_vision** - CV processing service
-- **detection_consumer** - Kafka detection consumer
-- **flower** - Celery monitoring (port 5555)
-- **nginx** - Reverse proxy (ports 80, 443)
+## 📂 Project Structure
 
-### Environment Variables
+- `apps/`: Modular Django applications (Core, Drones, Patrols, Detections, etc.)
+- `computer_vision/`: YOLOv8 detection and annotation engine.
+- `scripts/`: Utility scripts (e.g., `generate_drone_key.py`).
+- `api/`: Project settings, ASGI/WSGI, and Celery config.
 
-Key environment variables (see `.env.example`):
+## 📜 License & Contributing
 
-```bash
-# Database
-DB_NAME=skymarshal
-DB_USER=postgres
-DB_PASSWORD=your_password
-DB_HOST=db
-DB_PORT=5432
+Distributed under the MIT License. See [LICENSE](LICENSE) for details. Contributions are welcome—please review [CONTRIBUTING.md](CONTRIBUTING.md).
 
-# Redis
-REDIS_URL=redis://redis:6379/0
+## 🔗 External Resources
 
-# AWS (for notifications)
-AWS_ACCESS_KEY_ID=your_key
-AWS_SECRET_ACCESS_KEY=your_secret
-AWS_REGION=us-east-1
+- **[Sky Marshal Technical Reference](https://gist.github.com/TanyaMushonga/8791c3a9399597e9bde615d2e4fecbb8)**: Comprehensive architecture deep-dive and documentation for the full ecosystem.
 
-# Kafka
-KAFKA_BOOTSTRAP_SERVERS=kafka:9092
-```
-
-## License
-
-Distributed under the MIT License. See [LICENSE](LICENSE) for further details.
-
-## Contributing
-
-Contributions are welcome. Please refer to [CONTRIBUTING.md](CONTRIBUTING.md) for submission guidelines.
+---
+*Maintained by [Tanya Mushonga](https://github.com/TanyaMushonga)*
