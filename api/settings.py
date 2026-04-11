@@ -152,6 +152,10 @@ CELERY_BEAT_SCHEDULE = {
         'task': 'apps.detections.tasks.cleanup_old_detections',
         'schedule': timedelta(minutes=10),
     },
+    'send-unpaid-reminders': {
+        'task': 'apps.notifications.tasks.send_unpaid_reminders',
+        'schedule': timedelta(days=1),
+    },
 }
 
 # JWT Authentication
@@ -190,9 +194,20 @@ SIMPLE_JWT = {
 CORS_ALLOWED_ORIGINS = config('CORS_ALLOWED_ORIGINS', default='http://localhost:3000').split(',')
 CORS_ALLOW_ALL_ORIGINS = DEBUG
 
-CSRF_TRUSTED_ORIGINS = [origin for origin in CORS_ALLOWED_ORIGINS if origin != '*']
-if 'http://localhost:3000' not in CSRF_TRUSTED_ORIGINS:
-     CSRF_TRUSTED_ORIGINS.append('http://localhost:3000')
+# In DEBUG mode, we allow all for CSRF to handle dynamic local IPs
+if DEBUG:
+    CSRF_TRUSTED_ORIGINS = [
+        'http://localhost:3000',
+        'http://127.0.0.1:3000',
+        'http://localhost:8081',
+        'http://127.0.0.1:8081',
+    ]
+    # Dynamically allow the current host for CSRF if needed
+    # Note: Using '*' in CSRF_TRUSTED_ORIGINS is not supported by Django,
+    # but since we use JWT for the mobile app, this is primarily for the admin/web dashboard.
+else:
+    CSRF_TRUSTED_ORIGINS = [origin for origin in CORS_ALLOWED_ORIGINS if origin != '*']
+
 CORS_ALLOW_CREDENTIALS = True
 
 # Static files
